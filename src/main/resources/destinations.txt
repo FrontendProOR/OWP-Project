@@ -1,0 +1,8 @@
+1;Novi Sad;Srbija;Evropa
+2;Beograd;Srbija;Evropa
+3;Sremska Kamenica;Srbija;Evropa
+4;Novi Pazar;Srbija;Evropa
+5;Mali Zvornik;Srbija;Evropa
+6;Valjevo;Srbija;Evropa
+7;Loznica;Srbija;Evropa
+8;Sabac;Srbija;Evropa

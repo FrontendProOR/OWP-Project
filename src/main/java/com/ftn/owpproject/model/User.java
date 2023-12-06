@@ -1,9 +1,13 @@
 package com.ftn.owpproject.model;
 
+
 import java.time.LocalDateTime;
 
+
+import com.ftn.owpproject.model.enums.UserRole;
+
 public class User {
-    private int id;
+    private Long id;
     private String username;
     private String password;
     private String emailAddress;
@@ -13,7 +17,7 @@ public class User {
     private String address;
     private String phoneNumber;
     private LocalDateTime registrationDateTime;
-    private String role;
+    private UserRole role;
 
     // Empty Constructor
     public User() {
@@ -21,7 +25,7 @@ public class User {
 
     // Full Constructor without id
     public User(String username, String password, String emailAddress, String firstName, String lastName,
-                String dateOfBirth, String address, String phoneNumber, String role) {
+                String dateOfBirth, String address, String phoneNumber, UserRole role) {
         this.username = username;
         this.password = password;
         this.emailAddress = emailAddress;
@@ -35,8 +39,8 @@ public class User {
     }
 
     // Full Constructor with id
-    public User(int id, String username, String password, String emailAddress, String firstName, String lastName,
-                String dateOfBirth, String address, String phoneNumber, String role) {
+    public User(Long id, String username, String password, String emailAddress, String firstName, String lastName,
+                String dateOfBirth, String address, String phoneNumber, UserRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -50,12 +54,37 @@ public class User {
         this.role = role;
     }
 
+    public User(String firstName, String lastName, String emailAddress, String password) {
+        this.username = generateDefaultUsername(firstName, lastName);
+        this.password = password;
+        this.emailAddress = emailAddress;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.registrationDateTime = LocalDateTime.now();
+        this.role = UserRole.PASSENGER;  // Assuming a default role for new users
+    }
+    public User(Long id, String username, String password, String email, String firstName) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.emailAddress = email;
+        this.firstName = firstName;
+        // Set other default values or perform additional initialization if needed
+    }
+
+    // Helper method to generate a default username based on first and last name
+    private String generateDefaultUsername(String firstName, String lastName) {
+        // Logic to generate a username, e.g., concatenating first and last name
+        // This is just a placeholder; you may want to implement your own logic
+        return firstName.toLowerCase() + "." + lastName.toLowerCase();
+    }
+    
     // Getters and Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -131,12 +160,36 @@ public class User {
         this.registrationDateTime = registrationDateTime;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
+    
+    public String toFileString() {
+        StringBuilder result = new StringBuilder();
+
+        result.append(id).append(";");
+        result.append(username).append(";");
+        result.append(password).append(";");
+        result.append(emailAddress).append(";");
+        result.append(firstName).append(";");
+        result.append(lastName).append(";");
+        result.append(dateOfBirth).append(";");
+        result.append(address).append(";");
+        result.append(phoneNumber).append(";");
+        result.append(registrationDateTime).append(";");
+        result.append(role);
+
+        return result.toString();
+    }
+    
+//    public String toString() {
+//        return this.username + " " + this.lastName + " (" + this.emailAddress + ")";
+//    }
+    
+
 }
 

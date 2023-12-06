@@ -2,14 +2,17 @@ package com.ftn.owpproject.model;
 
 import java.util.List;
 
+import com.ftn.owpproject.model.enums.Service;
+import com.ftn.owpproject.model.enums.TypeOfAccommodation;
+
 public class AccommodationUnit {
     private int id;
     private String name;
-    private String type; // (e.g., apartment, hotel room only, hotel bed and breakfast, half board, ...)
+    private TypeOfAccommodation type; // (e.g., apartment, hotel room only, hotel bed and breakfast, half board, ...)
     private int capacity;
     private Destination destination;
     private List<String> reviews;
-    private List<String> services; // (e.g., wi-fi, bathroom, TV, air conditioning, ...)
+    private List<Service> services; // (e.g., wi-fi, bathroom, TV, air conditioning, ...)
     private String description;
 
     // Empty Constructor
@@ -17,8 +20,8 @@ public class AccommodationUnit {
     }
 
     // Full Constructor without id
-    public AccommodationUnit(String name, String type, int capacity, Destination destination,
-                             List<String> reviews, List<String> services, String description) {
+    public AccommodationUnit(String name, TypeOfAccommodation type, int capacity, Destination destination,
+                             List<String> reviews, List<Service> services, String description) {
         this.name = name;
         this.type = type;
         this.capacity = capacity;
@@ -29,8 +32,8 @@ public class AccommodationUnit {
     }
 
     // Full Constructor with id
-    public AccommodationUnit(int id, String name, String type, int capacity, Destination destination,
-                             List<String> reviews, List<String> services, String description) {
+    public AccommodationUnit(int id, String name, TypeOfAccommodation type, int capacity, Destination destination,
+                             List<String> reviews, List<Service> services, String description) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -58,11 +61,11 @@ public class AccommodationUnit {
         this.name = name;
     }
 
-    public String getType() {
+    public TypeOfAccommodation getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeOfAccommodation type) {
         this.type = type;
     }
 
@@ -90,11 +93,11 @@ public class AccommodationUnit {
         this.reviews = reviews;
     }
 
-    public List<String> getServices() {
+    public List<Service> getServices() {
         return services;
     }
 
-    public void setServices(List<String> services) {
+    public void setServices(List<Service> services) {
         this.services = services;
     }
 
@@ -104,6 +107,26 @@ public class AccommodationUnit {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public String toFileString() {
+        StringBuilder result = new StringBuilder();
+
+        result.append(id).append(";");
+        result.append(name).append(";");
+        result.append(type).append(";");
+        result.append(capacity).append(";");
+        result.append(destination).append(";");
+        result.append(reviews).append(";");
+        result.append(services).append(";");
+        result.append(description);
+
+        return result.toString();
+    }
+    
+    @Override
+    public String toString() {
+        return this.name + " - " + this.type + " (" + this.capacity + " people)";
     }
 }
 

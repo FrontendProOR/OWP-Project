@@ -2,12 +2,14 @@ package com.ftn.owpproject.model;
 
 import java.time.LocalDateTime;
 
+import com.ftn.owpproject.model.enums.TravelCategory;
+
 public class Trip {
     private int tripCode;
     private Destination destination;
     private Transportation transportation;
     private AccommodationUnit accommodationUnit;
-    private String travelCategory; // (e.g., Skiing, Summer vacation, Last minute, New Year, ...)
+    private TravelCategory travelCategory; // (e.g., Skiing, Summer vacation, Last minute, New Year, ...)
     private LocalDateTime departureDateTime;
     private LocalDateTime returnDateTime;
     private int numberOfNights;
@@ -19,7 +21,7 @@ public class Trip {
 
     // Full Constructor without tripCode
     public Trip(Destination destination, Transportation transportation, AccommodationUnit accommodationUnit,
-                String travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
+                TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
                 int numberOfNights, double tripPrice) {
         this.destination = destination;
         this.transportation = transportation;
@@ -33,7 +35,7 @@ public class Trip {
 
     // Full Constructor with tripCode
     public Trip(int tripCode, Destination destination, Transportation transportation, AccommodationUnit accommodationUnit,
-                String travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
+                TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
                 int numberOfNights, double tripPrice) {
         this.tripCode = tripCode;
         this.destination = destination;
@@ -79,11 +81,11 @@ public class Trip {
         this.accommodationUnit = accommodationUnit;
     }
 
-    public String getTravelCategory() {
+    public TravelCategory getTravelCategory() {
         return travelCategory;
     }
 
-    public void setTravelCategory(String travelCategory) {
+    public void setTravelCategory(TravelCategory travelCategory) {
         this.travelCategory = travelCategory;
     }
 
@@ -117,6 +119,27 @@ public class Trip {
 
     public void setTripPrice(double tripPrice) {
         this.tripPrice = tripPrice;
+    }
+    
+    public String toFileString() {
+        StringBuilder result = new StringBuilder();
+
+        result.append(tripCode).append(";");
+        result.append(destination).append(";");
+        result.append(transportation).append(";");
+        result.append(accommodationUnit).append(";");
+        result.append(travelCategory).append(";");
+        result.append(departureDateTime).append(";");
+        result.append(returnDateTime).append(";");
+        result.append(numberOfNights).append(";");
+        result.append(tripPrice);
+
+        return result.toString();
+    }
+    
+    @Override
+    public String toString() {
+        return this.tripCode + " - " + this.destination + " (" + this.travelCategory + ")";
     }
 }
 

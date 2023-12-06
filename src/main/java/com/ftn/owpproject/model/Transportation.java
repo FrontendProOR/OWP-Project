@@ -1,8 +1,10 @@
 package com.ftn.owpproject.model;
 
+import com.ftn.owpproject.model.enums.TransportationType;
+
 public class Transportation {
     private int id;
-    private String type; // (e.g., airplane, bus, ship, ...)
+    private TransportationType type; // (e.g., airplane, bus, ship, ...)
     private int numberOfSeats;
     private Destination finalDestination; // Updated attribute name
     private String description;
@@ -12,7 +14,7 @@ public class Transportation {
     }
 
     // Full Constructor without id
-    public Transportation(String type, int numberOfSeats, Destination finalDestination, String description) {
+    public Transportation(TransportationType type, int numberOfSeats, Destination finalDestination, String description) {
         this.type = type;
         this.numberOfSeats = numberOfSeats;
         this.finalDestination = finalDestination;
@@ -20,7 +22,7 @@ public class Transportation {
     }
 
     // Full Constructor with id
-    public Transportation(int id, String type, int numberOfSeats, Destination finalDestination, String description) {
+    public Transportation(int id, TransportationType type, int numberOfSeats, Destination finalDestination, String description) {
         this.id = id;
         this.type = type;
         this.numberOfSeats = numberOfSeats;
@@ -37,11 +39,11 @@ public class Transportation {
         this.id = id;
     }
 
-    public String getType() {
+    public TransportationType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TransportationType type) {
         this.type = type;
     }
 
@@ -67,6 +69,23 @@ public class Transportation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public String toFileString() {
+        StringBuilder result = new StringBuilder();
+
+        result.append(id).append(";");
+        result.append(type).append(";");
+        result.append(numberOfSeats).append(";");
+        result.append(finalDestination).append(";");
+        result.append(description);
+
+        return result.toString();
+    }
+    
+    @Override
+    public String toString() {
+        return this.type + " - " + this.finalDestination;
     }
 }
 
