@@ -1,5 +1,7 @@
 package com.ftn.owpproject.service.impl;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -69,26 +71,76 @@ public class DestinationServiceImpl implements DestinationService{
 			return new ArrayList<Destination>(destinations.values());
 		}
 
-		public Destination save(Destination destination) {
-			if (destination.getId() == null) {
-				destination.setId(++nextId);
-			}
-			destinations.put(destination.getId(), destination);
-			return destination;
-		}
+//		public Destination save(Destination destination) {
+//			if (destination.getId() == null) {
+//				destination.setId(++nextId);
+//			}
+//			destinations.put(destination.getId(), destination);
+//			return destination;
+//		}
+//
+//		public List<Destination> save(List<Destination> destinations) {
+//			List<Destination> ret = new ArrayList<>();
+//
+//			for (Destination d : destinations) {
+//				Destination saved = save(d);
+//				if (saved != null) {
+//					ret.add(saved);
+//				}
+//			}
+//			return ret;
+//		}
 
-		public List<Destination> save(List<Destination> destinations) {
-			List<Destination> ret = new ArrayList<>();
+		private long getNextIdFromFile() {
+	        String fileName = "destinations.txt";
+	        URL resource = getClass().getResource("/" + fileName);
 
-			for (Destination d : destinations) {
-				Destination saved = save(d);
-				if (saved != null) {
-					ret.add(saved);
-				}
-			}
-			return ret;
-		}
+	        if (resource == null) {
+	            System.err.println("File not found: " + fileName);
+	            return -1; 
+	        } else {
+	            try {
+	                Path path = Paths.get(resource.toURI());
+	                System.out.println("Absolute Path: " + path.toAbsolutePath());
 
+	                List<String> lines = Files.readAllLines(path, Charset.forName("UTF-8"));
+
+	                for (String line : lines) {
+	                    String[] tokens = line.split(";");
+	                    if (tokens.length > 0) {
+	                        Long id = Long.parseLong(tokens[0].trim());
+	                        nextId = Math.max(nextId, id + 1);
+	                    }
+	                }
+	            } catch (Exception e) {
+	                e.printStackTrace();
+
+	            }
+	        }
+	        return nextId;
+	    }
+		
+		public static void saveStringToFile(String filePath, String data) {
+	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+	            // Append a new line with the data to the existing file
+	            writer.write(data);
+	            writer.newLine();
+	        } catch (IOException e) {
+	            // Handle exceptions, e.g., log or throw
+	            e.printStackTrace();
+	        }
+	    }
+
+	    public void save(Destination destination) {
+	    	String filePath = "src/main/resources/destinations.txt"; 
+	    	if (destination.getId() == null) {
+
+	            destination.setId(getNextIdFromFile());
+	        }
+	        String stringToSave = destination.toFileString();
+	        saveStringToFile(filePath, stringToSave);
+	    }
+		
 //		public Destination delete(Long id) {
 //			if (!destinations.containsKey(id)) {
 //				throw new IllegalArgumentException("tried to remove non existing destination");

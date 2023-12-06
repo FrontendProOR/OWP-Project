@@ -6,3 +6,5 @@
 6;Valjevo;Srbija;Evropa
 7;Loznica;Srbija;Evropa
 8;Sabac;Srbija;Evropa
+8;Pariz;fr;eu
+9;shangaj;kina;azija

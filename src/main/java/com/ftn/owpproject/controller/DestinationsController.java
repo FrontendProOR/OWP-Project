@@ -3,6 +3,7 @@ package com.ftn.owpproject.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -126,14 +127,15 @@ public class DestinationsController {
 
 
     @PostMapping(value = "/add")
-    public void create(@RequestParam Long id, @RequestParam String city, @RequestParam String country,
+    public void create( @RequestParam String city, @RequestParam String country,
             @RequestParam String continent, HttpServletResponse response) throws IOException {
-
+    	//obriso @RequestParam Long id, iz parametara
         DestinationServiceImpl destinations = (DestinationServiceImpl) memorijaAplikacije.get(DestinationsController.DESTINATIONS_KEY);
+        
+        
+        Destination destination = new Destination(city, country, continent);
 
-        Destination destination = new Destination(id,city, country, continent);
-
-        Destination savedDestination = destinations.save(destination);
+        destinations.save(destination);
         response.sendRedirect(bURL + "destinations");
     }
 

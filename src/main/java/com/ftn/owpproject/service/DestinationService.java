@@ -7,7 +7,7 @@ import com.ftn.owpproject.model.Destination;
 public interface DestinationService {
 	Destination findOne(Long id);
 	List<Destination> findAll();
-	Destination save(Destination destination);
+	void save(Destination destination);
 	Destination update(Destination destination);
 	void delete(Long id);
 }
