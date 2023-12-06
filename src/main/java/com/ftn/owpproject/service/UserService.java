@@ -1,6 +1,7 @@
 package com.ftn.owpproject.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ftn.owpproject.model.User;
 
@@ -9,8 +10,9 @@ public interface UserService {
     User findOne(String emailAddress); 
     User findOne(String emailAddress, String password);
     List<User> findAll(); 
-    User save(User user); 
+    void save(User user); 
     User update(User user); 
-    User delete(Long id);
+    void delete(Long id);
 	User findOneById(Long id); 
+	Map<Long, User> findAllAsMap();
 }

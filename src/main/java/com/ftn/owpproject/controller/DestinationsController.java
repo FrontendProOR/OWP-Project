@@ -53,8 +53,13 @@ public class DestinationsController {
 
         StringBuilder htmlBuilder = new StringBuilder();
 
+        htmlBuilder.append("<head>");
+        htmlBuilder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/owpproject/css/StiloviTabela.css\"/>");
+        htmlBuilder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/owpproject/css/StiloviHorizontalniMeni.css\"/>");
+        htmlBuilder.append("</head>");
+        
         htmlBuilder.append("<table>");
-        htmlBuilder.append("<caption>Destinacije</caption>");
+        htmlBuilder.append("<caption>Destinations</caption>");
         htmlBuilder.append("<thead><tr><th>Redni broj</th><th>City</th><th>Country</th><th>Continent</th></tr></thead>");
         htmlBuilder.append("<tbody>");
 
@@ -71,7 +76,7 @@ public class DestinationsController {
             htmlBuilder.append("<td>");
             htmlBuilder.append("<form method=\"post\" action=\"destinations/delete\">");
             htmlBuilder.append("<input type=\"hidden\" name=\"id\" value=\"").append(destinacija.getId()).append("\"/>");
-            htmlBuilder.append("<input type=\"submit\" value=\"Obrisi\"/>");
+            htmlBuilder.append("<input type=\"submit\" value=\"Delete\"/>");
             htmlBuilder.append("</form>");
             htmlBuilder.append("</td>");
 
@@ -92,6 +97,11 @@ public class DestinationsController {
         PrintWriter out = response.getWriter();
 
         StringBuilder htmlBuilder = new StringBuilder();
+        htmlBuilder.append("<head>");
+        htmlBuilder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/owpproject/css/StiloviTabela.css\"/>");
+        htmlBuilder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/owpproject/css/StiloviHorizontalniMeni.css\"/>");
+        htmlBuilder.append("</head>");
+        
         htmlBuilder.append("<form method=\"post\" action=\"add\">");
         htmlBuilder.append("<table>");
 
@@ -153,6 +163,11 @@ public class DestinationsController {
 //    public void details(@RequestParam Long id) {
 //        // Existing code...
 //    }
-
+//    
+//    @GetMapping(value = "/update")
+//    @ResponseBody
+//    public void update(@RequestParam Long id,@RequestParam String city,@RequestParam String country,@RequestParam String continent) {
+//        // Existing code...
+//    }
 	
 }
