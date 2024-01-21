@@ -1,44 +1,35 @@
 package com.ftn.owpproject.model;
 
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 import com.ftn.owpproject.model.enums.UserRole;
 
 public class User {
-    public User(  String firstName, String lastName, String username, String password, String emailAddress,
-            String dateOfBirth, String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role) {
-		super();
-		this.id = getNextAvailableId();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.username = username;
-		this.password = password;
-		this.emailAddress = emailAddress;
-		this.dateOfBirth = dateOfBirth;
-		this.address = address;
-		this.phoneNumber = phoneNumber;
-		this.registrationDateTime = registrationDateTime;
-		this.role = role;
-	}
+	
+//    public User(  String firstName, String lastName, String password, String emailAddress,
+//            String dateOfBirth, String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role) {
+//		super();
+//		this.id = getNextAvailableId();
+//		this.firstName = firstName;
+//		this.lastName = lastName;
+//		this.password = password;
+//		this.emailAddress = emailAddress;
+//		this.dateOfBirth = dateOfBirth;
+//		this.address = address;
+//		this.phoneNumber = phoneNumber;
+//		this.registrationDateTime = registrationDateTime;
+//		this.role = role;
+//	}
     
     
-    public User( Long id, String firstName, String lastName, String username, String password, String emailAddress,
+    public User( Long id, String firstName, String lastName, String password, String emailAddress,
             String dateOfBirth, String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.username = username;
 		this.password = password;
 		this.emailAddress = emailAddress;
 		this.dateOfBirth = dateOfBirth;
@@ -51,7 +42,6 @@ public class User {
 	private Long id;
 	private String firstName;
 	private String lastName;
-    private String username;
     private String password;
     private String emailAddress;
     private String dateOfBirth;
@@ -65,9 +55,9 @@ public class User {
     }
 
     // Full Constructor without id
-    public User( String firstName, String lastName,String username, String password, String emailAddress,
+    public User( String firstName, String lastName, String password, String emailAddress,
                 String dateOfBirth, String address, String phoneNumber, UserRole role) {
-        this.username = username;
+        
         this.password = password;
         this.emailAddress = emailAddress;
         this.firstName = firstName;
@@ -80,10 +70,10 @@ public class User {
     }
 
     // Full Constructor with id
-    public User(Long id,  String firstName, String lastName,String username, String password, String emailAddress,
+    public User(Long id,  String firstName, String lastName, String password, String emailAddress,
                 String dateOfBirth, String address, String phoneNumber, UserRole role) {
         this.id = id;
-        this.username = username;
+        
         this.password = password;
         this.emailAddress = emailAddress;
         this.firstName = firstName;
@@ -96,28 +86,19 @@ public class User {
     }
 
     public User(String firstName, String lastName, String emailAddress, String password) {
-        this.username = generateDefaultUsername(firstName, lastName);
         this.password = password;
         this.emailAddress = emailAddress;
         this.firstName = firstName;
         this.lastName = lastName;
         this.registrationDateTime = LocalDateTime.now();
-        this.role = UserRole.PASSENGER;  // Assuming a default role for new users
+        this.role = UserRole.BUYER;  // Assuming a default role for new users
     }
     public User(Long id, String username, String password, String email, String firstName) {
         this.id = id;
-        this.username = username;
         this.password = password;
         this.emailAddress = email;
         this.firstName = firstName;
-        // Set other default values or perform additional initialization if needed
-    }
-
-    // Helper method to generate a default username based on first and last name
-    private String generateDefaultUsername(String firstName, String lastName) {
-        // Logic to generate a username, e.g., concatenating first and last name
-        // This is just a placeholder; you may want to implement your own logic
-        return firstName.toLowerCase() + "." + lastName.toLowerCase();
+        
     }
     
     // Getters and Setters
@@ -129,13 +110,7 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    
 
     public String getPassword() {
         return password;
@@ -214,7 +189,6 @@ public class User {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
@@ -231,7 +205,6 @@ public class User {
         result.append(id).append(";");
         result.append(firstName).append(";");
         result.append(lastName).append(";");
-        result.append(username).append(";");
         result.append(password).append(";");
         result.append(emailAddress).append(";");
         result.append(dateOfBirth).append(";");
@@ -254,75 +227,50 @@ public class User {
                 Objects.equals(getPassword(), user.getPassword());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getEmailAddress(), getPassword());
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getEmailAddress(), getPassword());
+//    }
 
     
 //    public Long getNextAvailableId() {
-//	    String fileName = "users.txt";
-//	    URL resource = getClass().getResource("/" + fileName);
+//        String fileName = "users.txt";
+//        URL resource = getClass().getResource("/" + fileName);
 //
-//	    if (resource == null) {
-//	        System.err.println("File not found: " + fileName);
-//	        return null;
-//	    }
+//        if (resource == null) {
+//            System.err.println("File not found: " + fileName);
+//            return null;
+//        }
 //
-//	    try {
-//	        Path path = Paths.get(resource.toURI());
-//	        List<String> lines = Files.readAllLines(path, Charset.forName("UTF-8"));
+//        try {
+//            Path path = Paths.get(resource.toURI());
+//            List<String> lines = Files.readAllLines(path, Charset.forName("UTF-8"));
 //
-//	        if (lines.isEmpty()) {
-//	            return 1L;
-//	        }
+//            if (lines.isEmpty()) {
+//                return 1L;
+//            }
 //
-//	        Long maxId = Long.parseLong(lines.get(0).trim());
-//	        Long newId = maxId + 1;
-//	        return newId;
-//	    } catch (IOException | URISyntaxException | NumberFormatException e) {
-//	        e.printStackTrace();
-//	        return null;
-//	    }
-//	}
-    public Long getNextAvailableId() {
-        String fileName = "users.txt";
-        URL resource = getClass().getResource("/" + fileName);
-
-        if (resource == null) {
-            System.err.println("File not found: " + fileName);
-            return null;
-        }
-
-        try {
-            Path path = Paths.get(resource.toURI());
-            List<String> lines = Files.readAllLines(path, Charset.forName("UTF-8"));
-
-            if (lines.isEmpty()) {
-                return 1L;
-            }
-
-            Long maxId = Long.MIN_VALUE;
-
-            for (String line : lines) {
-                String[] parts = line.split(";");
-                if (parts.length > 0) {
-                    try {
-                        Long userId = Long.parseLong(parts[0].trim());
-                        maxId = Math.max(maxId, userId);
-                    } catch (NumberFormatException ignored) {
-                        // Ignore lines where the ID is not a valid number
-                    }
-                }
-            }
-
-            Long newId = maxId + 1;
-            return newId;
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//            Long maxId = Long.MIN_VALUE;
+//
+//            for (String line : lines) {
+//                String[] parts = line.split(";");
+//                if (parts.length > 0) {
+//                    try {
+//                        Long userId = Long.parseLong(parts[0].trim());
+//                        maxId = Math.max(maxId, userId);
+//                    } catch (NumberFormatException ignored) {
+//                        // Ignore lines where the ID is not a valid number
+//                    }
+//                }
+//            }
+//
+//            Long newId = maxId + 1;
+//            return newId;
+//        } catch (IOException | URISyntaxException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
 }
 

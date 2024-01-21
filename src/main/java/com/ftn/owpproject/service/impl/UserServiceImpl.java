@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.ftn.owpproject.model.Destination;
 import com.ftn.owpproject.model.User;
 import com.ftn.owpproject.model.enums.UserRole;
 import com.ftn.owpproject.service.UserService;
@@ -54,7 +53,6 @@ public class UserServiceImpl implements UserService {
                 Long id = Long.parseLong(tokens[0]);
                 String firstName = tokens[1];
                 String lastName = tokens[2];
-                String username = tokens[3];
                 String password = tokens[4];
                 String email = tokens[5];
                 String dateOfBirth = tokens[6];
@@ -67,9 +65,9 @@ public class UserServiceImpl implements UserService {
                 LocalDateTime registrationDateTime = parsedDateTime;
                 
                 
-                UserRole role = UserRole.PASSENGER;
+                UserRole role = UserRole.BUYER;
 
-                users.put(id, new User(id, firstName,lastName,username,password,email,dateOfBirth,address,phoneNumber,registrationDateTime,role));
+                users.put(id, new User(id, firstName,lastName,password,email,dateOfBirth,address,phoneNumber,registrationDateTime,role));
 
                 if (nextId < id)
                     nextId = id;
@@ -100,7 +98,8 @@ public class UserServiceImpl implements UserService {
         return ret;
     }
 
-    private Long nextId(Map<Long, User> users) {
+    @SuppressWarnings("unused")
+	private Long nextId(Map<Long, User> users) {
         Long nextId = 1L;
         for (Long id : users.keySet()) {
             if (nextId < id)

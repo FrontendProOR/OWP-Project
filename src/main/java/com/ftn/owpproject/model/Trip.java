@@ -1,145 +1,94 @@
 package com.ftn.owpproject.model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
-import com.ftn.owpproject.model.enums.TravelCategory;
+import com.ftn.owpproject.model.enums.TransportationType;
+import com.ftn.owpproject.model.enums.TypeOfAccommodation;
 
 public class Trip {
-    private int tripCode;
-    private Destination destination;
-    private Transportation transportation;
-    private AccommodationUnit accommodationUnit;
-    private TravelCategory travelCategory; // (e.g., Skiing, Summer vacation, Last minute, New Year, ...)
-    private LocalDateTime departureDateTime;
-    private LocalDateTime returnDateTime;
+    
+	private TransportationType transportation;
+    private TypeOfAccommodation accommodationUnit;
+    private String destinationName;
+    private String locationImage; // Path to the image
+    private TripCategory tripCategory;
+    private Date departureDateTime;
+    private Date returnDateTime;
     private int numberOfNights;
-    private double tripPrice;
+    private double arrangmentPrice;
+    private int totalSeats;
+    private int availableSeats;
 
-    // Empty Constructor
-    public Trip() {
-    }
-
-    // Full Constructor without tripCode
-    public Trip(Destination destination, Transportation transportation, AccommodationUnit accommodationUnit,
-                TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
-                int numberOfNights, double tripPrice) {
-        this.destination = destination;
-        this.transportation = transportation;
-        this.accommodationUnit = accommodationUnit;
-        this.travelCategory = travelCategory;
-        this.departureDateTime = departureDateTime;
-        this.returnDateTime = returnDateTime;
-        this.numberOfNights = numberOfNights;
-        this.tripPrice = tripPrice;
-    }
-
-    // Full Constructor with tripCode
-    public Trip(int tripCode, Destination destination, Transportation transportation, AccommodationUnit accommodationUnit,
-                TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
-                int numberOfNights, double tripPrice) {
-        this.tripCode = tripCode;
-        this.destination = destination;
-        this.transportation = transportation;
-        this.accommodationUnit = accommodationUnit;
-        this.travelCategory = travelCategory;
-        this.departureDateTime = departureDateTime;
-        this.returnDateTime = returnDateTime;
-        this.numberOfNights = numberOfNights;
-        this.tripPrice = tripPrice;
-    }
-
-    // Getters and Setters
-    public int getTripCode() {
-        return tripCode;
-    }
-
-    public void setTripCode(int tripCode) {
-        this.tripCode = tripCode;
-    }
-
-    public Destination getDestination() {
-        return destination;
-    }
-
-    public void setDestination(Destination destination) {
-        this.destination = destination;
-    }
-
-    public Transportation getTransportation() {
-        return transportation;
-    }
-
-    public void setTransportation(Transportation transportation) {
-        this.transportation = transportation;
-    }
-
-    public AccommodationUnit getAccommodationUnit() {
-        return accommodationUnit;
-    }
-
-    public void setAccommodationUnit(AccommodationUnit accommodationUnit) {
-        this.accommodationUnit = accommodationUnit;
-    }
-
-    public TravelCategory getTravelCategory() {
-        return travelCategory;
-    }
-
-    public void setTravelCategory(TravelCategory travelCategory) {
-        this.travelCategory = travelCategory;
-    }
-
-    public LocalDateTime getDepartureDateTime() {
-        return departureDateTime;
-    }
-
-    public void setDepartureDateTime(LocalDateTime departureDateTime) {
-        this.departureDateTime = departureDateTime;
-    }
-
-    public LocalDateTime getReturnDateTime() {
-        return returnDateTime;
-    }
-
-    public void setReturnDateTime(LocalDateTime returnDateTime) {
-        this.returnDateTime = returnDateTime;
-    }
-
-    public int getNumberOfNights() {
-        return numberOfNights;
-    }
-
-    public void setNumberOfNights(int numberOfNights) {
-        this.numberOfNights = numberOfNights;
-    }
-
-    public double getTripPrice() {
-        return tripPrice;
-    }
-
-    public void setTripPrice(double tripPrice) {
-        this.tripPrice = tripPrice;
-    }
     
-    public String toFileString() {
-        StringBuilder result = new StringBuilder();
+	public TypeOfAccommodation getAccommodationUnit() {
+		return accommodationUnit;
+	}
+	public void setAccommodationUnit(TypeOfAccommodation accommodationUnit) {
+		this.accommodationUnit = accommodationUnit;
+	}
+	public String getDestinationName() {
+		return destinationName;
+	}
+	public void setDestinationName(String destinationName) {
+		this.destinationName = destinationName;
+	}
+	public String getLocationImage() {
+		return locationImage;
+	}
+	public void setLocationImage(String locationImage) {
+		this.locationImage = locationImage;
+	}
 
-        result.append(tripCode).append(";");
-        result.append(destination).append(";");
-        result.append(transportation).append(";");
-        result.append(accommodationUnit).append(";");
-        result.append(travelCategory).append(";");
-        result.append(departureDateTime).append(";");
-        result.append(returnDateTime).append(";");
-        result.append(numberOfNights).append(";");
-        result.append(tripPrice);
-
-        return result.toString();
-    }
-    
-    @Override
-    public String toString() {
-        return this.tripCode + " - " + this.destination + " (" + this.travelCategory + ")";
-    }
+	public Date getDepartureDateTime() {
+		return departureDateTime;
+	}
+	public void setDepartureDateTime(Date departureDateTime) {
+		this.departureDateTime = departureDateTime;
+	}
+	public Date getReturnDateTime() {
+		return returnDateTime;
+	}
+	public void setReturnDateTime(Date returnDateTime) {
+		this.returnDateTime = returnDateTime;
+	}
+	public int getNumberOfNights() {
+		return numberOfNights;
+	}
+	public void setNumberOfNights(int numberOfNights) {
+		this.numberOfNights = numberOfNights;
+	}
+	
+	public int getTotalSeats() {
+		return totalSeats;
+	}
+	public void setTotalSeats(int totalSeats) {
+		this.totalSeats = totalSeats;
+	}
+	public int getAvailableSeats() {
+		return availableSeats;
+	}
+	public void setAvailableSeats(int availableSeats) {
+		this.availableSeats = availableSeats;
+	}
+	public TransportationType getTransportation() {
+		return transportation;
+	}
+	public void setTransportation(TransportationType transportation) {
+		this.transportation = transportation;
+	}
+	public double getArrangmentPrice() {
+		return arrangmentPrice;
+	}
+	public void setArrangmentPrice(double arrangmentPrice) {
+		this.arrangmentPrice = arrangmentPrice;
+	}
+	public TripCategory getTripCategory() {
+		return tripCategory;
+	}
+	public void setTripCategory(TripCategory tripCategory) {
+		this.tripCategory = tripCategory;
+	}
+	
+	
 }
 

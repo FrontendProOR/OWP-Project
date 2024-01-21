@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -160,7 +161,7 @@ public class UserController {
                              HttpSession session, HttpServletResponse response) throws IOException {
         
         // Assuming UserRole is a predefined enum for user roles
-        UserRole role = UserRole.PASSENGER;  // Set the appropriate role for new users
+        UserRole role = UserRole.BUYER;  // Set the appropriate role for new users
 
         LocalDateTime registrationDateTime = LocalDateTime.now();  // Set the current registration date and time
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
@@ -170,7 +171,9 @@ public class UserController {
         
         LocalDateTime formattedDateTime = LocalDateTime.parse(formattedDateTimeString, formatter);
         
-        User user = new User( firstName, lastName,username, password, emailAddress,
+        Long idRandom = new Random().nextLong();
+        
+        User user = new User( idRandom,firstName, lastName, password, emailAddress,
                              dateOfBirth, address, phoneNumber, formattedDateTime, role);
         
         userService.save(user);
@@ -227,7 +230,6 @@ public class UserController {
                 htmlBuilder.append("            <tr>\r\n");
                 htmlBuilder.append("                <td>" + u.getFirstName() + "</td>\r\n");
                 htmlBuilder.append("                <td>" + u.getLastName() + "</td>\r\n");
-                htmlBuilder.append("                <td>" + u.getUsername() + "</td>\r\n");
                 htmlBuilder.append("                <td>" + u.getPassword() + "</td>\r\n");
                 htmlBuilder.append("                <td>" + u.getEmailAddress() + "</td>\r\n");
                 htmlBuilder.append("                <td>" + u.getDateOfBirth() + "</td>\r\n");

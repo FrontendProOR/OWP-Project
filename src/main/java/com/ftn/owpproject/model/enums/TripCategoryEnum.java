@@ -1,13 +1,13 @@
 package com.ftn.owpproject.model.enums;
 
-public enum TravelCategory {
+public enum TripCategoryEnum {
     SKIING("Skiing"),
     SUMMER_VACATION("Summer vacation"),
     LAST_MINUTE("Last minute"),
     NEW_YEAR("New Year");
 
 	private final String categoryName;
-	TravelCategory(String categoryName) {
+	TripCategoryEnum(String categoryName) {
 		this.categoryName = categoryName;
 	}
 	
