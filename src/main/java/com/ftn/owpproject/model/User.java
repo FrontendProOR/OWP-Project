@@ -8,21 +8,16 @@ import com.ftn.owpproject.model.enums.UserRole;
 
 public class User {
 	
-//    public User(  String firstName, String lastName, String password, String emailAddress,
-//            String dateOfBirth, String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role) {
-//		super();
-//		this.id = getNextAvailableId();
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.password = password;
-//		this.emailAddress = emailAddress;
-//		this.dateOfBirth = dateOfBirth;
-//		this.address = address;
-//		this.phoneNumber = phoneNumber;
-//		this.registrationDateTime = registrationDateTime;
-//		this.role = role;
-//	}
-    
+	private Long id;
+	private String firstName;
+	private String lastName;
+	private String password;
+	private String emailAddress;
+	private String dateOfBirth;
+	private String address;
+	private String phoneNumber;
+	private LocalDateTime registrationDateTime;
+	private UserRole role;    
     
     public User( Long id, String firstName, String lastName, String password, String emailAddress,
             String dateOfBirth, String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role) {
@@ -39,16 +34,6 @@ public class User {
 		this.role = role;
 	}
 
-	private Long id;
-	private String firstName;
-	private String lastName;
-    private String password;
-    private String emailAddress;
-    private String dateOfBirth;
-    private String address;
-    private String phoneNumber;
-    private LocalDateTime registrationDateTime;
-    private UserRole role;
 
     // Empty Constructor
     public User() {

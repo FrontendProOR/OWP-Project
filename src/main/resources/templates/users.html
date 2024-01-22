@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <base th:href="@{/owpproject}">
+    <title>Users</title>
+    <link rel="stylesheet" type="text/css" href="css/StiloviTabela.css" />
+    <link rel="stylesheet" type="text/css" href="css/StiloviHorizontalniMeni.css" />
+</head>
+
+<body>
+    <ul>
+        <li><a href="users">Users</a></li>
+    </ul>
+    <table>
+        <caption>Users</caption>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Date of Birth</th>
+            <th>Phone Number</th>
+            <th>Registration Date</th>
+            <th>Role</th>
+            <th></th>
+        </tr>
+        <tr th:each="itUser, status: ${users}">
+            <td th:text="${itUser.firstName}"></td>
+            <td th:text="${itUser.lastName}"></td>
+            <td th:text="${itUser.email}"></td>
+            <td th:text="${itUser.address}"></td>
+            <td th:text="${itUser.dateOfBirth}"></td>
+            <td th:text="${itUser.phoneNumber}"></td>
+            <td th:text="${#dates.format(itUser.registrationDateTime, 'dd-MM-yyyy HH:mm')}"></td>
+            <td th:text="${itUser.role}"></td>
+            <td>
+                <form method="post" action="users/delete">
+                    <input type="hidden" name="id" th:value="${itUser.id}">
+                    <input type="submit" value="Delete">
+                </form>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
