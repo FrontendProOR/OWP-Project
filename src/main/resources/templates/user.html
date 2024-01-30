@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <base th:href="@{/}">
+    <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .forma {
+            width: 100%;
+        }
+        .forma th {
+            text-align: right;
+            padding: 10px;
+            width: 30%;
+        }
+        .forma td {
+            padding: 10px;
+        }
+        .forma input[type="text"],
+        .forma input[type="password"],
+        .forma input[type="email"],
+        .forma input[type="date"],
+        .forma input[type="tel"] {
+            width: calc(100% - 20px);
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s ease-in-out;
+        }
+        .forma input[type="text"]:focus,
+        .forma input[type="password"]:focus,
+        .forma input[type="email"]:focus,
+        .forma input[type="date"]:focus,
+        .forma input[type="tel"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .forma input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .forma input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 10px;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div th:fragment="centralDiv">
+        <form method="post" action="users/edit">
+            <input type="hidden" name="id" th:value="${user.id}"/>
+            <table class="forma">
+                <caption>User Profile</caption>
+                <tr><th>First Name:</th><td><input type="text" th:value="${user.firstName}"/></td></tr>
+                <tr><th>Last Name:</th><td><input type="text" th:value="${user.lastName}"/></td></tr>
+                <tr><th>Email:</th><td><input type="text" th:value="${user.emailAddress}" readonly/></td></tr>
+                <tr><th>Date of Birth:</th><td><input type="date" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).MANAGER}"/></td></tr>
+                <tr><th>Address:</th><td><input type="text" th:value="${user.address}" name="address" th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).MANAGER}"/></td></tr>
+                <tr><th>Phone Number:</th><td><input type="text" th:value="${user.phoneNumber}" name="phoneNumber" th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).MANAGER}"/></td></tr>
+                <tr><th>Date of Registration:</th><td><input type="text" name="dateOfRegistration" th:value="${#temporals.format(user.dateOfRegistration, 'yyyy-MM-dd hh:mm:ss')}" readonly/></td></tr>
+                <tr><th>Role:</th><td><input type="text" name="role" th:value="${user.role}" readonly/></td></tr>
+                <tr><td colspan="2"><input type="submit" value="Edit"/></td></tr>
+            </table>
+        </form>
+        <form method="post" th:action="@{/users/delete}">
+            <input type="hidden" name="id" th:value="${user.id}"/>
+            <input type="submit" value="Delete"/>
+        </form>
+        <form method="post" action="/change-password">
+            <input type="hidden" name="id" th:value="${user.id}"/>
+            <input type="submit" value="Change Password"/>
+        </form>
+    </div>
+</body>
+</html>

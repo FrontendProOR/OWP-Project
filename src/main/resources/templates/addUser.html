@@ -1,0 +1,117 @@
+<!DOCTYPE html>    
+<html xmlns:th="http://www.thymeleaf.org">
+<head>    
+    <meta charset="UTF-8">    	
+ 	<link rel="stylesheet" type="text/css" href="static/css/StiloviForma.css"/>     
+	<base th:href="@{/}">  
+ 	<title>Add users</title>    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .form-table {
+            width: 100%;
+        }
+        .form-table th {
+            text-align: right;
+            padding: 10px;
+            width: 30%;
+        }
+        .form-table td {
+            padding: 10px;
+        }
+        .form-table input[type="text"],
+        .form-table input[type="password"],
+        .form-table input[type="email"],
+        .form-table input[type="date"],
+        .form-table input[type="tel"] {
+            width: calc(100% - 20px);
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s ease-in-out;
+        }
+        .form-table input[type="text"]:focus,
+        .form-table input[type="password"]:focus,
+        .form-table input[type="email"]:focus,
+        .form-table input[type="date"]:focus,
+        .form-table input[type="tel"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .form-table input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .form-table input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 10px;
+            color: #ff0000;
+        }
+    </style>
+</head>    
+<body>      
+    <div class="container">
+        <form method="post" action="users/add">    
+            <table class="form-table">    
+                <caption>User</caption>    
+                <tr>
+                    <th>First Name:</th>
+                    <td><input type="text" value="" name="firstName" required></td>
+                </tr> 
+                <tr>
+                    <th>Last Name:</th>
+                    <td><input type="text" value="" name="lastName" required></td>
+                </tr> 
+                <tr>
+                    <th>Password:</th>
+                    <td><input type="password" value="" name="password" required></td>
+                </tr>
+                <tr>
+                    <th>Repeat Password:</th>
+                    <td><input type="password" value="" name="repeatPassword" required></td>
+                </tr>
+                <tr>
+                    <th>Email Address:</th>
+                    <td><input type="email" value="" name="emailAddress" required></td>
+                </tr>  
+                <tr>
+                    <th>Date of Birth:</th>
+                    <td><input type="date" value="" name="dateOfBirth" required></td>
+                </tr>  
+                <tr>
+                    <th>Address:</th>
+                    <td><input type="text" value="" name="address" required></td>
+                </tr>   
+                <tr>
+                    <th>Phone Number:</th>
+                    <td><input type="tel" value="" name="phoneNumber" required></td>
+                </tr> 
+                <tr>
+                    <th></th>
+                    <td><input type="submit" value="Add"></td>  
+                </tr>  
+            </table>    
+        </form>   
+        <div class="message" th:text="${message}"></div>
+    </div>
+</body>  
+</html>

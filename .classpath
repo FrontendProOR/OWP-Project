@@ -37,6 +37,5 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/someb/OneDrive/Desktop/eclipse-workspace-owp-project/owpproject/lib/mysql-connector-java-8.0.30.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
