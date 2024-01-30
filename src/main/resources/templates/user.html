@@ -72,16 +72,19 @@
     <div th:fragment="centralDiv">
         <form method="post" action="users/edit">
             <input type="hidden" name="id" th:value="${user.id}"/>
+            <input type="hidden" name="password" th:value="${user.password}"/><!-- nikako ne pokusavati ovo sam pisao u cetri ili pola pet ujutru -->
+            
             <table class="forma">
                 <caption>User Profile</caption>
-                <tr><th>First Name:</th><td><input type="text" th:value="${user.firstName}"/></td></tr>
-                <tr><th>Last Name:</th><td><input type="text" th:value="${user.lastName}"/></td></tr>
-                <tr><th>Email:</th><td><input type="text" th:value="${user.emailAddress}" readonly/></td></tr>
-                <tr><th>Date of Birth:</th><td><input type="date" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).MANAGER}"/></td></tr>
-                <tr><th>Address:</th><td><input type="text" th:value="${user.address}" name="address" th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).MANAGER}"/></td></tr>
-                <tr><th>Phone Number:</th><td><input type="text" th:value="${user.phoneNumber}" name="phoneNumber" th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).MANAGER}"/></td></tr>
-                <tr><th>Date of Registration:</th><td><input type="text" name="dateOfRegistration" th:value="${#temporals.format(user.dateOfRegistration, 'yyyy-MM-dd hh:mm:ss')}" readonly/></td></tr>
+                <tr><th>First Name:</th><td><input type="text" name="firstName" th:value="${user.firstName}"/></td></tr>
+                <tr><th>Last Name:</th><td><input type="text" name="lastName" th:value="${user.lastName}"/></td></tr>
+                <tr><th>Email:</th><td><input type="text" name="emailAddress" th:value="${user.emailAddress}" readonly/></td></tr>
+                <tr><th>Date of Birth:</th><td><input type="date" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" readonly/></td></tr>
+                <tr><th>Address:</th><td><input type="text" th:value="${user.address}" name="address" /></td></tr><!-- th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).BUYER"} -->
+                <tr><th>Phone Number:</th><td><input type="text" th:value="${user.phoneNumber}" name="phoneNumber" /></td></tr><!-- th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).BUYER}" -->
+                <tr><th>Date of Registration:</th><td><input type="date" name="dateOfRegistration" th:value="${#temporals.format(user.registrationDateTime, 'yyyy-MM-dd hh:mm:ss')}" readonly/></td></tr>
                 <tr><th>Role:</th><td><input type="text" name="role" th:value="${user.role}" readonly/></td></tr>
+                <tr><th>JMBG:</th><td><input type="text" name="jmbg" th:value="${user.jmbg}" readonly/></td></tr>
                 <tr><td colspan="2"><input type="submit" value="Edit"/></td></tr>
             </table>
         </form>

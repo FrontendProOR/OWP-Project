@@ -25,7 +25,7 @@ import com.ftn.owpproject.dao.UserDAO;
 import com.ftn.owpproject.model.User;
 import com.ftn.owpproject.model.enums.UserRole;
 
-@SuppressWarnings("unused")
+
 @Repository
 public class UserDAOImpl implements UserDAO {
 
@@ -36,26 +36,45 @@ public class UserDAOImpl implements UserDAO {
 
 		private Map<Long, User> users = new LinkedHashMap<>();
 		
-		@Override
-		public void processRow(ResultSet resultSet) throws SQLException {
-			int index = 1;
-			Long id = resultSet.getLong(index++);
-			String firstName = resultSet.getString(index++);
-			String lastName = resultSet.getString(index++);	
-			String password = resultSet.getString(index++);
-			String email = resultSet.getString(index++);
-//			LocalDate dateOfBirth = resultSet.getTimestamp(index++).toLocalDateTime().toLocalDate();
-			LocalDate dateOfBirth = resultSet.getDate(index++).toLocalDate();
-			String address = resultSet.getString(index++);
-			String phoneNumber = resultSet.getString(index++);
-			
-			
-			User user = users.get(id);
-			if (user == null) {
-				user = new User(id,firstName,lastName,password,email,dateOfBirth,address,phoneNumber);
-				users.put(user.getId(), user);
+//		@Override
+//		public void processRow(ResultSet resultSet) throws SQLException {
+//			int index = 1;
+//			Long id = resultSet.getLong(index++);
+//			String firstName = resultSet.getString(index++);
+//			String lastName = resultSet.getString(index++);	
+//			String password = resultSet.getString(index++);
+//			String email = resultSet.getString(index++);
+////			LocalDate dateOfBirth = resultSet.getTimestamp(index++).toLocalDateTime().toLocalDate();
+//			LocalDate dateOfBirth = resultSet.getDate(index++).toLocalDate();
+//			String address = resultSet.getString(index++);
+//			String phoneNumber = resultSet.getString(index++);
+//			Long jmbg = resultSet.getLong(index++);	//		LocalDateTime registationDateTime = resultSet.getTimestamp(index++).toLocalDateTime();
+//			
+//			
+//			User user = users.get(id);
+//			if (user == null) {
+//				user = new User(id,firstName,lastName,password,email,dateOfBirth,address,phoneNumber,LocalDateTime.now(),UserRole.BUYER,jmbg);
+//				users.put(user.getId(), user);
+//			}
+//		}
+
+			@Override
+			public void processRow(ResultSet resultSet) throws SQLException {
+			    Long id = resultSet.getLong("id");
+			    String firstName = resultSet.getString("first_name");
+			    String lastName = resultSet.getString("last_name");
+			    String password = resultSet.getString("password");
+			    String email = resultSet.getString("email");
+			    LocalDate dateOfBirth = resultSet.getDate("date_of_birth").toLocalDate();
+			    String address = resultSet.getString("address");
+			    String phoneNumber = resultSet.getString("phone_number");
+			    Long jmbg = resultSet.getLong("jmbg");
+			    LocalDateTime registrationDateTime = resultSet.getTimestamp("registration_datetime").toLocalDateTime();
+
+			    User user = new User(id, firstName, lastName, password, email, dateOfBirth, address, phoneNumber, registrationDateTime, UserRole.BUYER, jmbg);
+			    users.put(id, user);
 			}
-		}
+
 
 		public List<User> getUsers() {
 			return new ArrayList<>(users.values());
@@ -121,20 +140,22 @@ public class UserDAOImpl implements UserDAO {
             
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                String sql = "INSERT INTO User (email, password, first_name, last_name, date_of_birth, address, phone_number, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO User ( first_name, last_name, password, email, date_of_birth, address, phone_number,registration_datetime, role,jmbg) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 int index = 1;
-                preparedStatement.setString(index++, user.getEmailAddress());
-                preparedStatement.setString(index++, user.getPassword());
                 preparedStatement.setString(index++, user.getFirstName());
                 preparedStatement.setString(index++, user.getLastName());
+                preparedStatement.setString(index++, user.getPassword());
+                preparedStatement.setString(index++, user.getEmailAddress());
                 LocalDate dateOfBirth = user.getDateOfBirth();
                 Date dateOfBirthSQL = Date.valueOf(dateOfBirth);
                 preparedStatement.setDate(index++, dateOfBirthSQL);
                 preparedStatement.setString(index++, user.getAddress());
                 preparedStatement.setString(index++, user.getPhoneNumber());
+                preparedStatement.setString(index++, user.getRegistrationDateTime().toString());
                 preparedStatement.setString(index++, user.getRole().name());
+                preparedStatement.setLong(index++, user.getJmbg());
 
                 return preparedStatement;
             }
@@ -149,8 +170,8 @@ public class UserDAOImpl implements UserDAO {
     @Transactional
     @Override
     public int update(User user) {
-        String sql = "UPDATE User SET first_name = ?, last_name = ?, email = ?, password = ?, date_of_birth = ?, address = ?, phone_number = ?, role = ? WHERE id = ?";
-        boolean success = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmailAddress(), user.getPassword(), user.getDateOfBirth(), user.getAddress(), user.getPhoneNumber(), user.getRole().name(), user.getId()) == 1;
+        String sql = "UPDATE User SET first_name = ?, last_name = ?,  password = ?,email = ?, date_of_birth = ?, address = ?, phone_number = ?, role = ?,jmbg = ? WHERE id = ?";
+        boolean success = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmailAddress(), user.getPassword(), user.getDateOfBirth(), user.getAddress(), user.getPhoneNumber(), user.getRole().name(), user.getJmbg(), user.getId()) == 1;
 
         return success ? 1 : 0;
     }

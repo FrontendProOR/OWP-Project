@@ -17,10 +17,11 @@ public class User {
     private String address;
     private String phoneNumber;
     private LocalDateTime registrationDateTime;
-    private UserRole role;    
-    
+    private UserRole role;
+    private Long jmbg; 
+
     public User(String firstName, String lastName, String password, String emailAddress, LocalDate dateOfBirth,
-            String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role) {
+                String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role, Long jmbg) {
         super();
         this.firstName = firstName;
         this.lastName = lastName;
@@ -31,10 +32,11 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.registrationDateTime = registrationDateTime;
         this.role = role;
+        this.jmbg = jmbg;
     }
 
     public User(Long id, String firstName, String lastName, String password, String emailAddress, LocalDate dateOfBirth,
-            String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role) {
+                String address, String phoneNumber, LocalDateTime registrationDateTime, UserRole role, Long jmbg) {
         super();
         this.id = id;
         this.firstName = firstName;
@@ -46,10 +48,11 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.registrationDateTime = registrationDateTime;
         this.role = role;
+        this.jmbg = jmbg;
     }
 
     public User(Long id, String firstName, String lastName, String password, String emailAddress,
-            LocalDate dateOfBirth, String address, String phoneNumber) {
+                LocalDate dateOfBirth, String address, String phoneNumber, Long jmbg) {
         super();
         this.id = id;
         this.firstName = firstName;
@@ -61,6 +64,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.registrationDateTime = LocalDateTime.now();
         this.role = UserRole.BUYER;
+        this.jmbg = jmbg;
     }
 
     public User() {
@@ -146,6 +150,14 @@ public class User {
         this.role = role;
     }
 
+    public Long getJmbg() {
+        return jmbg;
+    }
+
+    public void setJmbg(Long jmbg) {
+        this.jmbg = jmbg;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -159,6 +171,7 @@ public class User {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", registrationDateTime=" + registrationDateTime +
                 ", role=" + role +
+                ", jmbg=" + jmbg +
                 '}';
     }
 

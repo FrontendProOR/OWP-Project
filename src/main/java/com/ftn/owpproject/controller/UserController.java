@@ -84,6 +84,7 @@ public class UserController extends Exception implements ServletContextAware {
         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateOfBirth,
         @RequestParam String address, 
         @RequestParam String phoneNumber,
+        @RequestParam String jmbg,
         HttpServletResponse response) throws IOException {
 
         User sameEmail = userService.findOne(emailAddress);
@@ -93,9 +94,10 @@ public class UserController extends Exception implements ServletContextAware {
             result.addObject("message", "User with the same email already exists!");
             return result;
         }
+        Long jmbgLong = Long.parseLong(jmbg);
         LocalDateTime registrationDateTime = LocalDateTime.now();
         UserRole buyerRole = UserRole.BUYER;
-        User user = new User(firstName, lastName, password, emailAddress, dateOfBirth, address, phoneNumber,registrationDateTime,buyerRole);
+        User user = new User(firstName, lastName, password, emailAddress, dateOfBirth, address, phoneNumber,registrationDateTime,buyerRole,jmbgLong);
         userService.save(user);
         response.sendRedirect(bURL + "users");
         return null;
@@ -139,7 +141,7 @@ public class UserController extends Exception implements ServletContextAware {
 
     @PostMapping(value="/edit")
     public void edit(@RequestParam Long id, @RequestParam String firstName, @RequestParam String lastName,  @RequestParam String password,
-               @RequestParam String emailAddress,@RequestParam LocalDate dateOfBirth, @RequestParam String address, @RequestParam String phoneNumber, 
+               @RequestParam String emailAddress,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateOfBirth, @RequestParam String address, @RequestParam String phoneNumber,@RequestParam String jmbg, 
                HttpSession session, HttpServletResponse response) throws IOException {       
 
         User user = userService.findOneById(id);
@@ -151,7 +153,10 @@ public class UserController extends Exception implements ServletContextAware {
         user.setDateOfBirth(dateOfBirth);
         user.setAddress(address);
         user.setPhoneNumber(phoneNumber);
-
+        
+        Long jmbgLong = Long.parseLong(jmbg);
+        
+        user.setJmbg(jmbgLong);
         userService.update(user);
 
         response.sendRedirect(bURL + "users");
