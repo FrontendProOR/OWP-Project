@@ -1,27 +1,27 @@
 package com.ftn.owpproject.model;
 
-import com.ftn.owpproject.model.enums.TripCategoryEnum;
+import com.ftn.owpproject.model.enums.TravelCategoryEnum;
 
-public class TripCategory {
+public class TravelCategory {
 
-	private TripCategoryEnum categoryName;
+	private TravelCategoryEnum categoryName;
 	private String description;
 
-	public TripCategory(TripCategoryEnum categoryName, String description) {
+	public TravelCategory(TravelCategoryEnum categoryName, String description) {
 		super();
 		this.categoryName = categoryName;
 		this.description = description;
 	}
 	
-	public TripCategory() {
+	public TravelCategory() {
 		super();
 	}
 	
-	public TripCategoryEnum getCategoryName() {
+	public TravelCategoryEnum getCategoryName() {
 		return categoryName;
 	}
 	
-	public void setCategoryName(TripCategoryEnum categoryName) {
+	public void setCategoryName(TravelCategoryEnum categoryName) {
 		this.categoryName = categoryName;
 	}
 	

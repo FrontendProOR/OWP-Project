@@ -5,13 +5,13 @@ import java.util.Date;
 import com.ftn.owpproject.model.enums.TransportationType;
 import com.ftn.owpproject.model.enums.TypeOfAccommodation;
 
-public class Trip {
+public class Travel {
     
 	private TransportationType transportation;
     private TypeOfAccommodation accommodationUnit;
     private String destinationName;
     private String locationImage; // Path to the image
-    private TripCategory tripCategory;
+    private TravelCategory travelCategory;
     private Date departureDateTime;
     private Date returnDateTime;
     private int numberOfNights;
@@ -82,11 +82,11 @@ public class Trip {
 	public void setArrangmentPrice(double arrangmentPrice) {
 		this.arrangmentPrice = arrangmentPrice;
 	}
-	public TripCategory getTripCategory() {
-		return tripCategory;
+	public TravelCategory getTravelCategory() {
+		return travelCategory;
 	}
-	public void setTripCategory(TripCategory tripCategory) {
-		this.tripCategory = tripCategory;
+	public void setTravelCategory(TravelCategory travelCategory) {
+		this.travelCategory = travelCategory;
 	}
 	
 	
