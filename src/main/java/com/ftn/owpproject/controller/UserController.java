@@ -67,7 +67,6 @@ public class UserController extends Exception implements ServletContextAware {
         // Add loggedUser to the model
         result.addObject("loggedUser", loggedUser);
         
-
         return result;
     }
 

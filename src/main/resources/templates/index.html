@@ -15,9 +15,34 @@
     </style>
 </head>
 <body>
-   <div th:insert="~{fragments/navbar.html :: navbar}"></div>
+  	 <div th:insert="~{fragments/navbar.html :: navbar}"></div>
 	
-        
+	<div class="container">
+    <div class="row">
+        <div th:each="travel : ${travelOptions}" class="col-md-4">
+    <div class="card mb-4">
+        <img th:src="@{'/images/' + ${travel.locationImage}}" class="card-img-top" alt="Travel Destination" width="450" height="300">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${travel.destinationName}"></h5>
+            <p class="card-text">
+                Transportation: <span th:text="${travel.transportationType}"></span><br>
+                Accommodation: <span th:text="${travel.accommodationType}"></span><br>
+                Category: <span th:text="${travel.travelCategory.getCategoryName()}"></span><br>
+                Departure: <span th:text="${travel.departureDateTime}"></span><br>
+                Return: <span th:text="${travel.returnDateTime}"></span><br>
+                Number of Nights: <span th:text="${travel.numberOfNights}"></span><br>
+                Price: <span th:text="${travel.arrangmentPrice}"></span><br>
+                Total Seats: <span th:text="${travel.totalSeats}"></span><br>
+                Available Seats: <span th:text="${travel.availableSeats}"></span>
+            </p>
+            <a href="#" class="btn btn-secondary mb-2">View Details</a> 
+            <a href="#" class="btn btn-primary mb-2">Make Reservation</a> 
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+	
     
 </body>
 </html>

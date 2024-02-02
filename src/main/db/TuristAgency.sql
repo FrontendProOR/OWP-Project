@@ -78,8 +78,9 @@ VALUES
 -- Insert data for trips
 INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangement_price, total_seats, available_seats)
 VALUES
-    ('AIRPLANE', 'Hotel', 'Hong Kong', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\hongkong.jpg', 1, '2024-03-15 08:00:00', '2024-03-20 18:00:00', 5, 1500.00, 100, 100),
-    ('BUS', 'Hostel', 'Novgorod', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\novogorod.jpg', 2, '2024-04-10 10:00:00', '2024-04-15 20:00:00', 5, 800.00, 50, 50),
-    ('PERSONAL', 'Apartment', 'Moskva', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\moskva.jpg', 3, '2024-05-05 12:00:00', '2024-05-10 22:00:00', 5, 1200.00, 80, 80),
-    ('PERSONAL', 'Resort', 'Washington', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\washington.jpg', 4, '2024-06-20 14:00:00', '2024-06-25 23:00:00', 5, 2000.00, 120, 120),
-    ('BUS', 'Hotel', 'Jerusalem', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\jerusalim.jpg', 4, '2024-07-15 08:00:00', '2024-07-20 18:00:00', 5, 1800.00, 90, 90);
+    ('AIRPLANE', 'HOTEL', 'Hong Kong', 'hongkong.jpg', 1, '2024-03-15 08:00:00', '2024-03-20 18:00:00', 5, 1500.00, 100, 100),
+    ('BUS', 'HOTEL', 'Novgorod', 'novgorod.jpg', 2, '2024-04-10 10:00:00', '2024-04-15 20:00:00', 5, 800.00, 50, 50),
+    ('PERSONAL', 'APARTMENT', 'Moskva', 'moskva.jpg', 3, '2024-05-05 12:00:00', '2024-05-10 22:00:00', 5, 1200.00, 80, 80),
+    ('PERSONAL', 'HOTEL', 'Washington', 'washington.jpg', 4, '2024-06-20 14:00:00', '2024-06-25 23:00:00', 5, 2000.00, 120, 120),
+    ('PERSONAL', 'HOTEL', 'Shenzhen', 'shenzhen.jpg', 4, '2024-06-20 14:00:00', '2024-06-25 23:00:00', 5, 2000.00, 120, 120),
+    ('BUS', 'HOTEL', 'Jerusalem', 'jerusalim.jpg', 4, '2024-07-15 08:00:00', '2024-07-20 18:00:00', 5, 1800.00, 90, 90);

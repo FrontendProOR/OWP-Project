@@ -32,7 +32,7 @@ public class UserDAOImpl implements UserDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private class UserRowCallBackHandler implements RowCallbackHandler {
+    public class UserRowCallBackHandler implements RowCallbackHandler {
 
 		private Map<Long, User> users = new LinkedHashMap<>();
 		

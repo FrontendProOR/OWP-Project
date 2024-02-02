@@ -76,9 +76,8 @@
         <form method="post" action="users/edit">
             <input type="hidden" name="id" th:value="${user.id}"/>
             <input type="hidden" name="password" th:value="${user.password}"/>
-            
+            <h2>User Profile</h2>
             <table class="forma">
-                <caption>User Profile</caption>
                 <tr><th>First Name:</th><td><input type="text" name="firstName" th:value="${user.firstName}"/></td></tr>
                 <tr><th>Last Name:</th><td><input type="text" name="lastName" th:value="${user.lastName}"/></td></tr>
                 <tr><th>Email:</th><td><input type="text" name="emailAddress" th:value="${user.emailAddress}" readonly/></td></tr>
@@ -93,11 +92,11 @@
         </form>
         <form method="post" th:action="@{/users/delete}">
             <input type="hidden" name="id" th:value="${user.id}"/>
-            <input type="submit" value="Delete"/>
+            <input type="submit" class="btn btn-primary m-3" value="Delete Account"/>
         </form>
         <form method="post" action="/change-password">
             <input type="hidden" name="id" th:value="${user.id}"/>
-            <input type="submit" value="Change Password"/>
+            <input type="submit" class="btn btn-secondary m-3" value="Change Password"/>
         </form>
     </div>
 </body>

@@ -18,13 +18,13 @@
                         <!-- Fix Thymeleaf syntax -->
                         <a class="nav-link" th:href="@{/users/add}">Register</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" th:unless="loggedUser == null">
                         <!-- Fix Thymeleaf syntax -->
                         <a class="nav-link" th:href="@{/users/login}">Login</a>
                     </li>
                     <li class="nav-item" th:if="${loggedUser != null}">
                         <!-- Fix Thymeleaf syntax -->
-                        <a class="nav-link" th:href="@{/users/details(id=${loggedUser.id})}">Profile</a>
+                        <a class="nav-link" th:href="@{${loggedUser != null} ? '/users/details?id=' + ${loggedUser.id}  : '/users/details'}">Profile</a>
                     </li>
                     <li class="nav-item" th:if="${loggedUser != null}">
                         <!-- Fix Thymeleaf syntax -->
@@ -34,7 +34,7 @@
                         <!-- Fix Thymeleaf syntax -->
                         <a class="nav-link" th:href="@{/travels}">Travels</a>
                     </li>
-                    <li class="nav-item" th:unless="${loggedUser != null && loggedUser.getRole().toString() == 'MANAGER'}">
+                    <li class="nav-item" th:if="${loggedUser != null && loggedUser.getRole().toString() == 'MANAGER'}">
                         <!-- Fix Thymeleaf syntax -->
                         <a class="nav-link" th:href="@{/users}">Users</a>
                     </li>
