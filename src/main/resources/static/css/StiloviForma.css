@@ -14,18 +14,18 @@ th, td {
 
 th {
 	text-align: right;
-	width: 150px;
+	width: 100px;
 	color: white;
 	background-color: DodgerBlue;
 }
 
 td {
 	background-color: White;
-	min-width: 250px;
+	min-width: 170px;
 }
 
 input, textarea, select {
-	width: 250px;
+	width: 170px;
 	box-sizing: border-box;
 }
 

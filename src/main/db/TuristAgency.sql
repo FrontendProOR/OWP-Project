@@ -1,5 +1,4 @@
 -- Drop the schema if it exists
-DROP SCHEMA IF EXISTS putovanje;
 DROP SCHEMA IF EXISTS TURISTAGENCY;
 
 -- Create a new schema with UTF-8 character set
@@ -25,7 +24,7 @@ CREATE TABLE User (
 );
 
 -- Create a table for trip categories
-CREATE TABLE TripCategory (
+CREATE TABLE TravelCategory (
     id BIGINT AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -33,13 +32,13 @@ CREATE TABLE TripCategory (
 );
 
 -- Create a table for trips
-CREATE TABLE Trip (
+CREATE TABLE Travel (
     id BIGINT AUTO_INCREMENT,
-    transportation_mode VARCHAR(50),
-    accommodation_unit VARCHAR(50),
+    transportation_type VARCHAR(50),
+    accommodation_type VARCHAR(50),
     destination_name VARCHAR(255),
     location_image VARCHAR(255),
-    trip_category_id BIGINT,
+    travel_category_id BIGINT,
     departure_date_time DATETIME,
     return_date_time DATETIME,
     number_of_nights INT,
@@ -47,7 +46,7 @@ CREATE TABLE Trip (
     total_seats INT,
     available_seats INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (trip_category_id) REFERENCES TripCategory(id) ON DELETE CASCADE
+    FOREIGN KEY (travel_category_id) REFERENCES TravelCategory(id) ON DELETE CASCADE
 );
 
 -- Insert data for users with role BUYER
@@ -67,3 +66,20 @@ VALUES
     ('Jennifer', 'Garcia', 'jenpass', 'jennifer@example.com', '1972-06-15', '303 Manager Rd, Village', '7778889999', 'MANAGER', '3334445556667'),
     ('Robert', 'Martinez', 'robpass', 'robert@example.com', '1965-04-03', '404 Manager Ln, County', '1234567890', 'MANAGER', '4445556667778'),
     ('Jessica', 'Lopez', 'jesspass', 'jessica@example.com', '1978-10-12', '505 Manager Hill, State', '9876543210', 'MANAGER', '5556667778889');
+
+-- Insert data for travel categories
+INSERT INTO TravelCategory (name, description)
+VALUES
+    ('SKIING', 'Enjoy skiing in beautiful mountain resorts.'),
+    ('SUMMER_VACATION', 'Relax and unwind on a summer getaway.'),
+    ('LAST_MINUTE', 'Grab last-minute deals for spontaneous trips.'),
+    ('NEW_YEAR', 'Celebrate the New Year in exciting destinations.');
+
+-- Insert data for trips
+INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangement_price, total_seats, available_seats)
+VALUES
+    ('AIRPLANE', 'Hotel', 'Hong Kong', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\hongkong.jpg', 1, '2024-03-15 08:00:00', '2024-03-20 18:00:00', 5, 1500.00, 100, 100),
+    ('BUS', 'Hostel', 'Novgorod', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\novogorod.jpg', 2, '2024-04-10 10:00:00', '2024-04-15 20:00:00', 5, 800.00, 50, 50),
+    ('PERSONAL', 'Apartment', 'Moskva', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\moskva.jpg', 3, '2024-05-05 12:00:00', '2024-05-10 22:00:00', 5, 1200.00, 80, 80),
+    ('PERSONAL', 'Resort', 'Washington', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\washington.jpg', 4, '2024-06-20 14:00:00', '2024-06-25 23:00:00', 5, 2000.00, 120, 120),
+    ('BUS', 'Hotel', 'Jerusalem', 'C:\\Users\\someb\\OneDrive\\Desktop\\eclipse-workspace-owp-project\\owpproject\\src\\main\\resources\\static\\images\\jerusalim.jpg', 4, '2024-07-15 08:00:00', '2024-07-20 18:00:00', 5, 1800.00, 90, 90);

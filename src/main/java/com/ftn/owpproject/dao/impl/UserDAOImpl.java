@@ -68,10 +68,12 @@ public class UserDAOImpl implements UserDAO {
 			    LocalDate dateOfBirth = resultSet.getDate("date_of_birth").toLocalDate();
 			    String address = resultSet.getString("address");
 			    String phoneNumber = resultSet.getString("phone_number");
+			    String role = resultSet.getObject("role").toString().toUpperCase();
+			    UserRole roleEnum = UserRole.valueOf(role);
 			    Long jmbg = resultSet.getLong("jmbg");
 			    LocalDateTime registrationDateTime = resultSet.getTimestamp("registration_datetime").toLocalDateTime();
 
-			    User user = new User(id, firstName, lastName, password, email, dateOfBirth, address, phoneNumber, registrationDateTime, UserRole.BUYER, jmbg);
+			    User user = new User(id, firstName, lastName, password, email, dateOfBirth, address, phoneNumber, registrationDateTime, roleEnum, jmbg);
 			    users.put(id, user);
 			}
 

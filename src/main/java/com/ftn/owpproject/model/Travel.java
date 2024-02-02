@@ -1,30 +1,66 @@
 package com.ftn.owpproject.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 import com.ftn.owpproject.model.enums.TransportationType;
 import com.ftn.owpproject.model.enums.TypeOfAccommodation;
 
 public class Travel {
-    
-	private TransportationType transportation;
-    private TypeOfAccommodation accommodationUnit;
-    private String destinationName;
-    private String locationImage; // Path to the image
-    private TravelCategory travelCategory;
-    private Date departureDateTime;
-    private Date returnDateTime;
-    private int numberOfNights;
-    private double arrangmentPrice;
-    private int totalSeats;
-    private int availableSeats;
 
-    
-	public TypeOfAccommodation getAccommodationUnit() {
-		return accommodationUnit;
+	private Long id;
+	private TransportationType transportationType;
+	private TypeOfAccommodation accommodationType;
+	private String destinationName;
+	private String locationImage; 
+	private TravelCategory travelCategory;
+	private LocalDateTime departureDateTime;
+	private LocalDateTime returnDateTime;
+	private int numberOfNights;
+	private double arrangmentPrice;
+	private int totalSeats;
+	private int availableSeats;
+	
+    public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
+			String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
+			int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats) {
+		super();
+		this.transportationType = transportationType;
+		this.accommodationType = accommodationType;
+		this.destinationName = destinationName;
+		this.locationImage = locationImage;
+		this.travelCategory = travelCategory;
+		this.departureDateTime = departureDateTime;
+		this.returnDateTime = returnDateTime;
+		this.numberOfNights = numberOfNights;
+		this.arrangmentPrice = arrangmentPrice;
+		this.totalSeats = totalSeats;
+		this.availableSeats = availableSeats;
 	}
-	public void setAccommodationUnit(TypeOfAccommodation accommodationUnit) {
-		this.accommodationUnit = accommodationUnit;
+    
+	public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType,
+			String destinationName, String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime,
+			LocalDateTime returnDateTime, int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats) {
+		super();
+		this.id = id;
+		this.transportationType = transportationType;
+		this.accommodationType = accommodationType;
+		this.destinationName = destinationName;
+		this.locationImage = locationImage;
+		this.travelCategory = travelCategory;
+		this.departureDateTime = departureDateTime;
+		this.returnDateTime = returnDateTime;
+		this.numberOfNights = numberOfNights;
+		this.arrangmentPrice = arrangmentPrice;
+		this.totalSeats = totalSeats;
+		this.availableSeats = availableSeats;
+	}
+    
+	public TypeOfAccommodation getAccommodationType() {
+		return accommodationType;
+	}
+	public void setAccommodationType(TypeOfAccommodation accommodationType) {
+		this.accommodationType = accommodationType;
 	}
 	public String getDestinationName() {
 		return destinationName;
@@ -39,16 +75,16 @@ public class Travel {
 		this.locationImage = locationImage;
 	}
 
-	public Date getDepartureDateTime() {
+	public LocalDateTime getDepartureDateTime() {
 		return departureDateTime;
 	}
-	public void setDepartureDateTime(Date departureDateTime) {
+	public void setDepartureDateTime(LocalDateTime departureDateTime) {
 		this.departureDateTime = departureDateTime;
 	}
-	public Date getReturnDateTime() {
+	public LocalDateTime getReturnDateTime() {
 		return returnDateTime;
 	}
-	public void setReturnDateTime(Date returnDateTime) {
+	public void setReturnDateTime(LocalDateTime returnDateTime) {
 		this.returnDateTime = returnDateTime;
 	}
 	public int getNumberOfNights() {
@@ -70,11 +106,11 @@ public class Travel {
 	public void setAvailableSeats(int availableSeats) {
 		this.availableSeats = availableSeats;
 	}
-	public TransportationType getTransportation() {
-		return transportation;
+	public TransportationType getTransportationType() {
+		return transportationType;
 	}
-	public void setTransportation(TransportationType transportation) {
-		this.transportation = transportation;
+	public void setTransportationType(TransportationType transportationType) {
+		this.transportationType = transportationType;
 	}
 	public double getArrangmentPrice() {
 		return arrangmentPrice;
@@ -87,6 +123,12 @@ public class Travel {
 	}
 	public void setTravelCategory(TravelCategory travelCategory) {
 		this.travelCategory = travelCategory;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	

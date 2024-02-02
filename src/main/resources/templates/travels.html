@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <base th:href="@{/}">
+    <title>Travel </title>
+    <style>
+        .table-container {
+            width: 95%;
+            overflow-x: auto;
+            margin: 0 auto;
+        }
+        
+        table.table {
+            font-size: 0.7rem;
+        }
+
+        th, td {
+            white-space: nowrap;
+        }
+
+        .table-scroll {
+            max-height: 450px; /* Adjust as needed */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<div th:insert="~{fragments/navbar.html :: navbar}"></div>
+
+<h2>Travel Details</h2>
+<div class="table-container">
+    <div class="table-scroll">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Transportation Type</th>
+                <th>Accommodation Type</th>
+                <th>Destination Name</th>
+                <th>Location Image</th>
+                <th>Travel Category</th>
+                <th>Departure Date and Time</th>
+                <th>Return Date and Time</th>
+                <th>Number of Nights</th>
+                <th>Arrangement Price</th>
+                <th>Total Seats</th>
+                <th>Available Seats</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="travel, iterStat : ${travels}" th:if="${iterStat.index < 5}">
+                <td th:text="${travel.id}"></td>
+                <td th:text="${travel.transportationType}"></td>
+                <td th:text="${travel.accommodationType}"></td>
+                <td th:text="${travel.destinationName}"></td>
+                <td th:text="${travel.locationImage}"></td>
+                <td th:text="${travel.travelCategory}"></td>
+                <td th:text="${travel.departureDateTime}"></td>
+                <td th:text="${travel.returnDateTime}"></td>
+                <td th:text="${travel.numberOfNights}"></td>
+                <td th:text="${travel.arrangmentPrice}"></td>
+                <td th:text="${travel.totalSeats}"></td>
+                <td th:text="${travel.availableSeats}"></td>
+                <td><a class="btn btn-primary" th:href="@{/travels/edit(id=${travel.id})}">Edit</a></td>
+                <td><a class="btn btn-danger" th:href="@{/travels/delete(id=${travel.id})}">Delete</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="text-center">
+    <a class="btn btn-primary" th:href="@{/travels/addTravel}">Add Travel</a>
+</div>
+
+</body>
+</html>

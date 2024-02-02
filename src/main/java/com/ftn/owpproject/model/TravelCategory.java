@@ -3,7 +3,14 @@ package com.ftn.owpproject.model;
 import com.ftn.owpproject.model.enums.TravelCategoryEnum;
 
 public class TravelCategory {
+	public TravelCategory(Long id, TravelCategoryEnum categoryName, String description) {
+		super();
+		this.id = id;
+		this.categoryName = categoryName;
+		this.description = description;
+	}
 
+	private Long id;
 	private TravelCategoryEnum categoryName;
 	private String description;
 
@@ -31,6 +38,14 @@ public class TravelCategory {
 	
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 }

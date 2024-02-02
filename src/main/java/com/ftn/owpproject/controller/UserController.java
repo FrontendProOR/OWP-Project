@@ -51,22 +51,6 @@ public class UserController extends Exception implements ServletContextAware {
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
-
-//    @GetMapping
-//    public ModelAndView index(HttpServletResponse response, HttpSession session) throws IOException {    
-//        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-//        if (loggedUser == null ) { //||!(loggedUser.getRole() == UserRole.MANAGER)
-//            response.sendRedirect(bURL + "users/login");
-//            return null;
-//        }
-//
-//        List<User> users = userService.findAll();
-//
-//        ModelAndView result = new ModelAndView("users");
-//        result.addObject("users", users);
-//
-//        return result;
-//    }
     
     @GetMapping
     public ModelAndView index(HttpServletResponse response, HttpSession session) throws IOException {    
@@ -130,33 +114,6 @@ public class UserController extends Exception implements ServletContextAware {
         response.sendRedirect(bURL + "users");
     }
 
-
-//    @GetMapping(value = "/details")
-//    public ModelAndView userDetails(@RequestParam("id") Long userId, HttpSession session, HttpServletResponse response) throws IOException {
-//        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-//        if (loggedUser == null) {
-//            response.sendRedirect(bURL);
-//            return null;
-//        }
-//        
-//        User user = userService.findOneById(userId);
-//        boolean isCurrentUser = loggedUser.getId().equals(userId);
-//        
-//        ModelAndView result = new ModelAndView("user");
-//        result.addObject("user", user);
-//
-//        if(loggedUser.getRole() == UserRole.BUYER && isCurrentUser) {     
-//            UserRole buyer = UserRole.BUYER;
-//            result.addObject("buyer", buyer);
-//        }
-//
-//        if(loggedUser.getRole() == UserRole.MANAGER && isCurrentUser) {      
-//            UserRole manager = UserRole.MANAGER;
-//            result.addObject("manager", manager);
-//        }
-//
-//        return result;
-//    }
     @GetMapping(value = "/details")
     public ModelAndView userDetails(@RequestParam("id") Long userId, HttpSession session, HttpServletResponse response) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
@@ -165,9 +122,8 @@ public class UserController extends Exception implements ServletContextAware {
             return null;
         }
         
-        // Check if the requested user ID matches the ID of the logged-in user
         if (!loggedUser.getId().equals(userId)) {
-            // Redirect to an error page or some other appropriate action
+            
             response.sendRedirect(bURL + "error");
             return null;
         }
@@ -191,50 +147,23 @@ public class UserController extends Exception implements ServletContextAware {
         return result;
     }
 
-    
-
-//    @PostMapping(value="/edit")
-//    public void edit(@RequestParam Long id, @RequestParam String firstName, @RequestParam String lastName,  @RequestParam String password,
-//               @RequestParam String emailAddress,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateOfBirth, @RequestParam String address, @RequestParam String phoneNumber,@RequestParam String jmbg, 
-//               HttpSession session, HttpServletResponse response) throws IOException {       
-//
-//        User user = userService.findOneById(id);
-//
-//        user.setFirstName(firstName);
-//        user.setLastName(lastName);
-//        user.setPassword(password);
-//        user.setEmailAddress(emailAddress);
-//        user.setDateOfBirth(dateOfBirth);
-//        user.setAddress(address);
-//        user.setPhoneNumber(phoneNumber);
-//        
-//        Long jmbgLong = Long.parseLong(jmbg);
-//        
-//        user.setJmbg(jmbgLong);
-//        userService.update(user);
-//
-//        response.sendRedirect(bURL + "users");
-//    }
     @PostMapping(value="/edit")
     public void edit(@RequestParam Long id, @RequestParam String firstName, @RequestParam String lastName,  @RequestParam String password,
                @RequestParam String emailAddress,@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateOfBirth, @RequestParam String address, @RequestParam String phoneNumber,@RequestParam String jmbg, 
                HttpSession session, HttpServletResponse response) throws IOException {       
 
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-        // If no user is logged in, redirect to login page
+        
         if (loggedUser == null) {
             response.sendRedirect(bURL + "users/login");
             return;
         }
 
-        // Check if the user is trying to edit their own data
         if (!loggedUser.getId().equals(id)) {
-            // Redirect to an error page or some other appropriate action
             response.sendRedirect(bURL + "error");
             return;
         }
 
-        // Proceed with the edit
         User user = userService.findOneById(id);
 
         user.setFirstName(firstName);
@@ -255,8 +184,12 @@ public class UserController extends Exception implements ServletContextAware {
 
 
     @GetMapping(value="login")
-    public ModelAndView getLogin() {
-        ModelAndView result = new ModelAndView("login");
+    public ModelAndView getLogin(HttpSession session, HttpServletResponse response) throws IOException {
+    	if(session.getAttribute(USER_KEY) != null){
+    		response.sendRedirect(bURL);
+    	}
+    	ModelAndView result = new ModelAndView("login");
+        
         return result;
     }
 
@@ -265,15 +198,23 @@ public class UserController extends Exception implements ServletContextAware {
             HttpSession session, HttpServletResponse response) throws IOException {
         
         try {
+        	
             User user = userService.findOne(email, password);
             if (user == null) {
                 throw new Exception("Invalid username or password!");
-            }           
+            }else {           
             
             session.setAttribute(UserController.USER_KEY, user);
-            
-            response.sendRedirect(bURL + "users/details?id=" + user.getId());
+            if (user.getRole() == UserRole.MANAGER ) {
+            	response.sendRedirect(bURL + "users");
+              	return null;
+            }else if(user.getRole()==UserRole.BUYER){
+            	response.sendRedirect(bURL + "users/details?id=" + user.getId());
+            	//moze i na index stranu ako su tamo postavljene sve ponude 
+//            	response.sendRedirect(bURL);
+            }
             return null;
+            }
         } catch (Exception ex) {
             String message = "Log in failed!";
 

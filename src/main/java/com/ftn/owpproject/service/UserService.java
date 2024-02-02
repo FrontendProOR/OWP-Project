@@ -1,8 +1,11 @@
 package com.ftn.owpproject.service;
 
 import java.util.List;
-import com.ftn.owpproject.model.User;
 
+import org.springframework.stereotype.Service;
+
+import com.ftn.owpproject.model.User;
+@Service
 public interface UserService {
     User findOne(String emailAddress); 
     User findOne(String emailAddress, String password);
