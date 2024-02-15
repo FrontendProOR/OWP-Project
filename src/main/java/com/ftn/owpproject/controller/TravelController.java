@@ -71,13 +71,13 @@ public class TravelController implements ServletContextAware{
 	    
 		User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 	    
-	    if (loggedUser.getRole() == UserRole.MANAGER ) { 
-	    	response.sendRedirect(bURL + "travels/addTravel");
-	    	return null;
-	    }else if(loggedUser.getRole() == UserRole.BUYER){
-	    	response.sendRedirect(bURL + "travels/travelOptions");
-	    	return null;
-	    }
+//	    if (loggedUser.getRole() == UserRole.MANAGER ) { 
+//	    	response.sendRedirect(bURL + "travels/addTravel");
+//	    	return null;
+//	    }else if(loggedUser.getRole() == UserRole.BUYER){
+//	    	response.sendRedirect(bURL + "travels/travelOptions");
+//	    	return null;
+//	    }
 	    
 	    List<Travel> travels = travelService.findAll();
 	    ModelAndView result = null;
@@ -94,36 +94,6 @@ public class TravelController implements ServletContextAware{
 
 	    return result;
 	}
-
-	
-//	@GetMapping(value="travels/add")
-//	public ModelAndView create(HttpSession session, HttpServletResponse response) {	
-//		ModelAndView result = new ModelAndView("addTravel");
-//		
-//		result.addObject("categories", TravelCategoryEnum.values());
-//		
-//		return result;
-//	}
-//	
-//	@PostMapping(value="travels/add")
-//	public void create( @RequestParam TransportationType transportationType,@RequestParam TypeOfAccommodation accommodationType,@RequestParam String destinationName,
-//			@RequestParam	String locationImage,@RequestParam TravelCategory travelCategory,@RequestParam LocalDateTime departureDateTime,@RequestParam LocalDateTime returnDateTime,
-//			@RequestParam double arrangmentPrice,@RequestParam int totalSeats,@RequestParam int availableSeats, HttpServletResponse response,HttpSession session) throws IOException {		
-//	User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-//    if (loggedUser.getRole() == UserRole.MANAGER ) { //||!(loggedUser.getRole() == UserRole.MANAGER)
-//    	response.sendRedirect(bURL + "travels/addTravel");
-//    }else if(loggedUser.getRole() == UserRole.BUYER){
-//      	response.sendRedirect("/");
-//	}else {
-//		response.sendRedirect("/");
-//	}
-//      
-//		int numberOfNights = (int) ChronoUnit.DAYS.between(departureDateTime, returnDateTime);		
-//		
-//		Travel travel = new Travel(transportationType,accommodationType,destinationName,locationImage,travelCategory,departureDateTime,returnDateTime,numberOfNights,arrangmentPrice,totalSeats,availableSeats);
-//		travelService.save(travel);
-//		response.sendRedirect(bURL);
-//	}
 	
 	@GetMapping(value="/travels/add")
 	public ModelAndView create(HttpSession session, HttpServletResponse response) {    

@@ -2,8 +2,10 @@ package com.ftn.owpproject.service;
 
 import java.util.List;
 
-import com.ftn.owpproject.model.TravelCategory;
+import org.springframework.stereotype.Service;
 
+import com.ftn.owpproject.model.TravelCategory;
+@Service
 public interface TravelCategoryService {
 	TravelCategory findOne(Long id); 
 	
