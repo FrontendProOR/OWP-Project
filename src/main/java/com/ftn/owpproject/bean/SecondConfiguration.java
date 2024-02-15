@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.ftn.owpproject.service.TravelCategoryService;
+
 @Configuration
 public class SecondConfiguration {
 
@@ -13,6 +15,11 @@ public class SecondConfiguration {
 	public ApplicationMemory getApplicationMemory() {
 		return new ApplicationMemory();
 	}
+	
+//	@Bean
+//    public TravelCategoryService travelCategoryService() {
+//        return new TravelCategoryService();
+//    }
 	
 	public class ApplicationMemory extends HashMap<Object, Object> {
 		

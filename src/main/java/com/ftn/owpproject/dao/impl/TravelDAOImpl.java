@@ -57,10 +57,6 @@ public class TravelDAOImpl implements TravelDAO {
 
         travels.put(travel.getId(), travel);
     }
-
-//    public Map<Long, Travel> getTravels() {
-//        return travels;
-//    }
 	
     public List<Travel> getTravels() {
 		return new ArrayList<>(travels.values());
@@ -98,29 +94,6 @@ public class TravelDAOImpl implements TravelDAO {
 	        );
 	    }, id);
 	}
-
-//	@Override
-//	public List<Travel> findAll() {
-//	    String sql = "SELECT * FROM Travel";
-//	    return jdbcTemplate.query(sql, (rs, rowNum) -> {
-//	        Long id = rs.getLong("id");
-//	        TransportationType transportationType = TransportationType.valueOf(rs.getString("transportation_type"));
-//	        TypeOfAccommodation accommodationType = TypeOfAccommodation.valueOf(rs.getString("accommodation_type"));
-//	        String destinationName = rs.getString("destination_name");
-//	        String locationImage = rs.getString("location_image");
-//	        TravelCategory travelCategory = getTravelCategoryById(rs.getLong("travel_category_id"));
-//	        LocalDateTime departureDateTime = rs.getTimestamp("departure_date_time").toLocalDateTime();
-//	        LocalDateTime returnDateTime = rs.getTimestamp("return_date_time").toLocalDateTime();
-//	        int numberOfNights = rs.getInt("number_of_nights");
-//	        double arrangementPrice = rs.getDouble("arrangement_price");
-//	        int totalSeats = rs.getInt("total_seats");
-//	        int availableSeats = rs.getInt("available_seats");
-//
-//	        return new Travel(id, transportationType, accommodationType, destinationName, locationImage,
-//	            travelCategory, departureDateTime, returnDateTime, numberOfNights, arrangementPrice, totalSeats,
-//	            availableSeats);
-//	    });
-//	}
 	
 	@Override
 	public List<Travel> findAll() {

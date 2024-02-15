@@ -21,6 +21,23 @@ public class Travel {
 	private int totalSeats;
 	private int availableSeats;
 	
+	public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
+            String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
+            double arrangmentPrice, int totalSeats, int availableSeats) {
+        super();
+        this.transportationType = transportationType;
+        this.accommodationType = accommodationType;
+        this.destinationName = destinationName;
+        this.locationImage = locationImage;
+        this.travelCategory = travelCategory;
+        this.departureDateTime = departureDateTime;
+        this.returnDateTime = returnDateTime;
+        this.numberOfNights = (int) java.time.temporal.ChronoUnit.DAYS.between(departureDateTime, returnDateTime);
+        this.arrangmentPrice = arrangmentPrice;
+        this.totalSeats = totalSeats;
+        this.availableSeats = availableSeats;
+    }
+	
     public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
 			String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
 			int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats) {

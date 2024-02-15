@@ -55,7 +55,7 @@ public class UserController extends Exception implements ServletContextAware {
     @GetMapping
     public ModelAndView index(HttpServletResponse response, HttpSession session) throws IOException {    
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-        if (loggedUser == null ) { //||!(loggedUser.getRole() == UserRole.MANAGER)
+        if (loggedUser == null ) { 
             response.sendRedirect(bURL + "users/login");
             return null;
         }
@@ -64,7 +64,7 @@ public class UserController extends Exception implements ServletContextAware {
         ModelAndView result = new ModelAndView("users");
         result.addObject("users", users);
         
-        // Add loggedUser to the model
+        
         result.addObject("loggedUser", loggedUser);
         
         return result;
@@ -83,7 +83,6 @@ public class UserController extends Exception implements ServletContextAware {
         @RequestParam String password,
         @RequestParam String repeatPassword,
         @RequestParam String emailAddress,
-//        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
         @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateOfBirth,
         @RequestParam String address, 
         @RequestParam String phoneNumber,
@@ -227,7 +226,6 @@ public class UserController extends Exception implements ServletContextAware {
 
     @GetMapping(value="/logout")
     public void logout(HttpSession session, HttpServletResponse response) throws IOException {
-
         session.invalidate();
         
         response.sendRedirect(bURL);

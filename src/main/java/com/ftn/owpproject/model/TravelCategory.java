@@ -3,16 +3,16 @@ package com.ftn.owpproject.model;
 import com.ftn.owpproject.model.enums.TravelCategoryEnum;
 
 public class TravelCategory {
+	private Long id;
+	private TravelCategoryEnum categoryName;
+	private String description;
+
 	public TravelCategory(Long id, TravelCategoryEnum categoryName, String description) {
 		super();
 		this.id = id;
 		this.categoryName = categoryName;
 		this.description = description;
 	}
-
-	private Long id;
-	private TravelCategoryEnum categoryName;
-	private String description;
 
 	public TravelCategory(TravelCategoryEnum categoryName, String description) {
 		super();

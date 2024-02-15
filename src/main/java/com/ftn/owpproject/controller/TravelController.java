@@ -40,28 +40,38 @@ public class TravelController implements ServletContextAware{
 	private ServletContext servletContext;
 	private  String bURL; 
 	
+	@SuppressWarnings("unused")
 	@Autowired
 	private TravelCategoryService travelCategoryService;
-	
 	@Autowired
 	private TravelService travelService;
+	
 	
 	@PostConstruct
 	public void init() {	
 		bURL = servletContext.getContextPath() + "/";
+		
 	}
+	
+	@Autowired
+    public TravelController(ServletContext servletContext, TravelCategoryService travelCategoryService, TravelService travelService) {
+        this.servletContext = servletContext;
+        this.travelCategoryService = travelCategoryService;
+        this.travelService = travelService;
+        bURL = servletContext.getContextPath() + "/";
+    }
 	
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	} 
 	
-	@GetMapping(value = {"/", "/index", "/travels"}) // Define the URL mapping for the index page
+	@GetMapping(value = {"/", "/index", "/travels"}) 
 	public ModelAndView index(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
 	    
 		User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 	    
-	    if (loggedUser.getRole() == UserRole.MANAGER ) { //||!(loggedUser.getRole() == UserRole.MANAGER)
+	    if (loggedUser.getRole() == UserRole.MANAGER ) { 
 	    	response.sendRedirect(bURL + "travels/addTravel");
 	    	return null;
 	    }else if(loggedUser.getRole() == UserRole.BUYER){
@@ -73,14 +83,13 @@ public class TravelController implements ServletContextAware{
 	    ModelAndView result = null;
 
 	    if ("travels".equals(page)) {
-	        result = new ModelAndView("travels"); // Assuming your HTML file for travels is named "travels.html"
-	        result.addObject("travels", travels); // Add the travel options to the model
+	        result = new ModelAndView("travels"); 
+	        result.addObject("travels", travels); 
 	    } else {
-	        result = new ModelAndView("index"); // Assuming your HTML file for index is named "index.html"
-	        result.addObject("travelOptions", travels); // Add the travel options to the model
+	        result = new ModelAndView("index"); 
+	        result.addObject("travelOptions", travels);
 	    }
-	    result.addObject("travelCategory", TravelCategoryEnum.values());        
-	    // Add any additional data you need for both pages here
+	    result.addObject("travelCategory", TravelCategoryEnum.values());
 	    result.addObject("loggedUser", loggedUser);
 
 	    return result;
@@ -125,30 +134,28 @@ public class TravelController implements ServletContextAware{
 	        try {
 	            response.sendRedirect(bURL);
 	        } catch (IOException e) {
-	            // Handle IOException
 	            e.printStackTrace();
 	        }
-	        return null; // Returning null to end the method execution
+	        return null; 
 	    } else if (loggedUser.getRole() != UserRole.MANAGER) {
 	        try {
 	            response.sendRedirect(bURL + "travels/addTravel");
 	        } catch (IOException e) {
-	            // Handle IOException
 	            e.printStackTrace();
 	        }
-	        return null; // Returning null to end the method execution
+	        return null; 
 	    }
 	    
 	    result.addObject("categories", TravelCategoryEnum.values());
 	    return result;
 	}
-	//OVA DVA NISU GOTOVI a za travelcategory nije db gotov za njega proveriti da li treba dodavati stranice ili samo vezu sa bazom
+	
 	@PostMapping(value="/travels/add")
 	public void create(@RequestParam TransportationType transportationType,
 	                   @RequestParam TypeOfAccommodation accommodationType,
 	                   @RequestParam String destinationName,
 	                   @RequestParam String locationImage,
-	                   @RequestParam String travelCategoryName,
+	                   @RequestParam TravelCategory travelCategory,
 	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime departureDateTime,
 	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime returnDateTime,
 	                   @RequestParam double arrangementPrice,
@@ -161,22 +168,17 @@ public class TravelController implements ServletContextAware{
 	        try {
 	            response.sendRedirect(bURL);
 	        } catch (IOException e) {
-	            // Handle IOException
 	            e.printStackTrace();
 	        }
-	        return; // Returning to end the method execution
+	        return;
 	    }
-//	    TravelCategoryEnum travelCategoryEnum = TravelCategoryEnum.valueOf(travelCategoryName);
 	    
-//	    List<TravelCategory> travelCategories = travelCategoryService.findAll();
-//	    TravelCategory travelCategory = new TravelCategory(travelCategoryEnum,travelCategoryService.findByNameOfTravelCategory());
-//	    Travel travel = new Travel(transportationType, accommodationType, destinationName, locationImage, travelCategory, departureDateTime, returnDateTime, arrangementPrice, totalSeats, availableSeats);
-//	    travelService.save(travel);
+	    Travel travel = new Travel(transportationType, accommodationType, destinationName, locationImage, travelCategory, departureDateTime, returnDateTime, arrangementPrice, totalSeats, availableSeats);
+	    travelService.save(travel);
 	    
 	    try {
 	        response.sendRedirect(bURL);
 	    } catch (IOException e) {
-	        // Handle IOException
 	        e.printStackTrace();
 	    }
 	}
@@ -190,19 +192,17 @@ public class TravelController implements ServletContextAware{
 	    User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 	    
 	    if (loggedUser.getRole() != UserRole.MANAGER) {
-	        response.sendRedirect(bURL); // Redirect unauthorized users
+	        response.sendRedirect(bURL); 
 	        return;
 	    }
 	    
-	    // Get the travel by ID
 	    Travel travel = travelService.findOne(id);
 	    
 	    if (travel == null) {
-	        response.sendRedirect(bURL); // Redirect if travel is not found
+	        response.sendRedirect(bURL); 
 	        return;
 	    }
 	    
-	    // Update the travel object with new data
 	    travel.setTransportationType(transportationType);
 	    travel.setAccommodationType(accommodationType);
 	    travel.setDestinationName(destinationName);
@@ -218,7 +218,7 @@ public class TravelController implements ServletContextAware{
 	    
 	    travelService.save(travel);
 	    
-	    response.sendRedirect(bURL + "travels/details?id=" + id); // Redirect to the travel details page
+	    response.sendRedirect(bURL + "travels/details?id=" + id); 
 	}
 
 	

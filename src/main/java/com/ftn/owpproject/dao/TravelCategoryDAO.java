@@ -5,13 +5,14 @@ import java.util.List;
 import com.ftn.owpproject.model.TravelCategory;
 
 public interface TravelCategoryDAO {
-	TravelCategory findOne(Long id); 
 	
-	List<TravelCategory> findAll(); 
+	public TravelCategory findOne(Long id); 
 	
-	TravelCategory save(TravelCategory travelCategory); 
+	public List<TravelCategory> findAll(); 
 	
-	TravelCategory update(TravelCategory travelCategory); 
+	public int save(TravelCategory travelCategory); 
 	
-	TravelCategory delete(Long id); 
+	public int update(TravelCategory travelCategory); 
+	
+	public int delete(Long id); 
 }

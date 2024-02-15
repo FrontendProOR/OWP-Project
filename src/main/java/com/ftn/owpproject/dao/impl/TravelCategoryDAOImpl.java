@@ -1,7 +1,10 @@
 package com.ftn.owpproject.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,22 +12,19 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import com.ftn.owpproject.dao.TravelCategoryDAO;
-import com.ftn.owpproject.dao.impl.UserDAOImpl.UserRowCallBackHandler;
 import com.ftn.owpproject.model.TravelCategory;
 import com.ftn.owpproject.model.enums.TravelCategoryEnum;
-import com.ftn.owpproject.model.enums.UserRole;
-import com.ftn.owpproject.service.TravelCategoryService;
 
 public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 
-	@SuppressWarnings("unused")
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	@SuppressWarnings("unused")
 	public class TravelCategoryRowCallBackHandler implements RowCallbackHandler {
 		private Map<Long, TravelCategory> travelCategories = new LinkedHashMap<>();
 		
@@ -58,26 +58,48 @@ public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 
 	@Override
 	public List<TravelCategory> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "SELECT * FROM TravelCategory";
+		TravelCategoryRowCallBackHandler rowCallBackHandler	= new TravelCategoryRowCallBackHandler();
+		jdbcTemplate.query(sql,rowCallBackHandler);
+		return rowCallBackHandler.getTravelCategories();
 	}
 
 	@Override
-	public TravelCategory save(TravelCategory travelCategory) {
-		// TODO Auto-generated method stub
-		return null;
+	public int save(TravelCategory travelCategory) {
+		PreparedStatementCreator preparedStatementCreator = new PreparedStatementCreator() {
+			
+			@Override
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				String sql = "INSERT INTO TravelCategory (name,description) VALUES (?,?)";
+				
+				PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+				int index = 1;
+				preparedStatement.setString(index++, travelCategory.getCategoryName().toString());
+				preparedStatement.setString(index++, travelCategory.getDescription());
+				
+				return preparedStatement;
+			}
+
+		};
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		boolean success = jdbcTemplate.update(preparedStatementCreator, keyHolder) == 1;
+		
+		return success?1:0;
+		
+	}
+	
+
+	@Override
+	public int update(TravelCategory travelCategory) {
+		String sql = "UPDATE TravelCategory SET name = ?, description = ?";	
+		boolean success = jdbcTemplate.update(sql) == 1; 
+		return success?1:0;
 	}
 
 	@Override
-	public TravelCategory update(TravelCategory travelCategory) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TravelCategory delete(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public int delete(Long id) {
+		String sql = "DELETE FROM TravelCategory WHERE id = ?";
+		return jdbcTemplate.update(sql, id);
 	}
 
 }
