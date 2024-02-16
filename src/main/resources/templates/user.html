@@ -5,6 +5,7 @@
     <base th:href="@{/}">
     <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <title>User Profile</title>
     <style>
@@ -69,35 +70,141 @@
             color: #ff0000;
         }
     </style>
+    <script>
+    function validateForm() {
+        var firstName = document.forms["profileForm"]["firstName"].value.trim();
+        var lastName = document.forms["profileForm"]["lastName"].value.trim();
+        var email = document.forms["profileForm"]["emailAddress"].value.trim();
+        var dateOfBirth = document.forms["profileForm"]["dateOfBirth"].value.trim();
+        var address = document.forms["profileForm"]["address"].value.trim();
+        var phoneNumber = document.forms["profileForm"]["phoneNumber"].value.trim();
+        var jmbg = document.forms["profileForm"]["jmbg"].value.trim();
+        var password = document.forms["profileForm"]["password"].value.trim();
+        var confirmationPassword = document.forms["profileForm"]["confirmationPassword"].value.trim();
+
+        var namePattern = /^[a-zA-Z]+$/;
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var datePattern = /^\d{4}-\d{2}-\d{2}$/;
+        var phoneNumberPattern = /^\d{10}$/;
+        var jmbgPattern = /^\d{13}$/;
+
+        var errors = [];
+
+        if (firstName === "") {
+            errors.push("First name cannot be empty.");
+        }
+        if (lastName === "") {
+            errors.push("Last name cannot be empty.");
+        }
+        if (email === "") {
+            errors.push("Email address cannot be empty.");
+        }
+        if (dateOfBirth === "") {
+            errors.push("Date of birth cannot be empty.");
+        }
+        if (address === "") {
+            errors.push("Address cannot be empty.");
+        }
+        if (phoneNumber === "") {
+            errors.push("Phone number cannot be empty.");
+        }
+        if (jmbg === "") {
+            errors.push("JMBG cannot be empty.");
+        }
+        if (password === "") {
+            errors.push("Password cannot be empty.");
+        }
+        if (confirmationPassword === "") {
+            errors.push("Confirmation password cannot be empty.");
+        }
+
+        if (!firstName.match(namePattern)) {
+            errors.push("Please enter a valid first name.");
+        }
+        if (!lastName.match(namePattern)) {
+            errors.push("Please enter a valid last name.");
+        }
+        if (!email.match(emailPattern)) {
+            errors.push("Please enter a valid email address.");
+        }
+        if (!dateOfBirth.match(datePattern)) {
+            errors.push("Please enter a valid date of birth.");
+        }
+        if (!phoneNumber.match(phoneNumberPattern)) {
+            errors.push("Please enter a valid phone number (10 digits).");
+        }
+        if (!jmbg.match(jmbgPattern)) {
+            errors.push("Please enter a valid JMBG (13 digits).");
+        }
+        if (password !== confirmationPassword) {
+            errors.push("Password and confirmation password do not match.");
+        }
+
+        if (errors.length > 0) {
+            var errorList = document.getElementById("errorList");
+            errorList.innerHTML = "";
+            errors.forEach(function(error) {
+                var li = document.createElement("li");
+                li.textContent = error;
+                errorList.appendChild(li);
+            });
+            $('#errorModal').modal('show');
+            return false;
+        }
+
+        return true;
+    }
+    $(document).ready(function() {
+        $(".closeModalBtn").click(function() {
+            $("#errorModal").modal("hide");
+        });
+    });
+    </script>
 </head>
 <body>
-	<div th:insert="~{fragments/navbar.html :: navbar}"></div>
+    <div th:insert="~{fragments/navbar.html :: navbar}"></div>
     <div th:fragment="centarDiv">
-        <form method="post" action="users/edit">
+        <form method="post" action="users/edit" onsubmit="return validateForm()" name="profileForm">
             <input type="hidden" name="id" th:value="${user.id}"/>
-            <input type="hidden" name="password" th:value="${user.password}"/>
             <h2>User Profile</h2>
             <table class="forma">
                 <tr><th>First Name:</th><td><input type="text" name="firstName" th:value="${user.firstName}"/></td></tr>
                 <tr><th>Last Name:</th><td><input type="text" name="lastName" th:value="${user.lastName}"/></td></tr>
-                <tr><th>Email:</th><td><input type="text" name="emailAddress" th:value="${user.emailAddress}" readonly/></td></tr>
-                <tr><th>Date of Birth:</th><td><input type="date" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" readonly/></td></tr>
+                <tr><th>Email:</th><td><input type="text" name="emailAddress" th:value="${user.emailAddress}" /></td></tr><!-- readonly -->
+                <tr><th>Date of Birth:</th><td><input type="date" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" /></td></tr><!-- readonly -->
                 <tr><th>Address:</th><td><input type="text" th:value="${user.address}" name="address" /></td></tr><!-- th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).BUYER"} -->
                 <tr><th>Phone Number:</th><td><input type="text" th:value="${user.phoneNumber}" name="phoneNumber" /></td></tr><!-- th:readonly="${session.loggedUser.role != T(com.ftn.owpproject.model.enums.UserRole).BUYER}" -->
-                <tr><th>Date of Registration:</th><td><input type="date" name="dateOfRegistration" th:value="${#temporals.format(user.registrationDateTime, 'yyyy-MM-dd hh:mm:ss')}" readonly/></td></tr>
-                <tr><th>Role:</th><td><input type="text" name="role" th:value="${user.role}" readonly/></td></tr>
-                <tr><th>JMBG:</th><td><input type="text" name="jmbg" th:value="${user.jmbg}" readonly/></td></tr>
-                <tr><td colspan="2"><input type="submit" value="Edit"/></td></tr>
+                <tr><th>Date of Registration:</th><td><input type="datetime-local" name="dateOfRegistration" th:value="${#temporals.format(user.registrationDateTime, 'yyyy-MM-dd hh:mm:ss')}" readonly/></td></tr><!-- readonly -->
+                <tr><th>Role:</th><td><input type="text" name="role" th:value="${user.role}" readonly/></td></tr><!-- readonly -->
+                <tr><th>JMBG:</th><td><input type="text" name="jmbg" th:value="${user.jmbg}" /></td></tr><!-- readonly -->
+                <tr><th>Password:</th><td><input type="password" name="password" th:value="${user.password}"/></td></tr>
+                <tr><th>Confirmation Password:</th><td><input type="password" name="confirmationPassword" /></td></tr>
+                <tr><td colspan="2"><input type="submit" value="Edit" onclick="return validateForm()"/></td></tr>
             </table>
         </form>
         <form method="post" th:action="@{/users/delete}">
             <input type="hidden" name="id" th:value="${user.id}"/>
             <input type="submit" class="btn btn-primary m-3" value="Delete Account"/>
         </form>
-        <form method="post" action="/change-password">
-            <input type="hidden" name="id" th:value="${user.id}"/>
-            <input type="submit" class="btn btn-secondary m-3" value="Change Password"/>
-        </form>
+    </div>
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Validation Errors</h5>
+                    <button type="button" class="close closeModalBtn" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="errorList"></ul>
+                </div>
+                <div class="modal-footer">
+					<button type="button" class="btn btn-secondary closeModalBtn" >Close</button>
+                    
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

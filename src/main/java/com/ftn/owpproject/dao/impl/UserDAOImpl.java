@@ -173,7 +173,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public int update(User user) {
         String sql = "UPDATE User SET first_name = ?, last_name = ?,  password = ?,email = ?, date_of_birth = ?, address = ?, phone_number = ?, role = ?,jmbg = ? WHERE id = ?";
-        boolean success = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmailAddress(), user.getPassword(), user.getDateOfBirth(), user.getAddress(), user.getPhoneNumber(), user.getRole().name(), user.getJmbg(), user.getId()) == 1;
+        boolean success = jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getPassword(), user.getEmailAddress(), user.getDateOfBirth(), user.getAddress(), user.getPhoneNumber(), user.getRole().name(), user.getJmbg(), user.getId()) == 1;
 
         return success ? 1 : 0;
     }

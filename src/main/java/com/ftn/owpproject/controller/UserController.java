@@ -109,7 +109,7 @@ public class UserController extends Exception implements ServletContextAware {
     @PostMapping(value="/delete")
     public void delete(@RequestParam Long id, HttpServletResponse response) throws IOException {
         userService.delete(id);
-        response.sendRedirect(bURL + "users");
+        response.sendRedirect(bURL + "users/logout");
     }
 
     @GetMapping(value = "/details")
