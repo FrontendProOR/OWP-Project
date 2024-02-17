@@ -54,6 +54,12 @@ public class SecondConfiguration {
 				// TODO Auto-generated method stub
 				return null;
 			}
+
+			@Override
+			public Long getIdByName(String categoryName) {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 	}
 	

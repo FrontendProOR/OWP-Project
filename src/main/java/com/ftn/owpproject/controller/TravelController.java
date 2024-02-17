@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,7 @@ public class TravelController implements ServletContextAware{
 	@SuppressWarnings("unused")
 	@Autowired
 	private TravelCategoryService travelCategoryService;
+	
 	@Autowired
 	private TravelService travelService;
 	
@@ -66,34 +68,60 @@ public class TravelController implements ServletContextAware{
 		this.servletContext = servletContext;
 	} 
 	
-	@GetMapping(value = {"/", "/index", "/travels"}) 
-	public ModelAndView index(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
-	    
-		User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-	    
-//	    if (loggedUser.getRole() == UserRole.MANAGER ) { 
-//	    	response.sendRedirect(bURL + "travels/addTravel");
-//	    	return null;
-//	    }else if(loggedUser.getRole() == UserRole.BUYER){
-//	    	response.sendRedirect(bURL + "travels/travelOptions");
-//	    	return null;
+//	@GetMapping(value = {"/", "/index", "/travels"}) 
+//	public ModelAndView index(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
+//	    
+//		User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+//	    
+////	    if (loggedUser.getRole() == UserRole.MANAGER ) { 
+////	    	response.sendRedirect(bURL + "travels/addTravel");
+////	    	return null;
+////	    }else if(loggedUser.getRole() == UserRole.BUYER){
+////	    	response.sendRedirect(bURL + "travels/travelOptions");
+////	    	return null;
+////	    }
+//	    
+//	    List<Travel> travels = travelService.findAll();
+//	    ModelAndView result = null;
+//
+//	    if ("travels".equals(page)) {
+//	        result = new ModelAndView("travels"); 
+//	        result.addObject("travels", travels); 
+//	    } else {
+//	        result = new ModelAndView("index"); 
+//	        result.addObject("travelOptions", travels);
 //	    }
-	    
-	    List<Travel> travels = travelService.findAll();
-	    ModelAndView result = null;
+//	    result.addObject("travelCategory", TravelCategoryEnum.values());
+//	    result.addObject("loggedUser", loggedUser);
+//
+//	    return result;
+//	}
+	
+	@GetMapping(value = {"/", "/index"})
+    public ModelAndView indexPage(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
-	    if ("travels".equals(page)) {
-	        result = new ModelAndView("travels"); 
-	        result.addObject("travels", travels); 
-	    } else {
-	        result = new ModelAndView("index"); 
-	        result.addObject("travelOptions", travels);
-	    }
-	    result.addObject("travelCategory", TravelCategoryEnum.values());
-	    result.addObject("loggedUser", loggedUser);
+        List<Travel> travels = travelService.findAll();
+        ModelAndView result = new ModelAndView("index");
+        result.addObject("travelOptions", travels);
+        result.addObject("travelCategory", TravelCategoryEnum.values());
+        result.addObject("loggedUser", loggedUser);
 
-	    return result;
-	}
+        return result;
+    }
+
+    @GetMapping("/travels")
+    public ModelAndView travelsPage(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        List<Travel> travels = travelService.findAll();
+        ModelAndView result = new ModelAndView("travels");
+        result.addObject("travels", travels);
+        result.addObject("travelCategory", TravelCategoryEnum.values());
+        result.addObject("loggedUser", loggedUser);
+
+        return result;
+    }
 	
 	@GetMapping(value="/travels/add")
 	public ModelAndView create(HttpSession session, HttpServletResponse response) {    
@@ -128,7 +156,7 @@ public class TravelController implements ServletContextAware{
 	                   @RequestParam TravelCategory travelCategory,
 	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime departureDateTime,
 	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime returnDateTime,
-	                   @RequestParam double arrangementPrice,
+	                   @RequestParam double arrangmentPrice,
 	                   @RequestParam int totalSeats,
 	                   @RequestParam int availableSeats,
 	                   HttpServletResponse response,
@@ -143,7 +171,7 @@ public class TravelController implements ServletContextAware{
 	        return;
 	    }
 	    
-	    Travel travel = new Travel(transportationType, accommodationType, destinationName, locationImage, travelCategory, departureDateTime, returnDateTime, arrangementPrice, totalSeats, availableSeats);
+	    Travel travel = new Travel(transportationType, accommodationType, destinationName, locationImage, travelCategory, departureDateTime, returnDateTime, arrangmentPrice, totalSeats, availableSeats);
 	    travelService.save(travel);
 	    
 	    try {
@@ -153,23 +181,33 @@ public class TravelController implements ServletContextAware{
 	    }
 	}
 
-	
-	@PostMapping(value="travels/edit")
-	public void edit(@RequestParam Long id, @RequestParam TransportationType transportationType, @RequestParam TypeOfAccommodation accommodationType, 
-	                 @RequestParam String destinationName, @RequestParam String locationImage, @RequestParam TravelCategory travelCategory, 
-	                 @RequestParam LocalDateTime departureDateTime, @RequestParam LocalDateTime returnDateTime, @RequestParam double arrangmentPrice, 
-	                 @RequestParam int totalSeats, @RequestParam int availableSeats, HttpServletResponse response, HttpSession session) throws IOException {
+	@PostMapping(value = "/travels/edit")
+	public void edit(
+	        @RequestParam Long id, 
+	        @RequestParam TransportationType transportationType, 
+	        @RequestParam TypeOfAccommodation accommodationType, 
+	        @RequestParam String destinationName, 
+	        @RequestParam String locationImage, 
+	        @RequestParam String travelCategory, 
+	        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime departureDateTime, 
+	        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime returnDateTime, 
+	        @RequestParam double arrangmentPrice, 
+	        @RequestParam int totalSeats, 
+	        @RequestParam int availableSeats, 
+	        HttpServletResponse response, 
+	        HttpSession session) throws IOException {
+
 	    User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 	    
-	    if (loggedUser.getRole() != UserRole.MANAGER) {
-	        response.sendRedirect(bURL); 
+	    if (loggedUser == null || loggedUser.getRole() != UserRole.MANAGER) {
+	        response.sendRedirect(bURL);
 	        return;
 	    }
 	    
 	    Travel travel = travelService.findOne(id);
 	    
 	    if (travel == null) {
-	        response.sendRedirect(bURL); 
+	        response.sendRedirect(bURL);
 	        return;
 	    }
 	    
@@ -177,7 +215,13 @@ public class TravelController implements ServletContextAware{
 	    travel.setAccommodationType(accommodationType);
 	    travel.setDestinationName(destinationName);
 	    travel.setLocationImage(locationImage);
-	    travel.setTravelCategory(travelCategory);
+
+//	    TravelCategory travelCategoryMain = travelCategoryService.findOne(travelCategoryService.getIdByName(travelCategory));
+	    TravelCategoryEnum categoryEnum = TravelCategoryEnum.valueOf(travelCategory);
+	    TravelCategory travelCategoryMain = new TravelCategory();
+	    travelCategoryMain.setCategoryName(categoryEnum);
+	    
+	    travel.setTravelCategory(travelCategoryMain);
 	    travel.setDepartureDateTime(departureDateTime);
 	    travel.setReturnDateTime(returnDateTime);
 	    int numberOfNights = (int) ChronoUnit.DAYS.between(departureDateTime, returnDateTime);
@@ -186,9 +230,17 @@ public class TravelController implements ServletContextAware{
 	    travel.setTotalSeats(totalSeats);
 	    travel.setAvailableSeats(availableSeats);
 	    
-	    travelService.save(travel);
-	    
-	    response.sendRedirect(bURL + "travels/details?id=" + id); 
+	    travelService.update(travel);
+	   
+	    response.sendRedirect(bURL + "travels");
+	}
+
+	
+	@PostMapping(value = "/travels/showEditForm")
+	public String showEditForm(@RequestParam Long id, Model model) {
+	    Travel travel = travelService.findOne(id);
+	    model.addAttribute("travel", travel);
+	    return "editTravel";
 	}
 
 	
@@ -200,4 +252,10 @@ public class TravelController implements ServletContextAware{
 		
 		return result;
 	}
+	
+	@PostMapping(value="travels/delete")
+    public void delete(@RequestParam Long id, HttpServletResponse response) throws IOException {
+        travelService.delete(id);
+        response.sendRedirect(bURL + "travels");
+    }
 }

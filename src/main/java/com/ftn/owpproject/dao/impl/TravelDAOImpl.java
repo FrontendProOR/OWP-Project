@@ -20,12 +20,16 @@ import com.ftn.owpproject.model.TravelCategory;
 import com.ftn.owpproject.model.enums.TransportationType;
 import com.ftn.owpproject.model.enums.TravelCategoryEnum;
 import com.ftn.owpproject.model.enums.TypeOfAccommodation;
+import com.ftn.owpproject.service.TravelCategoryService;
 
 @Repository
 public class TravelDAOImpl implements TravelDAO {
 	
 	@Autowired
     private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	private TravelCategoryService travelCategoryService;
 	
 	public class TravelRowCallbackHandler implements RowCallbackHandler {
 
@@ -67,13 +71,23 @@ public class TravelDAOImpl implements TravelDAO {
 	@SuppressWarnings("deprecation")
 	private TravelCategory getTravelCategoryById(Long categoryId) {
 	    String sql = "SELECT * FROM TravelCategory WHERE id = ?";
-	    return jdbcTemplate.queryForObject(sql, new Object[]{categoryId}, (rs, rowNum) ->
+	    List<TravelCategory> results = jdbcTemplate.query(
+	        sql,
+	        new Object[]{categoryId},
+	        (rs, rowNum) ->
 	            new TravelCategory(
-	                    rs.getLong("id"),
-	                    TravelCategoryEnum.valueOf(rs.getString("name")),
-	                    rs.getString("description")));
+	                rs.getLong("id"),
+	                TravelCategoryEnum.valueOf(rs.getString("name")),
+	                rs.getString("description"))
+	    );
+	    
+	    if (results.isEmpty()) {
+	        return null;
+	    } else {
+	        return results.get(0);
+	    }
 	}
-	
+
 	@Override
 	public Travel findOne(Long id) {
 	    String sql = "SELECT * FROM Travel WHERE id = ?";
@@ -112,13 +126,47 @@ public class TravelDAOImpl implements TravelDAO {
 	    return rowsAffected > 0 ? 1 : 0;
 	}
 
+//	@Override
+//	public int update(Travel travel) {
+//		
+////		if (travel == null || travel.getTravelCategory() == null) {
+////	        return 0;
+////	    }
+//	    
+//	    Long travelCategoryId = travelCategoryService.getIdByName(travel.getTravelCategory().getCategoryName().toString());
+//	    List<TravelCategory> travelCategories = travelCategoryService.findAll();
+////	    if (travelCategoryId == null) {
+////	        return 0; 
+////	    }
+//	    
+//	    String sql = "UPDATE Travel SET transportation_type = ?, accommodation_type = ?, destination_name = ?, location_image = ?, travel_category_id = ?, departure_date_time = ?, return_date_time = ?, number_of_nights = ?, arrangement_price = ?, total_seats = ?, available_seats = ? WHERE id = ?";
+//	    int rowsAffected = jdbcTemplate.update(sql, travel.getTransportationType().toString(), travel.getAccommodationType().toString(), travel.getDestinationName(), travel.getLocationImage(), travelCategoryId, Timestamp.valueOf(travel.getDepartureDateTime()), Timestamp.valueOf(travel.getReturnDateTime()), travel.getNumberOfNights(), travel.getArrangmentPrice(), travel.getTotalSeats(), travel.getAvailableSeats(), travel.getId());
+//
+//	    return rowsAffected > 0 ? 1 : 0;
+//	}
 	@Override
 	public int update(Travel travel) {
+	    Long travelCategoryId = null;
+	    List<TravelCategory> travelCategories = travelCategoryService.findAll();
+
+	    for (TravelCategory category : travelCategories) {
+	        if (category.getCategoryName().equals(travel.getTravelCategory().getCategoryName())) {
+	            travelCategoryId = category.getId();
+	            break;
+	        }
+	    }
+
+	    if (travelCategoryId == null) {
+	        System.err.println("No category found with name: " + travel.getTravelCategory().getCategoryName());
+	        return 0;
+	    }
+
 	    String sql = "UPDATE Travel SET transportation_type = ?, accommodation_type = ?, destination_name = ?, location_image = ?, travel_category_id = ?, departure_date_time = ?, return_date_time = ?, number_of_nights = ?, arrangement_price = ?, total_seats = ?, available_seats = ? WHERE id = ?";
-	    int rowsAffected = jdbcTemplate.update(sql, travel.getTransportationType().toString(), travel.getAccommodationType().toString(), travel.getDestinationName(), travel.getLocationImage(), travel.getTravelCategory().getId(), Timestamp.valueOf(travel.getDepartureDateTime()), Timestamp.valueOf(travel.getReturnDateTime()), travel.getNumberOfNights(), travel.getArrangmentPrice(), travel.getTotalSeats(), travel.getAvailableSeats(), travel.getId());
+	    int rowsAffected = jdbcTemplate.update(sql, travel.getTransportationType().toString(), travel.getAccommodationType().toString(), travel.getDestinationName(), travel.getLocationImage(), travelCategoryId, Timestamp.valueOf(travel.getDepartureDateTime()), Timestamp.valueOf(travel.getReturnDateTime()), travel.getNumberOfNights(), travel.getArrangmentPrice(), travel.getTotalSeats(), travel.getAvailableSeats(), travel.getId());
 
 	    return rowsAffected > 0 ? 1 : 0;
 	}
+
 
 
 	@Override

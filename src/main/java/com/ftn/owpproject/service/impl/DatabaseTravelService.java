@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ftn.owpproject.dao.TravelCategoryDAO;
 import com.ftn.owpproject.dao.TravelDAO;
 import com.ftn.owpproject.model.Travel;
 import com.ftn.owpproject.service.TravelService;

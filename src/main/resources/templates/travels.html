@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <base th:href="@{/}">
+    <base th:href="@{/travels}">
     <title>Travel </title>
     <style>
         .table-container {
@@ -23,7 +23,7 @@
         }
 
         .table-scroll {
-            max-height: 450px; /* Adjust as needed */
+            max-height: 450px; 
             overflow-y: auto;
         }
     </style>
@@ -54,21 +54,25 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="travel, iterStat : ${travels}" th:if="${iterStat.index < 5}">
-                <td th:text="${travel.id}"></td>
-                <td th:text="${travel.transportationType}"></td>
-                <td th:text="${travel.accommodationType}"></td>
-                <td th:text="${travel.destinationName}"></td>
-                <td th:text="${travel.locationImage}"></td>
-                <td th:text="${travel.travelCategory}"></td>
-                <td th:text="${travel.departureDateTime}"></td>
-                <td th:text="${travel.returnDateTime}"></td>
-                <td th:text="${travel.numberOfNights}"></td>
-                <td th:text="${travel.arrangmentPrice}"></td>
-                <td th:text="${travel.totalSeats}"></td>
-                <td th:text="${travel.availableSeats}"></td>
-                <td><a class="btn btn-primary" th:href="@{/travels/edit(id=${travel.id})}">Edit</a></td>
-                <td><a class="btn btn-danger" th:href="@{/travels/delete(id=${travel.id})}">Delete</a></td>
+            <tr th:each="travel, iterStat : ${travels}"><!-- th:if="${iterStat.index < 5}" -->
+                <form th:action="@{'/travels/edit?id='+${travel.id}}" method="post">
+                    <td><input type="text" name="id" th:value="${travel.id}" readonly></td>
+                    <td><input type="text" name="transportationType" th:value="${travel.transportationType.toString()}"></td>
+                    <td><input type="text" name="accommodationType" th:value="${travel.accommodationType.toString()}"></td>
+                    <td><input type="text" name="destinationName" th:value="${travel.destinationName}"></td>
+                    <td><input type="text" name="locationImage" th:value="${travel.locationImage}"></td>
+                    <td><input type="text" name="travelCategory" th:value="${travel?.getTravelCategory()?.getCategoryName()?.toString()}" readonly></td>
+                    <td><input type="datetime-local" name="departureDateTime" th:value="${travel.departureDateTime}"></td>
+                    <td><input type="datetime-local" name="returnDateTime" th:value="${travel.returnDateTime}"></td>
+                    <td><input type="text" name="numberOfNights" th:value="${travel.numberOfNights}" readonly></td>
+                    <td><input type="number" name="arrangmentPrice" th:value="${travel.arrangmentPrice}"></td>
+                    <td><input type="number" name="totalSeats" th:value="${travel.totalSeats}"></td>
+                    <td><input type="number" name="availableSeats" th:value="${travel.availableSeats}" readonly></td>
+                    <td><button type="submit" class="btn btn-primary">Edit</button></td>
+                </form>
+                <form th:action="@{'/travels/delete?id='+${travel.id}}" method="post">
+                    <td><input type="hidden" name="id" th:value="${travel.id}"><button type="submit" class="btn btn-danger">Delete</button></td>
+                </form>
             </tr>
             </tbody>
         </table>

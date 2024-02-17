@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -25,26 +26,47 @@ public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
+//	public class TravelCategoryRowCallBackHandler implements RowCallbackHandler {
+//		private Map<Long, TravelCategory> travelCategories = new LinkedHashMap<>();
+//		
+//		@Override
+//		public void processRow(ResultSet resultSet)throws SQLException{
+//			int index = 1;
+//			Long id = resultSet.getLong(index++);
+//			String name = resultSet.getString(index++);
+//			String description = resultSet.getString(index++);
+//			TravelCategory travelCategory = travelCategories.get(id);
+//			TravelCategoryEnum nameEnum = TravelCategoryEnum.valueOf(name);
+//			if(travelCategory == null) {
+//				travelCategory = new TravelCategory(id,nameEnum,description);
+//			}
+//		}
+//		
+//		public List<TravelCategory> getTravelCategories(){
+//			return new ArrayList<>(travelCategories.values());
+//		}
+//	}
 	public class TravelCategoryRowCallBackHandler implements RowCallbackHandler {
-		private Map<Long, TravelCategory> travelCategories = new LinkedHashMap<>();
-		
-		@Override
-		public void processRow(ResultSet resultSet)throws SQLException{
-			int index = 1;
-			Long id = resultSet.getLong(index++);
-			String name = resultSet.getString(index++);
-			String description = resultSet.getString(index++);
-			TravelCategory travelCategory = travelCategories.get(id);
-			TravelCategoryEnum nameEnum = TravelCategoryEnum.valueOf(name);
-			if(travelCategory == null) {
-				travelCategory = new TravelCategory(id,nameEnum,description);
-			}
-		}
-		
-		public List<TravelCategory> getTravelCategories(){
-			return new ArrayList<>(travelCategories.values());
-		}
+	    private Map<Long, TravelCategory> travelCategories = new LinkedHashMap<>();
+
+	    @Override
+	    public void processRow(ResultSet resultSet) throws SQLException {
+	        Long id = resultSet.getLong("id");
+	        String name = resultSet.getString("name");
+	        String description = resultSet.getString("description");
+
+	        TravelCategoryEnum nameEnum = TravelCategoryEnum.valueOf(name);
+
+	        TravelCategory travelCategory = new TravelCategory(id, nameEnum, description);
+
+	        travelCategories.put(id, travelCategory);
+	    }
+
+	    public List<TravelCategory> getTravelCategories() {
+	        return new ArrayList<>(travelCategories.values());
+	    }
 	}
+
 	
 	@Override
 	public TravelCategory findOne(Long id) {
@@ -58,11 +80,12 @@ public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 
 	@Override
 	public List<TravelCategory> findAll() {
-		String sql = "SELECT * FROM TravelCategory";
-		TravelCategoryRowCallBackHandler rowCallBackHandler	= new TravelCategoryRowCallBackHandler();
-		jdbcTemplate.query(sql,rowCallBackHandler);
-		return rowCallBackHandler.getTravelCategories();
+	    String sql = "SELECT * FROM TravelCategory";
+	    TravelCategoryRowCallBackHandler rowCallBackHandler = new TravelCategoryRowCallBackHandler();
+	    jdbcTemplate.query(sql, rowCallBackHandler);
+	    return rowCallBackHandler.getTravelCategories();
 	}
+
 
 	@Override
 	public int save(TravelCategory travelCategory) {
@@ -88,6 +111,33 @@ public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 		
 	}
 	
+	@Override
+	public Long getIdByName(String categoryName) {
+	    String sql = "SELECT id FROM TravelCategory WHERE name = ?";
+	    try {
+	    	System.out.println(categoryName);
+	        
+	        Long categoryId = jdbcTemplate.queryForObject(sql, Long.class, categoryName);
+	        
+	        
+	        if (categoryId == null) {
+	            System.err.println("No category found with name: " + categoryName);
+	        }
+	        
+	        return categoryId;
+	    } catch (EmptyResultDataAccessException e) {
+	        
+	        System.err.println("No category found with name: " + categoryName);
+	        return null; 
+	    } catch (Exception e) {
+	        
+	        e.printStackTrace();
+	        return null; 
+	    }
+	}
+
+
+
 
 	@Override
 	public int update(TravelCategory travelCategory) {

@@ -27,7 +27,7 @@
             <p class="card-text">
                 Transportation: <span th:text="${travel.transportationType}"></span><br>
                 Accommodation: <span th:text="${travel.accommodationType}"></span><br>
-                Category: <span th:text="${travel.travelCategory.getCategoryName()}"></span><br>
+                Category: <span th:text="${travel.getTravelCategory().getCategoryName().toString()}"></span><br>
                 Departure: <span th:text="${travel.departureDateTime}"></span><br>
                 Return: <span th:text="${travel.returnDateTime}"></span><br>
                 Number of Nights: <span th:text="${travel.numberOfNights}"></span><br>

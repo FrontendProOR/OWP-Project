@@ -15,4 +15,6 @@ public interface TravelCategoryDAO {
 	public int update(TravelCategory travelCategory); 
 	
 	public int delete(Long id); 
+	
+	public Long getIdByName(String categoryName);
 }

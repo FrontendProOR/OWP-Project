@@ -16,4 +16,6 @@ public interface TravelCategoryService {
 	TravelCategory update(TravelCategory travelCategory); 
 	
 	TravelCategory delete(Long id); 
+	
+	Long getIdByName(String categoryName);
 }

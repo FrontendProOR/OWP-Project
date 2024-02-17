@@ -42,4 +42,10 @@ public class DatabaseTravelCategoryService implements TravelCategoryService{
 		}
 		return travelCategory;
 	}
+
+	@Override
+	public Long getIdByName(String categoryName) {
+		Long id = travelCategoryDAO.getIdByName(categoryName);
+		return id;
+	}
 }
