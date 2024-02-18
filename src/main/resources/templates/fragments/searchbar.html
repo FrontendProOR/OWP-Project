@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>	
+</head>
+<body>
+    <div th:fragment="searchbar">
+        <form id="searchForm">
+            <div class="mb-3">
+                <label for="transportation">Transportation:</label>
+                <input type="text" id="transportation" name="transportation">
+            </div>
+            <div class="mb-3">
+                <label for="destination">Destination Name:</label>
+                <input type="text" id="destination" name="destination">
+            </div>
+            <div class="mb-3">
+                <label for="category">Category:</label>
+                <input type="text" id="category" name="category">
+            </div>
+            <div class="mb-3">
+                <label for="minPrice">Min Price:</label>
+                <input type="number" id="minPrice" name="minPrice">
+            </div>
+            <div class="mb-3">
+                <label for="maxPrice">Max Price:</label>
+                <input type="number" id="maxPrice" name="maxPrice">
+            </div>
+            
+            <button type="button" onclick="search()">Search</button>
+        </form>
+
+        <div class="mb-4">
+            <label for="sortSelect">Sort by:</label>
+            <select id="sortSelect" onchange="filterAndSort()">
+                <option value="destination">Destination</option>
+                <option value="price">Price</option>
+                <option value="nights">Number of Nights</option>
+            </select>
+        </div>
+    </div>
+</body>
+</html>

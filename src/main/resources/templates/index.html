@@ -1,48 +1,126 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <base th:href="@{/}">
     <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
     <link rel="stylesheet" type="text/css" href="css/StiloviHorizontalniMeni.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
     <title>First page of Project</title>
     <style>
     .body{
     margin:0;
     }
+    .hidden {
+    display: none;
+    }
+    .visible {
+    display: block;
+    } 
     </style>
+    <script>
+    function search() {
+        var form = document.getElementById('searchForm');
+        var formData = new FormData(form);
+        var transportation = formData.get('transportation').toLowerCase();
+        var destination = formData.get('destination').toLowerCase();
+        var category = formData.get('category').toLowerCase();
+        var minPrice = formData.get('minPrice');
+        var maxPrice = formData.get('maxPrice');
+        var cards = document.querySelectorAll('.col-md-4');
+        
+        cards.forEach(function(card) {
+            var cardTransportation = card.querySelector('span:nth-child(1)').innerText.toLowerCase();
+            var cardDestination = card.querySelector('h5.card-title').innerText.toLowerCase();
+            var cardCategory = card.querySelector('.category').innerText.toLowerCase(); 
+            var cardPrice = parseFloat(card.querySelector('.arrangment-price').innerText);
+
+            var showCard = true;
+            if (transportation && cardTransportation.indexOf(transportation) === -1) {
+                showCard = false;
+            }
+            if (destination && cardDestination.indexOf(destination) === -1) {
+                showCard = false;
+            }
+            if (category && cardCategory.indexOf(category) === -1) { 
+                showCard = false;
+            }
+            var minPriceValue = minPrice ? parseFloat(minPrice) : null;
+            var maxPriceValue = maxPrice ? parseFloat(maxPrice) : null;
+            if ((minPriceValue !== null && cardPrice < minPriceValue) || (maxPriceValue !== null && cardPrice > maxPriceValue)) {
+                showCard = false;
+            }
+            if (showCard) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        filterAndSort(); 
+    }
+
+    function filterAndSort() {
+        var selectedOption = document.getElementById('sortSelect').value;
+        var cardsContainer = document.querySelector('.row');
+        var cards = cardsContainer.querySelectorAll('.col-md-4');
+        var cardsArray = Array.from(cards);
+
+        switch (selectedOption) {
+            case 'destination':
+                cardsArray.sort((a, b) => a.querySelector('h5.card-title').innerText.localeCompare(b.querySelector('h5.card-title').innerText));
+                break;
+            case 'price':
+                cardsArray.sort((a, b) => parseFloat(a.querySelector('.arrangment-price').innerText) - parseFloat(b.querySelector('.arrangment-price').innerText));
+                break;
+            case 'nights':
+                cardsArray.sort((a, b) => {
+                    var aNights = parseInt(a.querySelector('.num-nights').innerText);
+                    var bNights = parseInt(b.querySelector('.num-nights').innerText);
+                    return aNights - bNights;
+                });
+                break;
+            default:
+                break;
+        }
+
+        cardsContainer.innerHTML = '';
+
+        cardsArray.forEach(card => {
+            cardsContainer.appendChild(card);
+        });
+    }
+    </script>
 </head>
 <body>
-  	 <div th:insert="~{fragments/navbar.html :: navbar}"></div>
-	
-	<div class="container">
-    <div class="row">
-        <div th:each="travel : ${travelOptions}" class="col-md-4">
-    <div class="card mb-4">
-        <img th:src="@{'/images/' + ${travel.locationImage}}" class="card-img-top" alt="Travel Destination" width="450" height="300">
-        <div class="card-body">
-            <h5 class="card-title" th:text="${travel.destinationName}"></h5>
-            <p class="card-text">
-                Transportation: <span th:text="${travel.transportationType}"></span><br>
-                Accommodation: <span th:text="${travel.accommodationType}"></span><br>
-                Category: <span th:text="${travel.getTravelCategory().getCategoryName().toString()}"></span><br>
-                Departure: <span th:text="${travel.departureDateTime}"></span><br>
-                Return: <span th:text="${travel.returnDateTime}"></span><br>
-                Number of Nights: <span th:text="${travel.numberOfNights}"></span><br>
-                Price: <span th:text="${travel.arrangmentPrice}"></span><br>
-                Total Seats: <span th:text="${travel.totalSeats}"></span><br>
-                Available Seats: <span th:text="${travel.availableSeats}"></span>
-            </p>
-            <a href="#" class="btn btn-secondary mb-2">View Details</a> 
-            <a href="#" class="btn btn-primary mb-2">Make Reservation</a> 
+    <div th:insert="~{fragments/navbar.html :: navbar}"></div>
+    <div th:insert="~{fragments/searchbar.html :: searchbar}"></div>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div th:each="travel : ${travelOptions}" class="col-md-4">
+                <div class="card mb-4">
+                    <img th:src="@{'/images/' + ${travel.locationImage}}" class="card-img-top" alt="Travel Destination" width="450" height="300">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${travel.destinationName}"></h5>
+                        <p class="card-text">
+                            Transportation: <span th:text="${travel.transportationType}"></span><br>
+                            Accommodation: <span th:text="${travel.accommodationType}"></span><br>
+                            Category: <span class="category" th:text="${travel.getTravelCategory().getCategoryName().toString()}"></span><br>
+                            Departure: <span th:text="${travel.departureDateTime}"></span><br>
+                            Return: <span th:text="${travel.returnDateTime}"></span><br>
+                            Number of Nights: <span class="num-nights" th:text="${travel.numberOfNights}"></span><br>
+                            Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br> <!-- Add class to target arrangement price -->
+                            Total Seats: <span th:text="${travel.totalSeats}"></span><br>
+                            Available Seats: <span th:text="${travel.availableSeats}"></span>
+                        </p>
+                        <a href="#" class="btn btn-secondary mb-2">View Details</a> 
+                        <a href="#" class="btn btn-primary mb-2">Make Reservation</a> 
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-    </div>
-</div>
-	
-    
 </body>
 </html>

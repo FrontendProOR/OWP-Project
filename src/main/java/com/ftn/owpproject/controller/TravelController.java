@@ -1,6 +1,9 @@
 package com.ftn.owpproject.controller;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ftn.owpproject.model.Travel;
@@ -48,11 +53,12 @@ public class TravelController implements ServletContextAware{
 	@Autowired
 	private TravelService travelService;
 	
+	@Value("${image.upload.dir}")
+    private String imageUploadDir;
 	
 	@PostConstruct
 	public void init() {	
 		bURL = servletContext.getContextPath() + "/";
-		
 	}
 	
 	@Autowired
@@ -148,38 +154,101 @@ public class TravelController implements ServletContextAware{
 	    return result;
 	}
 	
+//	@PostMapping(value="/travels/add")
+//	public void create(@RequestParam TransportationType transportationType,
+//	                   @RequestParam TypeOfAccommodation accommodationType,
+//	                   @RequestParam String destinationName,
+//	                   @RequestParam String locationImage,
+//	                   @RequestParam TravelCategory travelCategory,
+//	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime departureDateTime,
+//	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime returnDateTime,
+//	                   @RequestParam double arrangmentPrice,
+//	                   @RequestParam int totalSeats,
+//	                   @RequestParam int availableSeats,
+//	                   HttpServletResponse response,
+//	                   HttpSession session) {
+//	    User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+//	    if (loggedUser == null || loggedUser.getRole() == UserRole.BUYER) {
+//	        try {
+//	            response.sendRedirect(bURL);
+//	        } catch (IOException e) {
+//	            e.printStackTrace();
+//	        }
+//	        return;
+//	    }
+//	    
+//	    Travel travel = new Travel(transportationType, accommodationType, destinationName, locationImage, travelCategory, departureDateTime, returnDateTime, arrangmentPrice, totalSeats, availableSeats);
+//	    travelService.save(travel);
+//	    
+//	    try {
+//	        response.sendRedirect(bURL);
+//	    } catch (IOException e) {
+//	        e.printStackTrace();
+//	    }
+//	}
+	
 	@PostMapping(value="/travels/add")
-	public void create(@RequestParam TransportationType transportationType,
-	                   @RequestParam TypeOfAccommodation accommodationType,
-	                   @RequestParam String destinationName,
-	                   @RequestParam String locationImage,
-	                   @RequestParam TravelCategory travelCategory,
-	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime departureDateTime,
-	                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime returnDateTime,
-	                   @RequestParam double arrangmentPrice,
-	                   @RequestParam int totalSeats,
-	                   @RequestParam int availableSeats,
-	                   HttpServletResponse response,
-	                   HttpSession session) {
-	    User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
-	    if (loggedUser == null || loggedUser.getRole() == UserRole.BUYER) {
-	        try {
-	            response.sendRedirect(bURL);
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-	        return;
-	    }
-	    
-	    Travel travel = new Travel(transportationType, accommodationType, destinationName, locationImage, travelCategory, departureDateTime, returnDateTime, arrangmentPrice, totalSeats, availableSeats);
-	    travelService.save(travel);
-	    
-	    try {
-	        response.sendRedirect(bURL);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	}
+    public void create(@RequestParam String transportationType,
+                       @RequestParam String accommodationType,
+                       @RequestParam String destinationName,
+                       @RequestParam MultipartFile locationImageFile,
+                       @RequestParam String travelCategory,
+                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime departureDateTime,
+                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime returnDateTime,
+                       @RequestParam double arrangmentPrice,
+                       @RequestParam int totalSeats,
+                       @RequestParam int availableSeats,
+                       HttpServletResponse response,
+                       HttpSession session) {
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null || loggedUser.getRole() == UserRole.BUYER) {
+            try {
+                response.sendRedirect(bURL);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        TransportationType transportationTypeMain = TransportationType.valueOf(transportationType.toUpperCase());
+        TypeOfAccommodation accommodationTypeMain = TypeOfAccommodation.valueOf(accommodationType.toUpperCase());
+        
+        TravelCategoryEnum travelCategoryEnum = TravelCategoryEnum.valueOf(travelCategory.toUpperCase());
+        TravelCategory travelCategoryMain = new TravelCategory();
+        travelCategoryMain.setCategoryName(travelCategoryEnum);
+
+        String locationImageUrl = null;
+        if (locationImageFile != null && !locationImageFile.isEmpty()) {
+            try {
+                String fileName = locationImageFile.getOriginalFilename();
+                
+                String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
+                
+                Path uploadPath = Paths.get(imageUploadDir);
+                
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                
+                Path filePath = uploadPath.resolve(uniqueFileName);
+                Files.copy(locationImageFile.getInputStream(), filePath);
+                
+                locationImageUrl = "/images/" + uniqueFileName;
+            } catch (IOException e) {
+                e.printStackTrace();
+                
+            }
+        }
+
+        Travel travel = new Travel(transportationTypeMain, accommodationTypeMain, destinationName, locationImageUrl, travelCategoryMain, departureDateTime, returnDateTime, arrangmentPrice, totalSeats, availableSeats);
+        travelService.save(travel);
+
+        try {
+            response.sendRedirect(bURL);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	@PostMapping(value = "/travels/edit")
 	public void edit(
@@ -241,6 +310,22 @@ public class TravelController implements ServletContextAware{
 	    Travel travel = travelService.findOne(id);
 	    model.addAttribute("travel", travel);
 	    return "editTravel";
+	}
+
+	@GetMapping(value = "/travels/addTravel")
+	public ModelAndView showAddTravelPage(HttpSession session, HttpServletResponse response) throws IOException {
+	    ModelAndView modelAndView = new ModelAndView();
+
+	    User loggedUser = (User) session.getAttribute(USER_KEY);
+	    if (loggedUser == null || loggedUser.getRole() != UserRole.MANAGER) {
+	        response.sendRedirect(bURL); 
+	        return null;
+	    }
+
+	    modelAndView.setViewName("addTravel");
+	    modelAndView.addObject("categories", TravelCategoryEnum.values());
+
+	    return modelAndView;
 	}
 
 	
