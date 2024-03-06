@@ -46,7 +46,6 @@ public class TravelController implements ServletContextAware{
 	private ServletContext servletContext;
 	private  String bURL; 
 	
-	@SuppressWarnings("unused")
 	@Autowired
 	private TravelCategoryService travelCategoryService;
 	
@@ -191,7 +190,7 @@ public class TravelController implements ServletContextAware{
     public void create(@RequestParam String transportationType,
                        @RequestParam String accommodationType,
                        @RequestParam String destinationName,
-                       @RequestParam MultipartFile locationImageFile,
+                       @RequestParam MultipartFile locationImage,
                        @RequestParam String travelCategory,
                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime departureDateTime,
                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime returnDateTime,
@@ -209,18 +208,21 @@ public class TravelController implements ServletContextAware{
             }
             return;
         }
-
+        int numberOfNights = (int) ChronoUnit.DAYS.between(departureDateTime, returnDateTime);
         TransportationType transportationTypeMain = TransportationType.valueOf(transportationType.toUpperCase());
         TypeOfAccommodation accommodationTypeMain = TypeOfAccommodation.valueOf(accommodationType.toUpperCase());
         
-        TravelCategoryEnum travelCategoryEnum = TravelCategoryEnum.valueOf(travelCategory.toUpperCase());
-        TravelCategory travelCategoryMain = new TravelCategory();
-        travelCategoryMain.setCategoryName(travelCategoryEnum);
-
+//        List<TravelCategory> travelCategories = travelCategoryService.findAll();
+//        TravelCategoryEnum travelCategoryEnum = TravelCategoryEnum.valueOf(travelCategory.toUpperCase());
+//        TravelCategory travelCategoryMain = new TravelCategory();
+//        travelCategoryMain.setCategoryName(travelCategoryEnum);
+        Long travelCategoryId = travelCategoryService.getIdByName(travelCategory);
+        TravelCategory travelCategoryMain = travelCategoryService.findOne(travelCategoryId);
+        
         String locationImageUrl = null;
-        if (locationImageFile != null && !locationImageFile.isEmpty()) {
+        if (locationImage != null && !locationImage.isEmpty()) {
             try {
-                String fileName = locationImageFile.getOriginalFilename();
+                String fileName = locationImage.getOriginalFilename();
                 
                 String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
                 
@@ -231,16 +233,17 @@ public class TravelController implements ServletContextAware{
                 }
                 
                 Path filePath = uploadPath.resolve(uniqueFileName);
-                Files.copy(locationImageFile.getInputStream(), filePath);
+                Files.copy(locationImage.getInputStream(), filePath);
                 
-                locationImageUrl = "/images/" + uniqueFileName;
+                locationImageUrl = uniqueFileName;
             } catch (IOException e) {
                 e.printStackTrace();
                 
             }
         }
-
-        Travel travel = new Travel(transportationTypeMain, accommodationTypeMain, destinationName, locationImageUrl, travelCategoryMain, departureDateTime, returnDateTime, arrangmentPrice, totalSeats, availableSeats);
+        
+        
+        Travel travel = new Travel(transportationTypeMain, accommodationTypeMain,destinationName, locationImageUrl, travelCategoryMain, departureDateTime, returnDateTime,numberOfNights, arrangmentPrice, totalSeats, availableSeats);
         travelService.save(travel);
 
         try {
