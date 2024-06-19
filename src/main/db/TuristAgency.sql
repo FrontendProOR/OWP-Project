@@ -49,6 +49,19 @@ CREATE TABLE Travel (
     FOREIGN KEY (travel_category_id) REFERENCES TravelCategory(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Reservation (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    travel_id BIGINT NOT NULL,
+    reservation_date TIMESTAMP NOT NULL,
+    reserved_seats INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(id),
+    FOREIGN KEY (travel_id) REFERENCES Travel(id)
+);
+
+
+
+
 -- Insert data for users with role BUYER
 INSERT INTO User (first_name, last_name, password, email, date_of_birth, address, phone_number, role, jmbg)
 VALUES

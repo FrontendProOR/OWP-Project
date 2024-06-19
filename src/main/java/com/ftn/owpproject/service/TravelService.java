@@ -10,4 +10,5 @@ public interface TravelService {
 	Travel save(Travel travel); 
 	Travel update(Travel travel); 
 	Travel delete(Long id); 
+	int updateAvailableSeats(Long travelId, int availableSeats);
 }

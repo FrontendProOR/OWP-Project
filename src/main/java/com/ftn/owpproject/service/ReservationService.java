@@ -1,0 +1,11 @@
+package com.ftn.owpproject.service;
+
+import com.ftn.owpproject.model.Reservation;
+
+import java.util.List;
+
+public interface ReservationService {
+    List<Reservation> findByUserId(Long userId);
+    void cancelReservation(Long reservationId) throws Exception;
+    void save(Reservation reservation);
+}

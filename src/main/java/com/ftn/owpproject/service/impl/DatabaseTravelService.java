@@ -47,4 +47,10 @@ public class DatabaseTravelService implements TravelService {
 		}
 		return travel;
 	}
+	
+	@Override
+	public int updateAvailableSeats(Long travelId, int availableSeats) {
+	    return travelDAO.updateAvailableSeats(travelId, availableSeats);
+	}
+
 }

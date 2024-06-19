@@ -116,7 +116,7 @@
                             Available Seats: <span th:text="${travel.availableSeats}"></span>
                         </p>
                         <a href="#" class="btn btn-secondary mb-2">View Details</a> 
-                        <a href="#" class="btn btn-primary mb-2">Make Reservation</a> 
+                        <a href="#" th:href="@{/reservations/make(travelId=${travel.id})}" class="btn btn-primary mb-2">Make Reservation</a> 
                     </div>
                 </div>
             </div>
