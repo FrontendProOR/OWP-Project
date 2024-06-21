@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ftn.owpproject.model.TravelCategory;
+import com.ftn.owpproject.model.enums.TravelCategoryEnum;
 @Service
 public interface TravelCategoryService {
 	TravelCategory findOne(Long id); 
@@ -18,4 +19,6 @@ public interface TravelCategoryService {
 	TravelCategory delete(Long id); 
 	
 	Long getIdByName(String categoryName);
+	
+	TravelCategory findByCategoryName(TravelCategoryEnum categoryName);
 }

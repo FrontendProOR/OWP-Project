@@ -2,28 +2,29 @@ package com.ftn.owpproject.model;
 
 import java.time.LocalDateTime;
 
-
 import com.ftn.owpproject.model.enums.TransportationType;
 import com.ftn.owpproject.model.enums.TypeOfAccommodation;
 
 public class Travel {
 
-	private Long id;
-	private TransportationType transportationType;
-	private TypeOfAccommodation accommodationType;
-	private String destinationName;
-	private String locationImage; 
-	private TravelCategory travelCategory;
-	private LocalDateTime departureDateTime;
-	private LocalDateTime returnDateTime;
-	private int numberOfNights;
-	private double arrangmentPrice;
-	private int totalSeats;
-	private int availableSeats;
-	
-	public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
-            String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
-            double arrangmentPrice, int totalSeats, int availableSeats) {
+    private Long id;
+    private TransportationType transportationType;
+    private TypeOfAccommodation accommodationType;
+    private String destinationName;
+    private String locationImage;
+    private TravelCategory travelCategory;
+    private LocalDateTime departureDateTime;
+    private LocalDateTime returnDateTime;
+    private int numberOfNights;
+    private double arrangmentPrice;
+    private int totalSeats;
+    private int availableSeats;
+    private String formattedDepartureDateTime; // Dodato polje za formatirani datum
+    private String formattedReturnDateTime;    // Dodato polje za formatirani datum
+
+    public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
+                  String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
+                  double arrangmentPrice, int totalSeats, int availableSeats) {
         super();
         this.transportationType = transportationType;
         this.accommodationType = accommodationType;
@@ -37,44 +38,63 @@ public class Travel {
         this.totalSeats = totalSeats;
         this.availableSeats = availableSeats;
     }
-	
+
     public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
-			String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
-			int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats) {
-		super();
-		this.transportationType = transportationType;
-		this.accommodationType = accommodationType;
-		this.destinationName = destinationName;
-		this.locationImage = locationImage;
-		this.travelCategory = travelCategory;
-		this.departureDateTime = departureDateTime;
-		this.returnDateTime = returnDateTime;
-		this.numberOfNights = numberOfNights;
-		this.arrangmentPrice = arrangmentPrice;
-		this.totalSeats = totalSeats;
-		this.availableSeats = availableSeats;
-	}
-    
-	public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType,
-			String destinationName, String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime,
-			LocalDateTime returnDateTime, int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats) {
-		super();
-		this.id = id;
-		this.transportationType = transportationType;
-		this.accommodationType = accommodationType;
-		this.destinationName = destinationName;
-		this.locationImage = locationImage;
-		this.travelCategory = travelCategory;
-		this.departureDateTime = departureDateTime;
-		this.returnDateTime = returnDateTime;
-		this.numberOfNights = numberOfNights;
-		this.arrangmentPrice = arrangmentPrice;
-		this.totalSeats = totalSeats;
-		this.availableSeats = availableSeats;
-	}
-    public Travel() {
-    	
+                  String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
+                  int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats) {
+        super();
+        this.transportationType = transportationType;
+        this.accommodationType = accommodationType;
+        this.destinationName = destinationName;
+        this.locationImage = locationImage;
+        this.travelCategory = travelCategory;
+        this.departureDateTime = departureDateTime;
+        this.returnDateTime = returnDateTime;
+        this.numberOfNights = numberOfNights;
+        this.arrangmentPrice = arrangmentPrice;
+        this.totalSeats = totalSeats;
+        this.availableSeats = availableSeats;
     }
+
+    public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType,
+                  String destinationName, String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime,
+                  LocalDateTime returnDateTime, int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats) {
+        super();
+        this.id = id;
+        this.transportationType = transportationType;
+        this.accommodationType = accommodationType;
+        this.destinationName = destinationName;
+        this.locationImage = locationImage;
+        this.travelCategory = travelCategory;
+        this.departureDateTime = departureDateTime;
+        this.returnDateTime = returnDateTime;
+        this.numberOfNights = numberOfNights;
+        this.arrangmentPrice = arrangmentPrice;
+        this.totalSeats = totalSeats;
+        this.availableSeats = availableSeats;
+    }
+
+    public Travel() {
+
+    }
+
+    // Getteri i setteri za novo dodata polja
+    public String getFormattedDepartureDateTime() {
+        return formattedDepartureDateTime;
+    }
+
+    public void setFormattedDepartureDateTime(String formattedDepartureDateTime) {
+        this.formattedDepartureDateTime = formattedDepartureDateTime;
+    }
+
+    public String getFormattedReturnDateTime() {
+        return formattedReturnDateTime;
+    }
+
+    public void setFormattedReturnDateTime(String formattedReturnDateTime) {
+        this.formattedReturnDateTime = formattedReturnDateTime;
+    }
+
 	public TypeOfAccommodation getAccommodationType() {
 		return accommodationType;
 	}

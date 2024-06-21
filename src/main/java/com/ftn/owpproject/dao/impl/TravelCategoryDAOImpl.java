@@ -147,4 +147,27 @@ public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 		return jdbcTemplate.update(sql, id);
 	}
 
+	@Override
+    public TravelCategory findByCategoryName(TravelCategoryEnum categoryName) {
+        String sql = "SELECT * FROM TravelCategory WHERE name = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{categoryName.toString()}, new RowMapper<TravelCategory>() {
+                @Override
+                public TravelCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    Long id = rs.getLong("id");
+                    String name = rs.getString("name");
+                    String description = rs.getString("description");
+
+                    TravelCategoryEnum nameEnum = TravelCategoryEnum.valueOf(name);
+
+                    return new TravelCategory(id, nameEnum, description);
+                }
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

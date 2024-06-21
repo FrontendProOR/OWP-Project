@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ftn.owpproject.dao.TravelCategoryDAO;
 import com.ftn.owpproject.model.TravelCategory;
+import com.ftn.owpproject.model.enums.TravelCategoryEnum;
 import com.ftn.owpproject.service.TravelCategoryService;
 
 @Service
@@ -48,5 +49,10 @@ public class DatabaseTravelCategoryService implements TravelCategoryService {
     @Override
     public Long getIdByName(String categoryName) {
         return travelCategoryDAO.getIdByName(categoryName);
+    }
+    
+    @Override
+    public TravelCategory findByCategoryName(TravelCategoryEnum categoryName) {
+        return travelCategoryDAO.findByCategoryName(categoryName);
     }
 }
