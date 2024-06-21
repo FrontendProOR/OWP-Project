@@ -72,7 +72,9 @@ public class Travel {
 		this.totalSeats = totalSeats;
 		this.availableSeats = availableSeats;
 	}
-    
+    public Travel() {
+    	
+    }
 	public TypeOfAccommodation getAccommodationType() {
 		return accommodationType;
 	}

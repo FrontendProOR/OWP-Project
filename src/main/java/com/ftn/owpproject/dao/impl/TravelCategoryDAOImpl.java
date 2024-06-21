@@ -9,18 +9,20 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Repository;
 
 import com.ftn.owpproject.dao.TravelCategoryDAO;
 import com.ftn.owpproject.model.TravelCategory;
 import com.ftn.owpproject.model.enums.TravelCategoryEnum;
 
+@Repository
 public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 
 	@Autowired
@@ -110,35 +112,28 @@ public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 		return success?1:0;
 		
 	}
-	
+
 	@Override
 	public Long getIdByName(String categoryName) {
 	    String sql = "SELECT id FROM TravelCategory WHERE name = ?";
 	    try {
-	    	System.out.println(categoryName);
-	        
-	        Long categoryId = jdbcTemplate.queryForObject(sql, Long.class, categoryName);
-	        
-	        
-	        if (categoryId == null) {
-	            System.err.println("No category found with name: " + categoryName);
-	        }
-	        
+	        System.out.println("Executing SQL: " + sql + " with parameter: " + categoryName);
+	        Long categoryId = jdbcTemplate.queryForObject(sql, new Object[]{categoryName}, new RowMapper<Long>() {
+	            @Override
+	            public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+	                return rs.getLong("id");
+	            }
+	        });
+	        System.out.println("Category ID found: " + categoryId);
 	        return categoryId;
 	    } catch (EmptyResultDataAccessException e) {
-	        
 	        System.err.println("No category found with name: " + categoryName);
 	        return null; 
 	    } catch (Exception e) {
-	        
 	        e.printStackTrace();
 	        return null; 
 	    }
 	}
-
-
-
-
 	@Override
 	public int update(TravelCategory travelCategory) {
 		String sql = "UPDATE TravelCategory SET name = ?, description = ?";	

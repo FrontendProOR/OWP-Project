@@ -2,8 +2,11 @@ package com.ftn.owpproject.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.ftn.owpproject.model.Travel;
 
+@Service
 public interface TravelService {
 	Travel findOne(Long id); 
 	List<Travel> findAll(); 
