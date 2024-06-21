@@ -11,4 +11,5 @@ public interface TravelDAO {
 	public int update(Travel travel);
 	public int delete(Long id);
 	public int updateAvailableSeats(Long travelId, int availableSeats);
+	public int countReservationsByTravelId(Long travelId);
 }

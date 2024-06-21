@@ -356,9 +356,28 @@ public class TravelController implements ServletContextAware{
 	    return result;
 	}
 
-	@PostMapping(value="travels/delete")
-    public void delete(@RequestParam Long id, HttpServletResponse response) throws IOException {
-        travelService.delete(id);
-        response.sendRedirect(bURL + "travels");
-    }
+//	@PostMapping(value="travels/delete")
+//    public void delete(@RequestParam Long id, HttpServletResponse response) throws IOException {
+//        travelService.delete(id);
+//        response.sendRedirect(bURL + "travels");
+//    }
+
+	@PostMapping(value = "/travels/delete")
+	public void delete(@RequestParam Long id, HttpServletResponse response, HttpSession session) throws IOException {
+	    User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+	    if (loggedUser == null || loggedUser.getRole() != UserRole.MANAGER) {
+	        response.sendRedirect(bURL);
+	        return;
+	    }
+
+	    boolean hasReservations = travelService.hasReservations(id);
+	    if (hasReservations) {
+	        response.sendRedirect(bURL + "travels?error=Travel%20has%20reservations%20and%20cannot%20be%20deleted");
+	    } else {
+	        travelService.delete(id);
+	        response.sendRedirect(bURL + "travels");
+	    }
+	}
+
 }

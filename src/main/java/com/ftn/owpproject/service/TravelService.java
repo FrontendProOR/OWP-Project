@@ -13,5 +13,7 @@ public interface TravelService {
 	Travel save(Travel travel); 
 	Travel update(Travel travel); 
 	Travel delete(Long id); 
+	boolean hasReservations(Long travelId);
+
 	int updateAvailableSeats(Long travelId, int availableSeats);
 }

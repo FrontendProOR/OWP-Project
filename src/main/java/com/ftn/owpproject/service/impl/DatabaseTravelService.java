@@ -34,6 +34,12 @@ public class DatabaseTravelService implements TravelService {
 	}
 
 	@Override
+	public boolean hasReservations(Long travelId) {
+	    return travelDAO.countReservationsByTravelId(travelId) > 0;
+	}
+
+	
+	@Override
 	public Travel update(Travel travel) {
 		travelDAO.update(travel);
 		return travel;

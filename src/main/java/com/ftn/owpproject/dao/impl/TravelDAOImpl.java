@@ -101,6 +101,13 @@ public class TravelDAOImpl implements TravelDAO {
     }
 
     @Override
+    public int countReservationsByTravelId(Long travelId) {
+        String sql = "SELECT COUNT(*) FROM Reservation WHERE travel_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{travelId}, Integer.class);
+    }
+
+    
+    @Override
     public int update(Travel travel) {
         List<TravelCategory> travelCategories = travelCategoryService.findAll();
         if (travelCategories == null || travelCategories.isEmpty()) {
