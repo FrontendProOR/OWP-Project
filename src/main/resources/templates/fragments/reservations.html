@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <table class="table table-striped" id="reservationTable">
+        <thead>
+            <tr>
+                <th>Travel</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Reserved Seats</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="reservation : ${reservations}">
+                <td th:text="${reservation.travel.destinationName}">Travel Title</td>
+                <td th:text="${#temporals.format(reservation.travel.departureDateTime, 'yyyy-MM-dd HH:mm')}">Start Date</td>
+                <td th:text="${#temporals.format(reservation.travel.returnDateTime, 'yyyy-MM-dd HH:mm')}">End Date</td>
+                <td th:text="${reservation.reservedSeats}">Reserved Seats</td>
+                <td>
+                    <button th:if="${reservation.travel.departureDateTime.isAfter(T(java.time.LocalDateTime).now())}" 
+                            class="btn btn-danger"
+                            th:attr="data-id=${reservation.id}" 
+                            onclick="cancelReservation(this)">
+                        Cancel
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

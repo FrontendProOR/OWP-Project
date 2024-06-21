@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface ReservationService {
     List<Reservation> findByUserId(Long userId);
+    Reservation findOne(Long reservationId);
     void cancelReservation(Long reservationId) throws Exception;
     void save(Reservation reservation);
 }

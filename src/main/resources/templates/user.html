@@ -2,223 +2,299 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <base th:href="@{/}">
-    <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <title>User Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .forma {
-            width: 100%;
-        }
-        .forma th {
-            text-align: right;
-            padding: 10px;
-            width: 30%;
-        }
-        .forma td {
-            padding: 10px;
-        }
-        .forma input[type="text"],
-        .forma input[type="password"],
-        .forma input[type="email"],
-        .forma input[type="date"],
-        .forma input[type="tel"] {
-            width: calc(100% - 20px);
-            padding: 5px;
-            border-radius: 3px;
-            border: 1px solid #ccc;
-            transition: border-color 0.3s ease-in-out;
-        }
-        .forma input[type="text"]:focus,
-        .forma input[type="password"]:focus,
-        .forma input[type="email"]:focus,
-        .forma input[type="date"]:focus,
-        .forma input[type="tel"]:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .forma input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-        }
-        .forma input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .message {
-            margin-top: 10px;
-            color: #ff0000;
-        }
-    </style>
     <script>
-    function validateForm() {
-        var firstName = document.forms["profileForm"]["firstName"].value.trim();
-        var lastName = document.forms["profileForm"]["lastName"].value.trim();
-        var email = document.forms["profileForm"]["emailAddress"].value.trim();
-        var dateOfBirth = document.forms["profileForm"]["dateOfBirth"].value.trim();
-        var address = document.forms["profileForm"]["address"].value.trim();
-        var phoneNumber = document.forms["profileForm"]["phoneNumber"].value.trim();
-        var jmbg = document.forms["profileForm"]["jmbg"].value.trim();
-        var password = document.forms["profileForm"]["password"].value.trim();
-        var confirmationPassword = document.forms["profileForm"]["confirmationPassword"].value.trim();
-
-        var namePattern = /^[a-zA-Z]+$/;
-        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        var datePattern = /^\d{4}-\d{2}-\d{2}$/;
-        var phoneNumberPattern = /^\d{10}$/;
-        var jmbgPattern = /^\d{13}$/;
-
-        var errors = [];
-
-        if (firstName === "") {
-            errors.push("First name cannot be empty.");
-        }
-        if (lastName === "") {
-            errors.push("Last name cannot be empty.");
-        }
-        if (email === "") {
-            errors.push("Email address cannot be empty.");
-        }
-        if (dateOfBirth === "") {
-            errors.push("Date of birth cannot be empty.");
-        }
-        if (address === "") {
-            errors.push("Address cannot be empty.");
-        }
-        if (phoneNumber === "") {
-            errors.push("Phone number cannot be empty.");
-        }
-        if (jmbg === "") {
-            errors.push("JMBG cannot be empty.");
-        }
-
-        if (password !== "") {
-            if (password !== confirmationPassword) {
-                errors.push("Password and confirmation password do not match.");
+        $(document).ready(function() {
+            function filterReservations(filter) {
+                var now = new Date();
+                $('#reservationTable tbody tr').each(function() {
+                    var startDate = new Date($(this).find('.start-date').text());
+                    var show = false;
+                    if (filter === 'all') {
+                        show = true;
+                    } else if (filter === 'future' && startDate > now) {
+                        show = true;
+                    } else if (filter === 'past' && startDate <= now) {
+                        show = true;
+                    }
+                    $(this).toggle(show);
+                });
             }
-        }
 
-        if (!firstName.match(namePattern)) {
-            errors.push("Please enter a valid first name.");
-        }
-        if (!lastName.match(namePattern)) {
-            errors.push("Please enter a valid last name.");
-        }
-        if (!email.match(emailPattern)) {
-            errors.push("Please enter a valid email address.");
-        }
-        if (!dateOfBirth.match(datePattern)) {
-            errors.push("Please enter a valid date of birth.");
-        }
-        if (!phoneNumber.match(phoneNumberPattern)) {
-            errors.push("Please enter a valid phone number (10 digits).");
-        }
-        if (!jmbg.match(jmbgPattern)) {
-            errors.push("Please enter a valid JMBG (13 digits).");
-        }
-
-        if (errors.length > 0) {
-            var errorList = document.getElementById("errorList");
-            errorList.innerHTML = "";
-            errors.forEach(function(error) {
-                var li = document.createElement("li");
-                li.textContent = error;
-                errorList.appendChild(li);
+            $('#filterAll').click(function(e) {
+                e.preventDefault();
+                filterReservations('all');
             });
-            $('#errorModal').modal('show');
-            return false;
+
+            $('#filterFuture').click(function(e) {
+                e.preventDefault();
+                filterReservations('future');
+            });
+
+            $('#filterPast').click(function(e) {
+                e.preventDefault();
+                filterReservations('past');
+            });
+
+            $('#profileForm').on('submit', function() {
+                return validateForm();
+            });
+
+            $('#password, #confirmationPassword').on('input', function() {
+                var password = $('#password').val().trim();
+                var confirmationPassword = $('#confirmationPassword').val().trim();
+                if (password !== confirmationPassword) {
+                    $('#confirmationPassword').get(0).setCustomValidity('Passwords do not match');
+                } else {
+                    $('#confirmationPassword').get(0).setCustomValidity('');
+                }
+            });
+
+            $(".closeModalBtn").click(function() {
+                $("#errorModal").modal("hide");
+            });
+        });
+
+        function validateForm() {
+            var firstName = document.forms["profileForm"]["firstName"].value.trim();
+            var lastName = document.forms["profileForm"]["lastName"].value.trim();
+            var email = document.forms["profileForm"]["emailAddress"].value.trim();
+            var dateOfBirth = document.forms["profileForm"]["dateOfBirth"].value.trim();
+            var address = document.forms["profileForm"]["address"].value.trim();
+            var phoneNumber = document.forms["profileForm"]["phoneNumber"].value.trim();
+            var jmbg = document.forms["profileForm"]["jmbg"].value.trim();
+            var password = document.forms["profileForm"]["password"].value.trim();
+            var confirmationPassword = document.forms["profileForm"]["confirmationPassword"].value.trim();
+
+            var namePattern = /^[a-zA-Z]+$/;
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            var datePattern = /^\d{4}-\d{2}-\d{2}$/;
+            var phoneNumberPattern = /^\d{10}$/;
+            var jmbgPattern = /^\d{13}$/;
+
+            var errors = [];
+
+            if (firstName === "") {
+                errors.push("First name cannot be empty.");
+            }
+            if (lastName === "") {
+                errors.push("Last name cannot be empty.");
+            }
+            if (email === "") {
+                errors.push("Email address cannot be empty.");
+            }
+            if (dateOfBirth === "") {
+                errors.push("Date of birth cannot be empty.");
+            }
+            if (address === "") {
+                errors.push("Address cannot be empty.");
+            }
+            if (phoneNumber === "") {
+                errors.push("Phone number cannot be empty.");
+            }
+            if (jmbg === "") {
+                errors.push("JMBG cannot be empty.");
+            }
+
+            if (password !== "") {
+                if (password !== confirmationPassword) {
+                    errors.push("Password and confirmation password do not match.");
+                }
+            }
+
+            if (!firstName.match(namePattern)) {
+                errors.push("Please enter a valid first name.");
+            }
+            if (!lastName.match(namePattern)) {
+                errors.push("Please enter a valid last name.");
+            }
+            if (!email.match(emailPattern)) {
+                errors.push("Please enter a valid email address.");
+            }
+            if (!dateOfBirth.match(datePattern)) {
+                errors.push("Please enter a valid date of birth.");
+            }
+            if (!phoneNumber.match(phoneNumberPattern)) {
+                errors.push("Please enter a valid phone number (10 digits).");
+            }
+            if (!jmbg.match(jmbgPattern)) {
+                errors.push("Please enter a valid JMBG (13 digits).");
+            }
+
+            if (errors.length > 0) {
+                var errorList = document.getElementById("errorList");
+                errorList.innerHTML = "";
+                errors.forEach(function(error) {
+                    var li = document.createElement("li");
+                    li.textContent = error;
+                    errorList.appendChild(li);
+                });
+                $('#errorModal').modal('show');
+                return false;
+            }
+
+            return true;
         }
+        
 
-        return true;
-    }
-
-    $(document).ready(function() {
-        $('#password').on('input', function() {
-            var password = $(this).val().trim();
-            var confirmationPassword = $('#confirmationPassword').val().trim();
-            if (password !== "" && password !== confirmationPassword) {
-                $('#confirmationPassword').get(0).setCustomValidity('Passwords do not match');
-            } else {
-                $('#confirmationPassword').get(0).setCustomValidity('');
+        function cancelReservation(button) {
+            var reservationId = button.getAttribute("data-id");
+            if (confirm("Are you sure you want to cancel this reservation?")) {
+                $.post("/owpproject/reservations/cancel", { reservationId: reservationId })
+                    .done(function(response) {
+                        if (response.message) {
+                            alert(response.message);
+                        } else {
+                            alert("Reservation cancelled successfully.");
+                        }
+                        location.reload();
+                    })
+                    .fail(function(jqXHR) {
+                        var response = jqXHR.responseJSON;
+                        if (response && response.error) {
+                            alert(response.error);
+                        } else {
+                            alert("Failed to cancel the reservation.");
+                        }
+                    });
             }
-        });
-
-        $('#confirmationPassword').on('input', function() {
-            var password = $('#password').val().trim();
-            var confirmationPassword = $(this).val().trim();
-            if (password !== "" && password !== confirmationPassword) {
-                this.setCustomValidity('Passwords do not match');
-            } else {
-                this.setCustomValidity('');
-            }
-        });
-
-        $(".closeModalBtn").click(function() {
-            $("#errorModal").modal("hide");
-        });
-    });
+        }
     </script>
 </head>
-<body>
+<body class="bg-light">
     <div th:insert="~{fragments/navbar.html :: navbar}"></div>
-    <div th:fragment="centarDiv">
-        <form method="post" th:action="@{/users/edit}" onsubmit="return validateForm()" name="profileForm">
+    <div class="container my-5">
+        <form method="post" th:action="@{/users/edit}" onsubmit="return validateForm()" name="profileForm" id="profileForm" class="needs-validation">
             <input type="hidden" name="id" th:value="${user.id}"/>
-            <h2>User Profile</h2>
-            <table class="forma">
-                <tr><th>First Name:</th><td><input type="text" name="firstName" th:value="${user.firstName}"/></td></tr>
-                <tr><th>Last Name:</th><td><input type="text" name="lastName" th:value="${user.lastName}"/></td></tr>
-                <tr><th>Email:</th><td><input type="text" name="emailAddress" th:value="${user.emailAddress}" readonly /></td></tr>
-                <tr><th>Date of Birth:</th><td><input type="date" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" readonly /></td></tr>
-                <tr><th>Address:</th><td><input type="text" th:value="${user.address}" name="address" /></td></tr>
-                <tr><th>Phone Number:</th><td><input type="text" th:value="${user.phoneNumber}" name="phoneNumber" /></td></tr>
-                <tr><th>Date of Registration:</th><td><input type="datetime-local" name="dateOfRegistration" th:value="${#temporals.format(user.registrationDateTime, 'yyyy-MM-dd hh:mm:ss')}" readonly/></td></tr>
-                <tr><th>Role:</th><td><input type="text" name="role" th:value="${user.role}" readonly/></td></tr>
-                <tr><th>JMBG:</th><td><input type="text" name="jmbg" th:value="${user.jmbg}" readonly/></td></tr>
-                <tr><th>Password:</th><td><input type="password" id="password" name="password"/></td></tr>
-                <tr><th>Confirmation Password:</th><td><input type="password" id="confirmationPassword" name="confirmationPassword" /></td></tr>
-                <tr><td colspan="2"><input type="submit" value="Edit" /></td></tr>
-            </table>
+            <h2 class="text-center mb-4">User Profile</h2>
+            <div class="row mb-3">
+                <label for="firstName" class="col-sm-3 col-form-label">First Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="firstName" name="firstName" th:value="${user.firstName}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="lastName" class="col-sm-3 col-form-label">Last Name:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="lastName" name="lastName" th:value="${user.lastName}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="emailAddress" class="col-sm-3 col-form-label">Email:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="emailAddress" name="emailAddress" th:value="${user.emailAddress}" readonly>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="dateOfBirth" class="col-sm-3 col-form-label">Date of Birth:</label>
+                <div class="col-sm-9">
+                    <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" readonly>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="address" class="col-sm-3 col-form-label">Address:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="address" name="address" th:value="${user.address}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="phoneNumber" class="col-sm-3 col-form-label">Phone Number:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:value="${user.phoneNumber}">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="dateOfRegistration" class="col-sm-3 col-form-label">Date of Registration:</label>
+                <div class="col-sm-9">
+                    <input type="datetime-local" class="form-control" id="dateOfRegistration" name="dateOfRegistration" th:value="${#temporals.format(user.registrationDateTime, 'yyyy-MM-dd hh:mm:ss')}" readonly>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="role" class="col-sm-3 col-form-label">Role:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="role" name="role" th:value="${user.role}" readonly>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="jmbg" class="col-sm-3 col-form-label">JMBG:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="jmbg" name="jmbg" th:value="${user.jmbg}" readonly>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="password" class="col-sm-3 col-form-label">Password:</label>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="confirmationPassword" class="col-sm-3 col-form-label">Confirmation Password:</label>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="confirmationPassword" name="confirmationPassword">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-12 text-center">
+                    <input type="submit" class="btn btn-primary" value="Edit">
+                </div>
+            </div>
         </form>
-        <form method="post" th:action="@{/users/delete}">
-            <input type="hidden" name="id" th:value="${user.id}"/>
-            <input type="submit" class="btn btn-primary m-3" value="Delete Account"/>
+        <form method="post" th:action="@{/users/delete}" class="text-center">
+            <input type="hidden" name="id" th:value="${user.id}">
+            <input type="submit" class="btn btn-danger m-3" value="Delete Account">
         </form>
+    </div>
+    <div class="container" th:if="${user.role.toString() == 'BUYER'}">
+        <h2 class="text-center mb-4">Your Reservations</h2>
+        <div class="d-flex justify-content-center mb-3">
+            <a href="#" id="filterAll" class="btn btn-outline-primary mx-1">All</a>
+            <a href="#" id="filterFuture" class="btn btn-outline-primary mx-1">Future</a>
+            <a href="#" id="filterPast" class="btn btn-outline-primary mx-1">Past</a>
+        </div>
+        <table class="table table-striped text-center" id="reservationTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>Travel</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Reserved Seats</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="reservation : ${reservations}">
+                    <td th:text="${reservation.travel.destinationName}">Travel Title</td>
+                    <td class="start-date" th:text="${#temporals.format(reservation.travel.departureDateTime, 'yyyy-MM-dd HH:mm')}">Start Date</td>
+                    <td th:text="${#temporals.format(reservation.travel.returnDateTime, 'yyyy-MM-dd HH:mm')}">End Date</td>
+                    <td th:text="${reservation.reservedSeats}">Reserved Seats</td>
+                    <td>
+                        <span th:if="${reservation.travel.departureDateTime.isBefore(T(java.time.LocalDateTime).now())}">Reservation is expired</span>
+                        <button th:if="${reservation.travel.departureDateTime.isAfter(T(java.time.LocalDateTime).now().plusHours(48))}" 
+                                class="btn btn-danger"
+                                th:attr="data-id=${reservation.id}" 
+                                onclick="cancelReservation(this)">
+                            Cancel
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="errorModalLabel">Validation Errors</h5>
-                    <button type="button" class="close closeModalBtn" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close closeModalBtn" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <ul id="errorList"></ul>
                 </div>
                 <div class="modal-footer">
-					<button type="button" class="btn btn-secondary closeModalBtn">Close</button>
+                    <button type="button" class="btn btn-secondary closeModalBtn" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

@@ -59,9 +59,6 @@ CREATE TABLE Reservation (
     FOREIGN KEY (travel_id) REFERENCES Travel(id)
 );
 
-
-
-
 -- Insert data for users with role BUYER
 INSERT INTO User (first_name, last_name, password, email, date_of_birth, address, phone_number, role, jmbg)
 VALUES
@@ -88,12 +85,49 @@ VALUES
     ('LAST_MINUTE', 'Grab last-minute deals for spontaneous trips.'),
     ('NEW_YEAR', 'Celebrate the New Year in exciting destinations.');
 
--- Insert data for trips
+-- Insert data for future trips
 INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangement_price, total_seats, available_seats)
 VALUES
-    ('AIRPLANE', 'HOTEL', 'Hong Kong', 'hongkong.jpg', 1, '2024-03-15 08:00:00', '2024-03-20 18:00:00', 5, 1500.00, 100, 100),
-    ('BUS', 'HOTEL', 'Novgorod', 'novgorod.jpg', 2, '2024-04-10 10:00:00', '2024-04-15 20:00:00', 5, 800.00, 50, 50),
-    ('PERSONAL', 'APARTMENT', 'Moskva', 'moskva.jpg', 3, '2024-05-05 12:00:00', '2024-05-10 22:00:00', 5, 1200.00, 80, 80),
-    ('PERSONAL', 'HOTEL', 'Washington', 'washington.jpg', 4, '2024-06-20 14:00:00', '2024-06-25 23:00:00', 5, 2000.00, 120, 120),
-    ('PERSONAL', 'HOTEL', 'Shenzhen', 'shenzhen.jpg', 4, '2024-06-20 14:00:00', '2024-06-25 23:00:00', 5, 2000.00, 120, 120),
-    ('BUS', 'HOTEL', 'Jerusalem', 'jerusalim.jpg', 4, '2024-07-15 08:00:00', '2024-07-20 18:00:00', 5, 1800.00, 90, 90);
+    ('AIRPLANE', 'HOTEL', 'Hong Kong', 'hongkong.jpg', 1, '2024-12-15 08:00:00', '2024-12-20 18:00:00', 5, 1500.00, 100, 100),
+    ('BUS', 'HOTEL', 'Novgorod', 'novgorod.jpg', 2, '2024-11-10 10:00:00', '2024-11-15 20:00:00', 5, 800.00, 50, 50),
+    ('PERSONAL', 'APARTMENT', 'Moskva', 'moskva.jpg', 3, '2024-10-05 12:00:00', '2024-10-10 22:00:00', 5, 1200.00, 80, 80),
+    ('PERSONAL', 'HOTEL', 'Washington', 'washington.jpg', 4, '2024-09-20 14:00:00', '2024-09-25 23:00:00', 5, 2000.00, 120, 120),
+    ('PERSONAL', 'HOTEL', 'Shenzhen', 'shenzhen.jpg', 4, '2024-08-20 14:00:00', '2024-08-25 23:00:00', 5, 2000.00, 120, 120);
+
+-- Insert data for past trips
+INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangement_price, total_seats, available_seats)
+VALUES
+    ('BUS', 'HOTEL', 'Jerusalem', 'jerusalim.jpg', 4, '2023-07-15 08:00:00', '2023-07-20 18:00:00', 5, 1800.00, 90, 90),
+    ('AIRPLANE', 'HOTEL', 'Tokyo', 'tokyo.jpg', 2, '2023-05-10 10:00:00', '2023-05-15 20:00:00', 5, 2200.00, 70, 70),
+    ('PERSONAL', 'APARTMENT', 'Paris', 'paris.jpg', 3, '2023-04-05 12:00:00', '2023-04-10 22:00:00', 5, 1300.00, 60, 60),
+    ('PERSONAL', 'HOTEL', 'Berlin', 'berlin.jpg', 1, '2023-03-20 14:00:00', '2023-03-25 23:00:00', 5, 1700.00, 80, 80),
+    ('PERSONAL', 'HOTEL', 'London', 'london.jpg', 4, '2023-02-20 14:00:00', '2023-02-25 23:00:00', 5, 2100.00, 90, 90);
+
+-- Insert reservations for buyers (2 in the future and 2 in the past for each buyer)
+INSERT INTO Reservation (user_id, travel_id, reservation_date, reserved_seats)
+VALUES
+    -- John Doe's reservations
+    (1, 1, CURRENT_TIMESTAMP, 2),
+    (1, 2, CURRENT_TIMESTAMP, 2),
+    (1, 6, CURRENT_TIMESTAMP, 2),
+    (1, 7, CURRENT_TIMESTAMP, 2),
+    -- Alice Smith's reservations
+    (2, 3, CURRENT_TIMESTAMP, 2),
+    (2, 4, CURRENT_TIMESTAMP, 2),
+    (2, 8, CURRENT_TIMESTAMP, 2),
+    (2, 9, CURRENT_TIMESTAMP, 2),
+    -- Bob Johnson's reservations
+    (3, 5, CURRENT_TIMESTAMP, 2),
+    (3, 1, CURRENT_TIMESTAMP, 2),
+    (3, 10, CURRENT_TIMESTAMP, 2),
+    (3, 6, CURRENT_TIMESTAMP, 2),
+    -- Emily Brown's reservations
+    (4, 2, CURRENT_TIMESTAMP, 2),
+    (4, 3, CURRENT_TIMESTAMP, 2),
+    (4, 7, CURRENT_TIMESTAMP, 2),
+    (4, 8, CURRENT_TIMESTAMP, 2),
+    -- Michael Lee's reservations
+    (5, 4, CURRENT_TIMESTAMP, 2),
+    (5, 5, CURRENT_TIMESTAMP, 2),
+    (5, 9, CURRENT_TIMESTAMP, 2),
+    (5, 10, CURRENT_TIMESTAMP, 2);

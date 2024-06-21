@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ftn.owpproject.model.Reservation;
 import com.ftn.owpproject.model.User;
 import com.ftn.owpproject.model.enums.UserRole;
+import com.ftn.owpproject.service.ReservationService;
 import com.ftn.owpproject.service.UserService;
 
 @Controller
@@ -38,6 +40,9 @@ public class UserController extends Exception implements ServletContextAware {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private ReservationService reservationService;
+	
 	@PostConstruct
 	public void init() {
 		bURL = servletContext.getContextPath() + "/";
@@ -114,12 +119,16 @@ public class UserController extends Exception implements ServletContextAware {
 			return null;
 		}
 
+		List<Reservation> reservations = reservationService.findByUserId(userId);
+		
+		
 		User user = userService.findOneById(userId);
 		boolean isCurrentUser = loggedUser.getId().equals(userId);
 
 		ModelAndView result = new ModelAndView("user");
 		result.addObject("user", user);
-
+		result.addObject("reservations",reservations);
+		
 		if (loggedUser.getRole() == UserRole.BUYER && isCurrentUser) {
 			UserRole buyer = UserRole.BUYER;
 			result.addObject("buyer", buyer);

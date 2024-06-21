@@ -5,7 +5,6 @@ import com.ftn.owpproject.dao.TravelDAO;
 import com.ftn.owpproject.model.Reservation;
 import com.ftn.owpproject.model.Travel;
 import com.ftn.owpproject.service.ReservationService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,11 @@ public class DatabaseReservationService implements ReservationService {
     @Override
     public List<Reservation> findByUserId(Long userId) {
         return reservationDAO.findByUserId(userId);
+    }
+
+    @Override
+    public Reservation findOne(Long reservationId) {
+        return reservationDAO.findOne(reservationId);
     }
 
     @Override
