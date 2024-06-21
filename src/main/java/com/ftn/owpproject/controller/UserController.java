@@ -211,10 +211,11 @@ public class UserController extends Exception implements ServletContextAware {
 
 				session.setAttribute(UserController.USER_KEY, user);
 				if (user.getRole() == UserRole.MANAGER) {
-					response.sendRedirect(bURL + "users");
+					response.sendRedirect(bURL + "travels");
 					return null;
 				} else if (user.getRole() == UserRole.BUYER) {
-					response.sendRedirect(bURL + "users/details?id=" + user.getId());
+//					response.sendRedirect(bURL + "users/details?id=" + user.getId());
+					response.sendRedirect(bURL);
 				}
 				return null;
 			}
