@@ -128,6 +128,7 @@ public class UserController extends Exception implements ServletContextAware {
 		ModelAndView result = new ModelAndView("user");
 		result.addObject("user", user);
 		result.addObject("reservations",reservations);
+		result.addObject("loggedUser", loggedUser);
 		
 		if (loggedUser.getRole() == UserRole.BUYER && isCurrentUser) {
 			UserRole buyer = UserRole.BUYER;
