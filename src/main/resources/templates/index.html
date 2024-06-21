@@ -18,13 +18,16 @@
         var category = formData.get('category').toLowerCase();
         var minPrice = formData.get('minPrice');
         var maxPrice = formData.get('maxPrice');
+        var minNights = formData.get('minNights');
+        var maxNights = formData.get('maxNights');
         var cards = document.querySelectorAll('.col-md-4');
-        
+
         cards.forEach(function(card) {
             var cardTransportation = card.querySelector('span:nth-child(1)').innerText.toLowerCase();
             var cardDestination = card.querySelector('h5.card-title').innerText.toLowerCase();
             var cardCategory = card.querySelector('.category').innerText.toLowerCase(); 
             var cardPrice = parseFloat(card.querySelector('.arrangment-price').innerText);
+            var cardNights = parseInt(card.querySelector('.num-nights').innerText);
 
             var showCard = true;
             if (transportation && cardTransportation.indexOf(transportation) === -1) {
@@ -41,6 +44,11 @@
             if ((minPriceValue !== null && cardPrice < minPriceValue) || (maxPriceValue !== null && cardPrice > maxPriceValue)) {
                 showCard = false;
             }
+            var minNightsValue = minNights ? parseInt(minNights) : null;
+            var maxNightsValue = maxNights ? parseInt(maxNights) : null;
+            if ((minNightsValue !== null && cardNights < minNightsValue) || (maxNightsValue !== null && cardNights > maxNightsValue)) {
+                showCard = false;
+            }
             if (showCard) {
                 card.style.display = 'block';
             } else {
@@ -49,6 +57,7 @@
         });
         filterAndSort(); 
     }
+
 
     function filterAndSort() {
         var selectedOption = document.getElementById('sortSelect').value;
