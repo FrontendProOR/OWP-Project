@@ -27,6 +27,38 @@
             overflow-y: auto;
         }
     </style>
+    <script>
+        function validateForm(form) {
+            var discountPercentage = form.discountPercentage.value.trim();
+            var discountEndDate = form.discountEndDate.value.trim();
+            var departureDateTime = form.departureDateTime.value.trim();
+            var returnDateTime = form.returnDateTime.value.trim();
+
+            var dateTimeFormat = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4} (0[1-9]|1[0-2]):[0-5][0-9] [APap][Mm]$/;
+
+            if (discountPercentage !== '' && discountEndDate === '') {
+                alert('You must enter a Discount End Date if you enter a Discount Percentage.');
+                return false;
+            }
+
+            if (!dateTimeFormat.test(departureDateTime)) {
+                alert('Departure Date and Time must be in the format MM/dd/yyyy hh:mm a.');
+                return false;
+            }
+
+            if (!dateTimeFormat.test(returnDateTime)) {
+                alert('Return Date and Time must be in the format MM/dd/yyyy hh:mm a.');
+                return false;
+            }
+
+            if (discountEndDate !== '' && !dateTimeFormat.test(discountEndDate)) {
+                alert('Discount End Date must be in the format MM/dd/yyyy hh:mm a.');
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
 <div th:insert="~{fragments/navbar.html :: navbar}"></div>
@@ -54,13 +86,15 @@
                 <th>Arrangement Price</th>
                 <th>Total Seats</th>
                 <th>Available Seats</th>
+                <th>Discount End Date</th>
+                <th>Discount Percentage</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="travel, iterStat : ${travels}">
-                <form th:action="@{'/travels/edit?id='+${travel.id}}" method="post">
+                <form th:action="@{'/travels/edit?id='+${travel.id}}" method="post" onsubmit="return validateForm(this)">
                     <td><input type="text" name="id" th:value="${travel.id}" readonly></td>
                     <td>
                         <select class="form-control" id="transportationType" name="transportationType">
@@ -82,7 +116,7 @@
                             <option value="SKIING" th:selected="${travel.travelCategory.categoryName.name() == 'SKIING'}">Skiing</option>
                             <option value="NEW_YEAR" th:selected="${travel.travelCategory.categoryName.name() == 'NEW_YEAR'}">New Year</option>
                             <option value="LAST_MINUTE" th:selected="${travel.travelCategory.categoryName.name() == 'LAST_MINUTE'}">Last Minute</option>
-                            <option value="SUMMER_VACATION" th:selected="${travel.travelCategory.categoryName.name() == 'SUMMER_VACATION'}">Summer</option>
+                            <option value="SUMMER_VACATION" th:selected="${travel.travelCategory.categoryName.name() == 'SUMMER_VACATION'}">Summer Vacation</option>
                         </select>
                     </td>
                     <td><input type="text" name="departureDateTime" th:value="${travel.formattedDepartureDateTime}"></td>
@@ -91,6 +125,8 @@
                     <td><input type="text" name="arrangmentPrice" th:value="${travel.arrangmentPrice}"></td>
                     <td><input type="text" name="totalSeats" th:value="${travel.totalSeats}"></td>
                     <td><input type="text" name="availableSeats" th:value="${travel.availableSeats}"></td>
+                    <td><input type="text" name="discountEndDate" th:value="${travel.discountEndDate != null ? travel.discountEndDate.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a')) : ''}"></td>
+                    <td><input type="text" name="discountPercentage" th:value="${travel.discountPercentage}"></td>
                     <td><button type="submit" class="btn btn-primary">Edit</button></td>
                 </form>
                 <form th:action="@{'/travels/delete?id='+${travel.id}}" method="post" th:if="${loggedUser != null && loggedUser.role.name() == 'MANAGER'}">

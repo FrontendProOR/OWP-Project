@@ -3,39 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Make Reservation</title>
-    <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div th:insert="~{fragments/navbar.html :: navbar}"></div>
-    <div class="container">
-        <h2>Make Reservation</h2>
-        <form method="post" th:action="@{/reservations/make}">
-            <input type="hidden" name="travelId" th:value="${travel.id}" />
-            <div class="form-group">
-                <label>Destination</label>
-                <input type="text" class="form-control" th:value="${travel.destinationName}" readonly/>
-            </div>
-            <div class="form-group">
-                <label>Departure Date</label>
-                <input type="text" class="form-control" th:value="${travel.departureDateTime}" readonly/>
-            </div>
-            <div class="form-group">
-                <label>Return Date</label>
-                <input type="text" class="form-control" th:value="${travel.returnDateTime}" readonly/>
-            </div>
-            <div class="form-group">
-                <label>Available Seats</label>
-                <input type="text" class="form-control" th:value="${travel.availableSeats}" readonly/>
-            </div>
-            <div class="form-group">
-                <label>Number of Seats</label>
-                <input type="number" class="form-control" name="reservedSeats" min="1" max="[[${travel.availableSeats}]]" required/>
-            </div>
-            <button type="submit" class="btn btn-primary">Make Reservation</button>
-        </form>
+<div th:insert="~{fragments/navbar.html :: navbar}"></div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <img th:src="@{'/images/' + ${travel.locationImage}}" class="img-fluid" alt="Travel Destination">
+        </div>
+        <div class="col-md-4">
+            <h2 th:text="${travel.destinationName}">Destination Name</h2>
+            <p>Transportation: <span th:text="${travel.transportationType}">Transportation Type</span></p>
+            <p>Accommodation: <span th:text="${travel.accommodationType}">Accommodation Type</span></p>
+            <p>Category: <span th:text="${travel.getTravelCategory().getCategoryName().toString()}">Travel Category</span></p>
+            <p>Departure: <span th:text="${travel.departureDateTime}">Departure Date</span></p>
+            <p>Return: <span th:text="${travel.returnDateTime}">Return Date</span></p>
+            <p>Number of Nights: <span th:text="${travel.numberOfNights}">Number of Nights</span></p>
+            <p>Price: <span th:text="${travel.arrangmentPrice}">Price</span></p>
+            <p>Total Seats: <span th:text="${travel.totalSeats}">Total Seats</span></p>
+            <p>Available Seats: <span th:text="${travel.availableSeats}">Available Seats</span></p>
+            <p>Discount Percentage: <span th:text="${travel.discountPercentage}">N/A</span></p>
+            <p>Discount End Date: <span th:text="${travel.discountEndDate}">N/A</span></p>
+
+            <form th:action="@{/reservations/make}" method="post">
+                <input type="hidden" name="travelId" th:value="${travel.id}">
+                <div class="form-group">
+                    <label for="reservedSeats">Number of Seats to Reserve:</label>
+                    <input type="number" class="form-control" id="reservedSeats" name="reservedSeats" min="1" max="${travel.availableSeats}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Make Reservation</button>
+            </form>
+        </div>
     </div>
+</div>
 </body>
 </html>

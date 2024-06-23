@@ -25,6 +25,8 @@
                 <p>Price: <span th:text="${travel.arrangmentPrice}">Price</span></p>
                 <p>Total Seats: <span th:text="${travel.totalSeats}">Total Seats</span></p>
                 <p>Available Seats: <span th:text="${travel.availableSeats}">Available Seats</span></p>
+                <p>Discount Percentage: <span th:text="${travel.discountPercentage}">N/A</span></p>
+                <p>Discount End Date: <span th:text="${travel.discountEndDate}">N/A</span></p>
                 
                 <!-- Conditional "Make Reservation" button -->
                 <a th:if="${loggedUser != null and loggedUser.getRole().toString() == 'BUYER'}" th:href="@{/reservations/make(travelId=${travel.id})}" class="btn btn-primary">Make Reservation</a>

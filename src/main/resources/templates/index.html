@@ -92,7 +92,6 @@
     </script>
 </head>
 <body>
-    <body>
     <div th:insert="~{fragments/navbar.html :: navbar}"></div>
     <div th:insert="~{fragments/searchbar.html :: searchbar}"></div>
     <hr>
@@ -110,12 +109,17 @@
                             Departure: <span th:text="${travel.departureDateTime}"></span><br>
                             Return: <span th:text="${travel.returnDateTime}"></span><br>
                             Number of Nights: <span class="num-nights" th:text="${travel.numberOfNights}"></span><br>
-                            Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br> <!-- Add class to target arrangement price -->
+                            Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
                             Total Seats: <span th:text="${travel.totalSeats}"></span><br>
-                            Available Seats: <span th:text="${travel.availableSeats}"></span>
+                            Available Seats: <span th:text="${travel.availableSeats}"></span><br>
+                            Discount Percentage: <span th:text="${travel.discountPercentage}">N/A</span><br>
+                            Discount End Date: <span th:text="${travel.discountEndDate}">N/A</span><br>
                         </p>
                         <a th:href="@{/travels/details(travelId=${travel.id})}" class="btn btn-secondary mb-2">View Details</a> 
                         <a th:href="@{/reservations/make(travelId=${travel.id})}" class="btn btn-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'BUYER'}">Make Reservation</a> 
+                    	<!--<a th:href="@{/travels}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>-->
+                    	<a th:href="@{/travels/editTravel(id=${travel.id})}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>
+                    	
                     </div>
                 </div>
             </div>

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -80,7 +81,11 @@ public class TravelController implements ServletContextAware {
     public ModelAndView indexPage(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
-        List<Travel> travels = travelService.findAll();
+//        List<Travel> travels = travelService.findAll();
+        List<Travel> travels = travelService.findAll().stream()
+                .filter(travel -> ChronoUnit.HOURS.between(LocalDateTime.now(), travel.getDepartureDateTime()) > 48)
+                .collect(Collectors.toList());
+        
         ModelAndView result = new ModelAndView("index");
         result.addObject("travelOptions", travels);
         result.addObject("travelCategory", TravelCategoryEnum.values());
@@ -122,11 +127,13 @@ public class TravelController implements ServletContextAware {
             @RequestParam("destinationName") String destinationName,
             @RequestParam("locationImage") MultipartFile locationImage,
             @RequestParam("travelCategory") String travelCategoryName,
-            @RequestParam("departureDateTime") String departureDateTime,
-            @RequestParam("returnDateTime") String returnDateTime,
-            @RequestParam("arrangmentPrice") String arrangmentPrice,
-            @RequestParam("totalSeats") String totalSeats,
-            @RequestParam("availableSeats") String availableSeats) {
+            @RequestParam("departureDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departureDateTime,
+            @RequestParam("returnDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime returnDateTime,
+            @RequestParam("arrangmentPrice") double arrangmentPrice,
+            @RequestParam("totalSeats") int totalSeats,
+            @RequestParam("availableSeats") int availableSeats,
+            @RequestParam(value = "discountPercentage", required = false) Double discountPercentage,
+            @RequestParam(value = "discountEndDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime discountEndDate) {
 
         // Čuvanje slike
         String imageFileName = locationImage.getOriginalFilename();
@@ -146,15 +153,107 @@ public class TravelController implements ServletContextAware {
         }
 
         // Kreiranje Travel objekta i čuvanje u bazi
-        Travel travel = new Travel(transportationType, accommodationType, destinationName, imageFileName,
-                travelCategoryService.findOne(travelCategoryId), LocalDateTime.parse(departureDateTime),
-                LocalDateTime.parse(returnDateTime), Double.parseDouble(arrangmentPrice),
-                Integer.parseInt(totalSeats), Integer.parseInt(availableSeats));
+        Travel travel = new Travel(null, transportationType, accommodationType, destinationName, imageFileName,
+                travelCategoryService.findOne(travelCategoryId), departureDateTime, returnDateTime, discountEndDate,
+                (int) ChronoUnit.DAYS.between(departureDateTime, returnDateTime), arrangmentPrice, totalSeats,
+                availableSeats, discountPercentage != null ? discountPercentage : 0.0, null, null, null);
 
         travelService.save(travel);
 
         return "redirect:/travels";
     }
+
+    @GetMapping(value = "/travels/editTravel")
+    public ModelAndView showEditTravelPage(@RequestParam Long id, HttpSession session, HttpServletResponse response) throws IOException {
+        User loggedUser = (User) session.getAttribute(USER_KEY);
+        if (loggedUser == null || loggedUser.getRole() != UserRole.MANAGER) {
+            response.sendRedirect(bURL);
+            return null;
+        }
+
+        Travel travel = travelService.findOne(id);
+        if (travel == null) {
+            response.sendRedirect(bURL + "error");
+            return null;
+        }
+
+        ModelAndView modelAndView = new ModelAndView("editTravel");
+        modelAndView.addObject("travel", travel);
+        modelAndView.addObject("categories", TravelCategoryEnum.values());
+
+        return modelAndView;
+    }
+
+    
+//    @PostMapping(value = "/travels/edit")
+//    public void edit(
+//            @RequestParam Long id,
+//            @RequestParam String transportationType,
+//            @RequestParam String accommodationType,
+//            @RequestParam String destinationName,
+//            @RequestParam String locationImage,
+//            @RequestParam String travelCategory,
+//            @RequestParam String departureDateTime,
+//            @RequestParam String returnDateTime,
+//            @RequestParam double arrangmentPrice,
+//            @RequestParam int totalSeats,
+//            @RequestParam int availableSeats,
+//            @RequestParam(value = "discountPercentage", required = false) String discountPercentageStr,
+//            @RequestParam(value = "discountEndDate", required = false) String discountEndDateStr,
+//            HttpServletResponse response,
+//            HttpSession session) throws IOException {
+//
+//        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+//
+//        if (loggedUser == null || loggedUser.getRole() != UserRole.MANAGER) {
+//            response.sendRedirect(bURL);
+//            return;
+//        }
+//
+//        Travel travel = travelService.findOne(id);
+//
+//        if (travel == null) {
+//            response.sendRedirect(bURL);
+//            return;
+//        }
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+//
+//        travel.setTransportationType(TransportationType.valueOf(transportationType.toUpperCase()));
+//        travel.setAccommodationType(TypeOfAccommodation.valueOf(accommodationType.toUpperCase()));
+//        travel.setDestinationName(destinationName);
+//        travel.setLocationImage(locationImage);
+//
+//        TravelCategoryEnum categoryEnum = TravelCategoryEnum.valueOf(travelCategory.toUpperCase());
+//        TravelCategory travelCategoryMain = travelCategoryService.findByCategoryName(categoryEnum);
+//
+//        travel.setTravelCategory(travelCategoryMain);
+//        travel.setDepartureDateTime(LocalDateTime.parse(departureDateTime, formatter));
+//        travel.setReturnDateTime(LocalDateTime.parse(returnDateTime, formatter));
+//        int numberOfNights = (int) ChronoUnit.DAYS.between(travel.getDepartureDateTime(), travel.getReturnDateTime());
+//        travel.setNumberOfNights(numberOfNights);
+//        travel.setArrangmentPrice(arrangmentPrice);
+//        travel.setTotalSeats(totalSeats);
+//        travel.setAvailableSeats(availableSeats);
+//
+//        // Provera i postavljanje vrednosti za discountPercentage
+//        if (discountPercentageStr != null && !discountPercentageStr.isEmpty()) {
+//            travel.setDiscountPercentage(Double.parseDouble(discountPercentageStr));
+//        } else {
+//            travel.setDiscountPercentage(0.0);
+//        }
+//
+//        // Provera i postavljanje vrednosti za discountEndDate
+//        if (discountEndDateStr != null && !discountEndDateStr.isEmpty()) {
+//            travel.setDiscountEndDate(LocalDateTime.parse(discountEndDateStr, formatter));
+//        } else {
+//            travel.setDiscountEndDate(null);
+//        }
+//
+//        travelService.update(travel);
+//
+//        response.sendRedirect(bURL + "travels");
+//    }
 
     @PostMapping(value = "/travels/edit")
     public void edit(
@@ -162,13 +261,15 @@ public class TravelController implements ServletContextAware {
             @RequestParam String transportationType,
             @RequestParam String accommodationType,
             @RequestParam String destinationName,
-            @RequestParam String locationImage,
+            @RequestParam(required = false) MultipartFile locationImage,
             @RequestParam String travelCategory,
             @RequestParam String departureDateTime,
             @RequestParam String returnDateTime,
             @RequestParam double arrangmentPrice,
             @RequestParam int totalSeats,
             @RequestParam int availableSeats,
+            @RequestParam(value = "discountPercentage", required = false) String discountPercentageStr,
+            @RequestParam(value = "discountEndDate", required = false) String discountEndDateStr,
             HttpServletResponse response,
             HttpSession session) throws IOException {
 
@@ -191,7 +292,14 @@ public class TravelController implements ServletContextAware {
         travel.setTransportationType(TransportationType.valueOf(transportationType.toUpperCase()));
         travel.setAccommodationType(TypeOfAccommodation.valueOf(accommodationType.toUpperCase()));
         travel.setDestinationName(destinationName);
-        travel.setLocationImage(locationImage);
+
+        if (locationImage != null && !locationImage.isEmpty()) {
+            String imageFileName = locationImage.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIRECTORY + imageFileName);
+            Files.createDirectories(path.getParent());
+            Files.write(path, locationImage.getBytes());
+            travel.setLocationImage(imageFileName);
+        }
 
         TravelCategoryEnum categoryEnum = TravelCategoryEnum.valueOf(travelCategory.toUpperCase());
         TravelCategory travelCategoryMain = travelCategoryService.findByCategoryName(categoryEnum);
@@ -204,6 +312,20 @@ public class TravelController implements ServletContextAware {
         travel.setArrangmentPrice(arrangmentPrice);
         travel.setTotalSeats(totalSeats);
         travel.setAvailableSeats(availableSeats);
+
+        // Provera i postavljanje vrednosti za discountPercentage
+        if (discountPercentageStr != null && !discountPercentageStr.isEmpty()) {
+            travel.setDiscountPercentage(Double.parseDouble(discountPercentageStr));
+        } else {
+            travel.setDiscountPercentage(0.0);
+        }
+
+        // Provera i postavljanje vrednosti za discountEndDate
+        if (discountEndDateStr != null && !discountEndDateStr.isEmpty()) {
+            travel.setDiscountEndDate(LocalDateTime.parse(discountEndDateStr, formatter));
+        } else {
+            travel.setDiscountEndDate(null);
+        }
 
         travelService.update(travel);
 

@@ -15,14 +15,111 @@ public class Travel {
     private TravelCategory travelCategory;
     private LocalDateTime departureDateTime;
     private LocalDateTime returnDateTime;
+    private LocalDateTime discountEndDate;
     private int numberOfNights;
-    private double arrangmentPrice;
     private int totalSeats;
     private int availableSeats;
-    private String formattedDepartureDateTime; // Dodato polje za formatirani datum
-    private String formattedReturnDateTime;    // Dodato polje za formatirani datum
-
+    private double arrangmentPrice;
+    private double discountPercentage;
+    private String formattedDepartureDateTime;
+    private String formattedReturnDateTime;
+    private String formattedDiscountEndDateTime;
+    
+    public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType,
+            String destinationName, String locationImage, TravelCategory travelCategory,
+            LocalDateTime departureDateTime, LocalDateTime returnDateTime, LocalDateTime discountEndDate,
+            int numberOfNights, double arrangementPrice, int totalSeats, int availableSeats,
+            double discountPercentage, String formattedDepartureDateTime, String formattedReturnDateTime,
+            String formattedDiscountEndDateTime) {
+  this.id = id;
+  this.transportationType = transportationType;
+  this.accommodationType = accommodationType;
+  this.destinationName = destinationName;
+  this.locationImage = locationImage;
+  this.travelCategory = travelCategory;
+  this.departureDateTime = departureDateTime;
+  this.returnDateTime = returnDateTime;
+  this.discountEndDate = discountEndDate;
+  this.numberOfNights = numberOfNights;
+  this.arrangmentPrice = arrangementPrice;
+  this.totalSeats = totalSeats;
+  this.availableSeats = availableSeats;
+  this.discountPercentage = discountPercentage;
+  this.formattedDepartureDateTime = formattedDepartureDateTime;
+  this.formattedReturnDateTime = formattedReturnDateTime;
+  this.formattedDiscountEndDateTime = formattedDiscountEndDateTime;
+}
+    public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType, 
+            String destinationName, String locationImage, TravelCategory travelCategory, 
+            LocalDateTime departureDateTime, LocalDateTime returnDateTime, LocalDateTime discountEndDate, 
+            int numberOfNights, double arrangmentPrice, int totalSeats, int availableSeats, 
+            double discountPercentage) {
+  this.id = id;
+  this.transportationType = transportationType;
+  this.accommodationType = accommodationType;
+  this.destinationName = destinationName;
+  this.locationImage = locationImage;
+  this.travelCategory = travelCategory;
+  this.departureDateTime = departureDateTime;
+  this.returnDateTime = returnDateTime;
+  this.discountEndDate = discountEndDate;
+  this.numberOfNights = numberOfNights;
+  this.arrangmentPrice = arrangmentPrice;
+  this.totalSeats = totalSeats;
+  this.availableSeats = availableSeats;
+  this.discountPercentage = discountPercentage;
+}
+    
     public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
+			String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime,
+			LocalDateTime returnDateTime, LocalDateTime discountEndDate, int numberOfNights, int totalSeats,
+			int availableSeats, double arrangmentPrice, double discountPercentage, String formattedDepartureDateTime,
+			String formattedReturnDateTime, String formattedDiscountEndDateTime) {
+		super();
+		this.transportationType = transportationType;
+		this.accommodationType = accommodationType;
+		this.destinationName = destinationName;
+		this.locationImage = locationImage;
+		this.travelCategory = travelCategory;
+		this.departureDateTime = departureDateTime;
+		this.returnDateTime = returnDateTime;
+		this.discountEndDate = discountEndDate;
+		this.numberOfNights = numberOfNights;
+		this.totalSeats = totalSeats;
+		this.availableSeats = availableSeats;
+		this.arrangmentPrice = arrangmentPrice;
+		this.discountPercentage = discountPercentage;
+		this.formattedDepartureDateTime = formattedDepartureDateTime;
+		this.formattedReturnDateTime = formattedReturnDateTime;
+		this.formattedDiscountEndDateTime = formattedDiscountEndDateTime;
+	}
+
+	public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType,
+			String destinationName, String locationImage, TravelCategory travelCategory,
+			LocalDateTime departureDateTime, LocalDateTime returnDateTime, LocalDateTime discountEndDate,
+			int numberOfNights, int totalSeats, int availableSeats, double arrangmentPrice, double discountPercentage,
+			String formattedDepartureDateTime, String formattedReturnDateTime, String formattedDiscountEndDateTime) {
+		super();
+		this.id = id;
+		this.transportationType = transportationType;
+		this.accommodationType = accommodationType;
+		this.destinationName = destinationName;
+		this.locationImage = locationImage;
+		this.travelCategory = travelCategory;
+		this.departureDateTime = departureDateTime;
+		this.returnDateTime = returnDateTime;
+		this.discountEndDate = discountEndDate;
+		this.numberOfNights = numberOfNights;
+		this.totalSeats = totalSeats;
+		this.availableSeats = availableSeats;
+		this.arrangmentPrice = arrangmentPrice;
+		this.discountPercentage = discountPercentage;
+		this.formattedDepartureDateTime = formattedDepartureDateTime;
+		this.formattedReturnDateTime = formattedReturnDateTime;
+		this.formattedDiscountEndDateTime = formattedDiscountEndDateTime;
+	}
+
+	public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
                   String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime, LocalDateTime returnDateTime,
                   double arrangmentPrice, int totalSeats, int availableSeats) {
         super();
@@ -78,7 +175,6 @@ public class Travel {
 
     }
 
-    // Getteri i setteri za novo dodata polja
     public String getFormattedDepartureDateTime() {
         return formattedDepartureDateTime;
     }
@@ -168,6 +264,30 @@ public class Travel {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public LocalDateTime getDiscountEndDate() {
+		return discountEndDate;
+	}
+
+	public void setDiscountEndDate(LocalDateTime discountEndDate) {
+		this.discountEndDate = discountEndDate;
+	}
+
+	public double getDiscountPercentage() {
+		return discountPercentage;
+	}
+
+	public void setDiscountPercentage(double discountPercentage) {
+		this.discountPercentage = discountPercentage;
+	}
+
+	public String getFormattedDiscountEndDateTime() {
+		return formattedDiscountEndDateTime;
+	}
+
+	public void setFormattedDiscountEndDateTime(String formattedDiscountEndDateTime) {
+		this.formattedDiscountEndDateTime = formattedDiscountEndDateTime;
 	}
 	
 	

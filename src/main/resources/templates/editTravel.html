@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Travel</title>
+    <base th:href="@{/}">
+    <link rel="stylesheet" type="text/css" href="css/StiloviForma.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        function validateForm(form) {
+            var discountPercentage = form.discountPercentage.value.trim();
+            var discountEndDate = form.discountEndDate.value.trim();
+            if ((discountPercentage !== '' && discountEndDate === '') || (discountPercentage === '' && discountEndDate !== '')) {
+                alert('You must enter both Discount Percentage and Discount End Date if you are updating one of them.');
+                return false;
+            }
+            if (discountPercentage !== '' && parseFloat(discountPercentage) <= 1) {
+                alert('Discount Percentage must be greater than 1.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <div th:insert="~{fragments/navbar.html :: navbar}"></div>
+    <div class="container">
+        <form th:action="@{/travels/edit}" method="post" enctype="multipart/form-data" onsubmit="return validateForm(this)">
+            <input type="hidden" name="id" th:value="${travel.id}"/>
+            <div class="form-group">
+                <label for="transportationType">Transportation Type:</label>
+                <select class="form-control" id="transportationType" name="transportationType">
+                    <option value="AIRPLANE" th:selected="${travel.transportationType.name() == 'AIRPLANE'}">Airplane</option>
+                    <option value="BUS" th:selected="${travel.transportationType.name() == 'BUS'}">Bus</option>
+                    <option value="PERSONAL" th:selected="${travel.transportationType.name() == 'PERSONAL'}">Personal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="accommodationType">Accommodation Type:</label>
+                <select class="form-control" id="accommodationType" name="accommodationType">
+                    <option value="APARTMENT" th:selected="${travel.accommodationType.name() == 'APARTMENT'}">Apartment</option>
+                    <option value="HOTEL" th:selected="${travel.accommodationType.name() == 'HOTEL'}">Hotel</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="destinationName">Destination Name:</label>
+                <input type="text" class="form-control" id="destinationName" name="destinationName" th:value="${travel.destinationName}">
+            </div>
+            <div class="form-group">
+                <label for="locationImage">Location Image (JPG or PNG only):</label>
+                <input type="file" class="form-control-file" id="locationImage" name="locationImage" accept=".jpg, .png">
+                <div th:if="${travel.locationImage}">
+                    <img th:src="@{'/images/' + ${travel.locationImage}}" alt="Current Image" width="200" height="150"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="travelCategory">Travel Category:</label>
+                <select class="form-control" id="travelCategory" name="travelCategory">
+                    <option value="SKIING" th:selected="${travel.travelCategory.categoryName.name() == 'SKIING'}">Skiing</option>
+                    <option value="NEW_YEAR" th:selected="${travel.travelCategory.categoryName.name() == 'NEW_YEAR'}">New Year</option>
+                    <option value="LAST_MINUTE" th:selected="${travel.travelCategory.categoryName.name() == 'LAST_MINUTE'}">Last Minute</option>
+                    <option value="SUMMER_VACATION" th:selected="${travel.travelCategory.categoryName.name() == 'SUMMER_VACATION'}">Summer Vacation</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="departureDateTime">Departure Date and Time:</label>
+                <input type="text" class="form-control" id="departureDateTime" name="departureDateTime" th:value="${travel.departureDateTime.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a'))}">
+            </div>
+            <div class="form-group">
+                <label for="returnDateTime">Return Date and Time:</label>
+                <input type="text" class="form-control" id="returnDateTime" name="returnDateTime" th:value="${travel.returnDateTime.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a'))}">
+            </div>
+            <div class="form-group">
+                <label for="arrangmentPrice">Arrangment Price:</label>
+                <input type="text" class="form-control" id="arrangmentPrice" name="arrangmentPrice" th:value="${travel.arrangmentPrice}">
+            </div>
+            <div class="form-group">
+                <label for="totalSeats">Total Seats:</label>
+                <input type="text" class="form-control" id="totalSeats" name="totalSeats" th:value="${travel.totalSeats}">
+            </div>
+            <div class="form-group">
+                <label for="availableSeats">Available Seats:</label>
+                <input type="text" class="form-control" id="availableSeats" name="availableSeats" th:value="${travel.availableSeats}">
+            </div>
+            <div class="form-group">
+                <label for="discountPercentage">Discount Percentage:</label>
+                <input type="text" class="form-control" id="discountPercentage" name="discountPercentage" th:value="${travel.discountPercentage}">
+            </div>
+            <div class="form-group">
+                <label for="discountEndDate">Discount End Date:</label>
+                <input type="text" class="form-control" id="discountEndDate" name="discountEndDate" th:value="${travel.discountEndDate != null ? travel.discountEndDate.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a')) : ''}">
+            </div>
+            <button type="submit" class="btn btn-primary">Edit</button>
+        </form>
+    </div>
+</body>
+</html>
