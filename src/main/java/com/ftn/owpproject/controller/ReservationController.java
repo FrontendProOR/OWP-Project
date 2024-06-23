@@ -1,5 +1,6 @@
 package com.ftn.owpproject.controller;
 
+import com.ftn.owpproject.dao.ReservationDAO;
 import com.ftn.owpproject.model.Reservation;
 import com.ftn.owpproject.model.Travel;
 import com.ftn.owpproject.model.User;
@@ -21,6 +22,9 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
+	@Autowired
+    private ReservationDAO reservationDAO;
+	
     @Autowired
     private ReservationService reservationService;
 
@@ -36,9 +40,9 @@ public class ReservationController {
 
         List<Reservation> reservations = reservationService.findByUserId(loggedUser.getId());
         model.addAttribute("reservations", reservations);
-        model.addAttribute("user", loggedUser); // Ensure user is added to the model
+        model.addAttribute("user", loggedUser); 
 
-        return "user"; // Make sure this returns to the user.html template
+        return "user"; 
     }
   
 
@@ -50,7 +54,7 @@ public class ReservationController {
         }
 
         if (loggedUser.getRole().toString() == "MANAGER") {
-            return "redirect:/error"; // Or show an appropriate message
+            return "redirect:/error";
         }
 
         Travel travel = travelService.findOne(travelId);
@@ -66,12 +70,12 @@ public class ReservationController {
         }
 
         if (loggedUser.getRole().toString() == "MANAGER") {
-            return "redirect:/error"; // Or show an appropriate message
+            return "redirect:/error";
         }
 
         Travel travel = travelService.findOne(travelId);
         if (travel == null || travel.getAvailableSeats() < reservedSeats) {
-            return "redirect:/error"; // Or some error handling logic
+            return "redirect:/error"; 
         }
 
         int newAvailableSeats = travel.getAvailableSeats() - reservedSeats;
@@ -82,7 +86,28 @@ public class ReservationController {
 
         return "redirect:/";
     }
+    
+    @PostMapping("/deleteExpired")
+    public String deleteExpiredReservation(@RequestParam Long reservationId, HttpSession session, Model model) {
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null) {
+            return "redirect:/users/login";
+        }
 
+        try {
+            Reservation reservation = reservationService.findOne(reservationId);
+            if (reservation == null) {
+                throw new Exception("Reservation not found");
+            }
+            reservationDAO.delete(reservationId);
+            model.addAttribute("message", "Reservation deleted successfully");
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/reservations";
+    }
+    
     @PostMapping("/cancel")
     public String cancelReservation(@RequestParam Long reservationId, HttpSession session, Model model) {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
@@ -109,6 +134,48 @@ public class ReservationController {
             model.addAttribute("error", e.getMessage());
         }
 
+        return "redirect:/reservations";
+    }
+    
+    @PostMapping("/cancelAll")
+    public String cancelAllReservations(@RequestParam Long userId, HttpSession session, Model model) throws Exception {
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null || !loggedUser.getId().equals(userId)) {
+            return "redirect:/users/login";
+        }
+
+        List<Reservation> reservations = reservationService.findByUserId(userId);
+        for (Reservation reservation : reservations) {
+            Travel travel = reservation.getTravel();
+            
+            if (travel.getDepartureDateTime().isBefore(LocalDateTime.now().plusHours(48))) {
+                throw new Exception("Cannot cancel reservation less than 48 hours before travel starts");
+            }
+            
+            reservationService.cancelReservation(reservation.getId());
+            int newAvailableSeats = travel.getAvailableSeats() + reservation.getReservedSeats();
+            travelService.updateAvailableSeats(travel.getId(), newAvailableSeats);
+        }
+
+        model.addAttribute("message", "All reservations cancelled successfully.");
+        return "redirect:/reservations";
+    }
+
+    @PostMapping("/deleteAllExpired")
+    public String deleteAllExpiredReservations(@RequestParam Long userId, HttpSession session, Model model) {
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        if (loggedUser == null || !loggedUser.getId().equals(userId)) {
+            return "redirect:/users/login";
+        }
+
+        List<Reservation> reservations = reservationService.findByUserId(userId);
+        for (Reservation reservation : reservations) {
+            if (reservation.getTravel().getDepartureDateTime().isBefore(LocalDateTime.now().plusHours(48))) {
+                reservationDAO.delete(reservation.getId());
+            }
+        }
+
+        model.addAttribute("message", "All expired reservations deleted successfully.");
         return "redirect:/reservations";
     }
 }

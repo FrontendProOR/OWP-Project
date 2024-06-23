@@ -185,7 +185,7 @@ public class UserController extends Exception implements ServletContextAware {
 
 		userService.update(user);
 
-		response.sendRedirect(bURL + "users");
+		response.sendRedirect(bURL + "users/details?id="+ loggedUser.getId());
 	}
 
 	@GetMapping(value = "login")
@@ -214,7 +214,6 @@ public class UserController extends Exception implements ServletContextAware {
 					response.sendRedirect(bURL + "travels");
 					return null;
 				} else if (user.getRole() == UserRole.BUYER) {
-//					response.sendRedirect(bURL + "users/details?id=" + user.getId());
 					response.sendRedirect(bURL);
 				}
 				return null;

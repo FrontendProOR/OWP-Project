@@ -56,8 +56,53 @@
             $(".closeModalBtn").click(function() {
                 $("#errorModal").modal("hide");
             });
+
+            if ($('#reservationTable tbody tr').length > 0) {
+                $('#deleteAccountBtn').click(function(e) {
+                    e.preventDefault();
+                    $('#reservationModal').modal('show');
+                });
+            } else {
+                $('#deleteAccountBtn').click(function(e) {
+                    e.preventDefault();
+                    $('#deleteAccountForm').submit();
+                });
+            }
+
+            $('#cancelAllReservationsBtn').click(function() {
+                if (confirm("Are you sure you want to cancel all reservations?")) {
+                    $.post("/owpproject/reservations/cancelAll", { userId: $('#userId').val() })
+                        .done(function(response) {
+                            alert(response.message || "All reservations cancelled successfully.");
+                            location.reload();
+                        })
+                        .fail(function(jqXHR) {
+                            var response = jqXHR.responseJSON;
+                            alert(response.error || "Failed to cancel all reservations.");
+                        });
+                }
+            });
+
+            $('#deleteAllReservationsBtn').click(function() {
+                if (confirm("Are you sure you want to delete all expired reservations?")) {
+                    $.post("/owpproject/reservations/deleteAllExpired", { userId: $('#userId').val() })
+                        .done(function(response) {
+                            alert(response.message || "All expired reservations deleted successfully.");
+                            location.reload();
+                        })
+                        .fail(function(jqXHR) {
+                            var response = jqXHR.responseJSON;
+                            alert(response.error || "Failed to delete all expired reservations.");
+                        });
+                }
+            });
         });
 
+        function showErrorModal(message) {
+            $('#errorModalMessage').text(message);
+            $('#errorModal').modal('show');
+        }
+        
         function validateForm() {
             var firstName = document.forms["profileForm"]["firstName"].value.trim();
             var lastName = document.forms["profileForm"]["lastName"].value.trim();
@@ -138,27 +183,33 @@
 
             return true;
         }
-        
 
         function cancelReservation(button) {
             var reservationId = button.getAttribute("data-id");
             if (confirm("Are you sure you want to cancel this reservation?")) {
                 $.post("/owpproject/reservations/cancel", { reservationId: reservationId })
                     .done(function(response) {
-                        if (response.message) {
-                            alert(response.message);
-                        } else {
-                            alert("Reservation cancelled successfully.");
-                        }
+                        alert(response.message || "Reservation cancelled successfully.");
                         location.reload();
                     })
                     .fail(function(jqXHR) {
                         var response = jqXHR.responseJSON;
-                        if (response && response.error) {
-                            alert(response.error);
-                        } else {
-                            alert("Failed to cancel the reservation.");
-                        }
+                        alert(response.error || "Failed to cancel the reservation.");
+                    });
+            }
+        }
+
+        function deleteExpiredReservation(button) {
+            var reservationId = button.getAttribute("data-id");
+            if (confirm("Are you sure you want to delete expired reservation?")) {
+                $.post("/owpproject/reservations/deleteExpired", { reservationId: reservationId })
+                    .done(function(response) {
+                        alert(response.message || "Reservation deleted successfully.");
+                        location.reload();
+                    })
+                    .fail(function(jqXHR) {
+                        var response = jqXHR.responseJSON;
+                        alert(response.error || "Failed to delete the reservation.");
                     });
             }
         }
@@ -168,7 +219,7 @@
     <div th:insert="~{fragments/navbar.html :: navbar}"></div>
     <div class="container my-5">
         <form method="post" th:action="@{/users/edit}" onsubmit="return validateForm()" name="profileForm" id="profileForm" class="needs-validation">
-            <input type="hidden" name="id" th:value="${user.id}"/>
+            <input type="hidden" name="id" th:value="${user.id}" id="userId"/>
             <h2 class="text-center mb-4">User Profile</h2>
             <div class="row mb-3">
                 <label for="firstName" class="col-sm-3 col-form-label">First Name:</label>
@@ -185,13 +236,13 @@
             <div class="row mb-3">
                 <label for="emailAddress" class="col-sm-3 col-form-label">Email:</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="emailAddress" name="emailAddress" th:value="${user.emailAddress}" readonly>
+                    <input type="text" class="form-control" id="emailAddress" name="emailAddress" th:value="${user.emailAddress}" >
                 </div>
             </div>
             <div class="row mb-3">
                 <label for="dateOfBirth" class="col-sm-3 col-form-label">Date of Birth:</label>
                 <div class="col-sm-9">
-                    <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" readonly>
+                    <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" th:value="${#temporals.format(user.dateOfBirth, 'yyyy-MM-dd')}" >
                 </div>
             </div>
             <div class="row mb-3">
@@ -221,7 +272,7 @@
             <div class="row mb-3">
                 <label for="jmbg" class="col-sm-3 col-form-label">JMBG:</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="jmbg" name="jmbg" th:value="${user.jmbg}" readonly>
+                    <input type="text" class="form-control" id="jmbg" name="jmbg" th:value="${user.jmbg}" >
                 </div>
             </div>
             <div class="row mb-3">
@@ -242,9 +293,9 @@
                 </div>
             </div>
         </form>
-        <form method="post" th:action="@{/users/delete}" class="text-center">
+        <form method="post" th:action="@{/users/delete}" class="text-center" id="deleteAccountForm">
             <input type="hidden" name="id" th:value="${user.id}">
-            <input type="submit" class="btn btn-danger m-3" value="Delete Account">
+            <input type="submit" class="btn btn-danger m-3" value="Delete Account" id="deleteAccountBtn">
         </form>
     </div>
     <div class="container" th:if="${user.role.toString() == 'BUYER'}">
@@ -261,6 +312,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Reserved Seats</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -271,12 +323,21 @@
                     <td th:text="${#temporals.format(reservation.travel.returnDateTime, 'yyyy-MM-dd HH:mm')}">End Date</td>
                     <td th:text="${reservation.reservedSeats}">Reserved Seats</td>
                     <td>
-                        <span th:if="${reservation.travel.departureDateTime.isBefore(T(java.time.LocalDateTime).now())}">Reservation is expired</span>
+                    	<span th:if="${reservation.travel.departureDateTime.isBefore(T(java.time.LocalDateTime).now())}">Reservation is expired</span>
+                    	<span th:if="${reservation.travel.departureDateTime.isAfter(T(java.time.LocalDateTime).now().plusHours(48))}">Reservation is active</span>
+                    </td>
+                    <td>
                         <button th:if="${reservation.travel.departureDateTime.isAfter(T(java.time.LocalDateTime).now().plusHours(48))}" 
                                 class="btn btn-danger"
                                 th:attr="data-id=${reservation.id}" 
                                 onclick="cancelReservation(this)">
                             Cancel
+                        </button>
+                        <button th:if="${reservation.travel.departureDateTime.isBefore(T(java.time.LocalDateTime).now())}" 
+                                class="btn btn-danger"
+                                th:attr="data-id=${reservation.id}" 
+                                onclick="deleteExpiredReservation(this)">
+                            Delete expired
                         </button>
                     </td>
                 </tr>
@@ -295,6 +356,40 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary closeModalBtn" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="errorModalMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="reservationModal" tabindex="-1" role="dialog" aria-labelledby="reservationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reservationModalLabel">Reservations Exist</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You have existing reservations. Please cancel or delete all reservations before deleting your account.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="cancelAllReservationsBtn">Cancel All Reservations</button>
+                    <button type="button" class="btn btn-danger" id="deleteAllReservationsBtn">Delete All Expired Reservations</button>
                 </div>
             </div>
         </div>
