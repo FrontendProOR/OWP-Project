@@ -270,6 +270,88 @@ public class TravelController implements ServletContextAware {
         return modelAndView;
     }
 
+    @PostMapping(value = "/travels/add")
+    public void addTravel(
+            @RequestParam String transportationType,
+            @RequestParam String accommodationType,
+            @RequestParam String destinationName,
+            @RequestParam MultipartFile locationImage,
+            @RequestParam String travelCategory,
+            @RequestParam String departureDateTime,
+            @RequestParam String returnDateTime,
+            @RequestParam double originalPrice,
+            @RequestParam int totalSeats,
+            @RequestParam int availableSeats,
+            @RequestParam(value = "discountPercentage", required = false) String discountPercentageStr,
+            @RequestParam(value = "discountEndDate", required = false) String discountEndDateStr,
+            HttpServletResponse response,
+            HttpSession session) throws IOException {
+
+        User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+
+        if (loggedUser == null || loggedUser.getRole() != UserRole.MANAGER) {
+            response.sendRedirect(bURL);
+            return;
+        }
+
+        Travel travel = new Travel();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        travel.setTransportationType(TransportationType.valueOf(transportationType.toUpperCase()));
+        travel.setAccommodationType(TypeOfAccommodation.valueOf(accommodationType.toUpperCase()));
+        travel.setDestinationName(destinationName);
+
+        if (locationImage != null && !locationImage.isEmpty()) {
+            String imageFileName = locationImage.getOriginalFilename();
+            Path path = Paths.get(UPLOAD_DIRECTORY + imageFileName);
+            Files.createDirectories(path.getParent());
+            Files.write(path, locationImage.getBytes());
+            travel.setLocationImage(imageFileName);
+        }
+
+        TravelCategoryEnum categoryEnum = TravelCategoryEnum.valueOf(travelCategory.toUpperCase());
+        TravelCategory travelCategoryMain = travelCategoryService.findByCategoryName(categoryEnum);
+
+        travel.setTravelCategory(travelCategoryMain);
+        travel.setDepartureDateTime(LocalDateTime.parse(departureDateTime, formatter));
+        travel.setReturnDateTime(LocalDateTime.parse(returnDateTime, formatter));
+        int numberOfNights = (int) ChronoUnit.DAYS.between(travel.getDepartureDateTime(), travel.getReturnDateTime());
+        travel.setNumberOfNights(numberOfNights);
+
+        // Calculate arrangmentPrice
+        double arrangmentPrice = originalPrice;
+        if (discountPercentageStr != null && !discountPercentageStr.isEmpty()) {
+            double discountPercentage = Double.parseDouble(discountPercentageStr);
+            LocalDateTime discountEndDate = LocalDateTime.parse(discountEndDateStr, formatter);
+            if (discountPercentage > 0 && discountEndDate.isAfter(LocalDateTime.now())) {
+                arrangmentPrice = originalPrice - (originalPrice * discountPercentage / 100);
+            }
+        }
+
+        travel.setOriginalPrice(originalPrice); // Set original price
+        travel.setArrangmentPrice(arrangmentPrice); // Calculated
+        travel.setTotalSeats(totalSeats);
+        travel.setAvailableSeats(availableSeats);
+
+        if (discountPercentageStr != null && !discountPercentageStr.isEmpty()) {
+            travel.setDiscountPercentage(Double.parseDouble(discountPercentageStr));
+        } else {
+            travel.setDiscountPercentage(0.0);
+        }
+
+        if (discountEndDateStr != null && !discountEndDateStr.isEmpty()) {
+            travel.setDiscountEndDate(LocalDateTime.parse(discountEndDateStr, formatter));
+        } else {
+            travel.setDiscountEndDate(null);
+        }
+
+        travelService.save(travel);
+
+        response.sendRedirect(bURL + "travels");
+    }
+
+    
     @GetMapping("/travels/details")
     public ModelAndView viewTravelDetails(@RequestParam Long travelId, HttpServletResponse response, HttpSession session) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);

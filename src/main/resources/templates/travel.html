@@ -30,7 +30,7 @@
                 <p>Departure: <span th:text="${travel.departureDateTime}">Departure Date</span></p>
                 <p>Return: <span th:text="${travel.returnDateTime}">Return Date</span></p>
                 <p>Number of Nights: <span th:text="${travel.numberOfNights}">Number of Nights</span></p>
-                <p>Original Price: <span class="strikethrough" th:text="${travel.originalPrice}">Original Price</span></p>
+                <p>Original Price: <span class="strikethrough" th:text="${travel.originalPrice}" >Original Price</span></p><!-- th:if="${travel.discountPercentage} != 0.0" -->
                 <p>Arrangment Price: <span th:text="${travel.arrangmentPrice}">Action Price</span></p>
                 <p>Total Seats: <span th:text="${travel.totalSeats}">Total Seats</span></p>
                 <p>Available Seats: <span th:text="${travel.availableSeats}">Available Seats</span></p>
