@@ -82,7 +82,7 @@
 
 <body>
 <div th:insert="~{fragments/navbar.html :: navbar}"></div>
-    <div class="container">
+    <div class="container mt-4">
         <form method="post" th:action="@{/users/login}">
             <table>
                 <caption>User Log In</caption>
@@ -102,7 +102,7 @@
         </form>
         <p th:text="${message}"></p>
     </div>
-    <div>If you don't have an Account: <a class="btn btn-primary" th:href="@{/users/add}">Register</a></div>
+    <div>If you don't have an Account: <a class="btn btn-primary mt-4" th:href="@{/users/add}">Register</a></div>
 </body>
 
 </html>

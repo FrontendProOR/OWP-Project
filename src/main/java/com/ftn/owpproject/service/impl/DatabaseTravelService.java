@@ -9,66 +9,62 @@ import org.springframework.stereotype.Service;
 import com.ftn.owpproject.dao.TravelDAO;
 import com.ftn.owpproject.model.Travel;
 import com.ftn.owpproject.service.TravelService;
+
 @Service
 public class DatabaseTravelService implements TravelService {
-	@Autowired
-	private TravelDAO travelDAO;
-	
-//	@SuppressWarnings("unused")
-//	@Autowired
-//	private TravelCategoryDAO travelCategoryDAO;
-	
-	@Override
-	public Travel findOne(Long id) {
-		return travelDAO.findOne(id);
-	}
+    @Autowired
+    private TravelDAO travelDAO;
 
-	@Override
-	public List<Travel> findAll() {
-		return travelDAO.findAll();
-	}
+    @Override
+    public Travel findOne(Long id) {
+        return travelDAO.findOne(id);
+    }
 
-	@Override
-	public Travel save(Travel travel) {
-		travelDAO.save(travel);
-		return travel;
-	}
+    @Override
+    public List<Travel> findAll() {
+        return travelDAO.findAll();
+    }
 
-	@Override
-	public boolean hasReservations(Long travelId) {
-	    return travelDAO.countReservationsByTravelId(travelId) > 0;
-	}
+    @Override
+    public Travel save(Travel travel) {
+        travelDAO.save(travel);
+        return travel;
+    }
 
-	
-	@Override
-	public Travel update(Travel travel) {
-		travelDAO.update(travel);
-		return travel;
-	}
+    @Override
+    public boolean hasReservations(Long travelId) {
+        return travelDAO.countReservationsByTravelId(travelId) > 0;
+    }
 
-	@Override
-	public Travel delete(Long id) {
-		Travel travel = travelDAO.findOne(id);
-		if(travel != null) {
-			travelDAO.delete(id);
-		}
-		return travel;
-	}
-	
-	@Override
-	public int updateAvailableSeats(Long travelId, int availableSeats) {
-	    return travelDAO.updateAvailableSeats(travelId, availableSeats);
-	}
+    @Override
+    public Travel update(Travel travel) {
+        travelDAO.update(travel);
+        return travel;
+    }
 
-	public double getCurrentPrice(Travel travel) {
+    @Override
+    public Travel delete(Long id) {
+        Travel travel = travelDAO.findOne(id);
+        if (travel != null) {
+            travelDAO.delete(id);
+        }
+        return travel;
+    }
+
+    @Override
+    public int updateAvailableSeats(Long travelId, int availableSeats) {
+        return travelDAO.updateAvailableSeats(travelId, availableSeats);
+    }
+
+    public double getCurrentPrice(Travel travel) {
         if (travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isBefore(LocalDateTime.now())) {
             return travel.getOriginalPrice();
         } else {
             return travel.getArrangmentPrice();
         }
     }
-	
-	public void updatePrice(Long travelId, double newPrice) {
+
+    public void updatePrice(Long travelId, double newPrice) {
         travelDAO.updatePrice(travelId, newPrice);
     }
 
@@ -85,6 +81,12 @@ public class DatabaseTravelService implements TravelService {
                 travel.setArrangmentPrice(newPrice);
                 updatePrice(travel.getId(), newPrice);
             }
+        } else if (travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isBefore(LocalDateTime.now())) {
+            // Discount has expired, reset discount attributes
+            travel.setDiscountPercentage(0.0);
+            travel.setDiscountEndDate(null);
+            travel.setArrangmentPrice(travel.getOriginalPrice());
+            update(travel); // Update travel with new attributes
         } else if (travel.getArrangmentPrice() != travel.getOriginalPrice()) {
             travel.setArrangmentPrice(travel.getOriginalPrice());
             updatePrice(travel.getId(), travel.getOriginalPrice());

@@ -32,3 +32,18 @@ input, textarea, select {
 input[type="checkbox"], input[type="radio"] {
 	width: 20px;
 }
+
+.discount-card {
+    border: 2px solid blue;
+    position: relative;
+}
+
+.discount-tag {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgb(255, 140, 0);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
