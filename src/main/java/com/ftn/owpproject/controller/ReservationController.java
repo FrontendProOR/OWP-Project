@@ -22,9 +22,9 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-	@Autowired
+    @Autowired
     private ReservationDAO reservationDAO;
-	
+
     @Autowired
     private ReservationService reservationService;
 
@@ -40,11 +40,10 @@ public class ReservationController {
 
         List<Reservation> reservations = reservationService.findByUserId(loggedUser.getId());
         model.addAttribute("reservations", reservations);
-        model.addAttribute("user", loggedUser); 
+        model.addAttribute("user", loggedUser);
 
-        return "user"; 
+        return "user";
     }
-  
 
     @GetMapping("/make")
     public String showMakeReservationForm(@RequestParam Long travelId, Model model, HttpSession session) {
@@ -53,7 +52,7 @@ public class ReservationController {
             return "redirect:/users/login";
         }
 
-        if (loggedUser.getRole().toString() == "MANAGER") {
+        if (loggedUser.getRole().toString().equals("MANAGER")) {
             return "redirect:/error";
         }
 
@@ -69,13 +68,13 @@ public class ReservationController {
             return "redirect:/users/login";
         }
 
-        if (loggedUser.getRole().toString() == "MANAGER") {
+        if (loggedUser.getRole().toString().equals("MANAGER")) {
             return "redirect:/error";
         }
 
         Travel travel = travelService.findOne(travelId);
         if (travel == null || travel.getAvailableSeats() < reservedSeats) {
-            return "redirect:/error"; 
+            return "redirect:/error";
         }
 
         int newAvailableSeats = travel.getAvailableSeats() - reservedSeats;
@@ -86,7 +85,7 @@ public class ReservationController {
 
         return "redirect:/";
     }
-    
+
     @PostMapping("/deleteExpired")
     public String deleteExpiredReservation(@RequestParam Long reservationId, HttpSession session, Model model) {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
@@ -107,7 +106,7 @@ public class ReservationController {
 
         return "redirect:/reservations";
     }
-    
+
     @PostMapping("/cancel")
     public String cancelReservation(@RequestParam Long reservationId, HttpSession session, Model model) {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
@@ -136,7 +135,7 @@ public class ReservationController {
 
         return "redirect:/reservations";
     }
-    
+
     @PostMapping("/cancelAll")
     public String cancelAllReservations(@RequestParam Long userId, HttpSession session, Model model) throws Exception {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
@@ -147,11 +146,11 @@ public class ReservationController {
         List<Reservation> reservations = reservationService.findByUserId(userId);
         for (Reservation reservation : reservations) {
             Travel travel = reservation.getTravel();
-            
+
             if (travel.getDepartureDateTime().isBefore(LocalDateTime.now().plusHours(48))) {
                 throw new Exception("Cannot cancel reservation less than 48 hours before travel starts");
             }
-            
+
             reservationService.cancelReservation(reservation.getId());
             int newAvailableSeats = travel.getAvailableSeats() + reservation.getReservedSeats();
             travelService.updateAvailableSeats(travel.getId(), newAvailableSeats);

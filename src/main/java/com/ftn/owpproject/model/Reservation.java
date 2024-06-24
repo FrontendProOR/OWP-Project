@@ -8,12 +8,23 @@ public class Reservation {
     private Travel travel;
     private LocalDateTime reservationDate;
     private int reservedSeats;
+    private double totalPrice;
 
+    public Reservation(Long id, Long userId, Travel travel, LocalDateTime reservationDate, int reservedSeats, double totalPrice) {
+        this.id = id;
+        this.userId = userId;
+        this.travel = travel;
+        this.reservationDate = reservationDate;
+        this.reservedSeats = reservedSeats;
+        this.totalPrice = totalPrice;
+    }
+    
     public Reservation(Long userId, Travel travel, LocalDateTime reservationDate, int reservedSeats) {
         this.userId = userId;
         this.travel = travel;
         this.reservationDate = reservationDate;
         this.reservedSeats = reservedSeats;
+        this.totalPrice = calculateTotalPrice(travel, reservedSeats);
     }
 
     public Reservation(Long id, Long userId, Travel travel, LocalDateTime reservationDate, int reservedSeats) {
@@ -22,9 +33,16 @@ public class Reservation {
         this.travel = travel;
         this.reservationDate = reservationDate;
         this.reservedSeats = reservedSeats;
+        this.totalPrice = calculateTotalPrice(travel, reservedSeats);
     }
 
-    // Getters and setters
+    private double calculateTotalPrice(Travel travel, int reservedSeats) {
+        double price = travel.getArrangmentPrice() * reservedSeats;
+        if (travel.getDiscountPercentage() > 0 && LocalDateTime.now().isBefore(travel.getDiscountEndDate())) {
+            price = price - (price * (travel.getDiscountPercentage() / 100));
+        }
+        return price;
+    }
 
     public Long getId() {
         return id;
@@ -65,4 +83,12 @@ public class Reservation {
     public void setReservedSeats(int reservedSeats) {
         this.reservedSeats = reservedSeats;
     }
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 }

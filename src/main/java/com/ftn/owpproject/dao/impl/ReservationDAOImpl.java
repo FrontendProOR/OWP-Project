@@ -32,7 +32,8 @@ public class ReservationDAOImpl implements ReservationDAO {
                     rs.getLong("user_id"),
                     travel,
                     rs.getTimestamp("reservation_date").toLocalDateTime(),
-                    rs.getInt("reserved_seats")
+                    rs.getInt("reserved_seats"),
+                    rs.getDouble("total_price")
             );
         }
     }
@@ -57,9 +58,9 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     @Override
     public int save(Reservation reservation) {
-        String sql = "INSERT INTO Reservation (user_id, travel_id, reservation_date, reserved_seats) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Reservation (user_id, travel_id, reservation_date, reserved_seats, total_price) VALUES (?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql, reservation.getUserId(), reservation.getTravel().getId(), 
-            Timestamp.valueOf(reservation.getReservationDate()), reservation.getReservedSeats());
+            Timestamp.valueOf(reservation.getReservationDate()), reservation.getReservedSeats(), reservation.getTotalPrice());
     }
 
     @Override

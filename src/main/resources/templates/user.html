@@ -312,6 +312,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Reserved Seats</th>
+                    <th>Total Price</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -322,9 +323,10 @@
                     <td class="start-date" th:text="${#temporals.format(reservation.travel.departureDateTime, 'yyyy-MM-dd HH:mm')}">Start Date</td>
                     <td th:text="${#temporals.format(reservation.travel.returnDateTime, 'yyyy-MM-dd HH:mm')}">End Date</td>
                     <td th:text="${reservation.reservedSeats}">Reserved Seats</td>
+                    <td th:text="${reservation.totalPrice}">Total Price</td>
                     <td>
-                    	<span th:if="${reservation.travel.departureDateTime.isBefore(T(java.time.LocalDateTime).now())}">Reservation is expired</span>
-                    	<span th:if="${reservation.travel.departureDateTime.isAfter(T(java.time.LocalDateTime).now().plusHours(48))}">Reservation is active</span>
+                        <span th:if="${reservation.travel.departureDateTime.isBefore(T(java.time.LocalDateTime).now())}">Reservation is expired</span>
+                        <span th:if="${reservation.travel.departureDateTime.isAfter(T(java.time.LocalDateTime).now().plusHours(48))}">Reservation is active</span>
                     </td>
                     <td>
                         <button th:if="${reservation.travel.departureDateTime.isAfter(T(java.time.LocalDateTime).now().plusHours(48))}" 
