@@ -99,6 +99,20 @@ VALUES
     ('PERSONAL', 'HOTEL', 'Washington', 'washington.jpg', 4, '2024-09-20 14:00:00', '2024-09-25 23:00:00', 5, 2000.00, 2000.00, 120, 120, 0, NULL),
     ('PERSONAL', 'HOTEL', 'Shenzhen', 'shenzhen.jpg', 4, '2024-08-20 14:00:00', '2024-08-25 23:00:00', 5, 2000.00, 2000.00, 120, 120, 0, NULL);
 
+-- Insert additional data for future trips
+INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangment_price, original_price, total_seats, available_seats, discount_percentage, discount_end_date)
+VALUES
+    ('AIRPLANE', 'HOTEL', 'Barcelona', 'barcelona.jpg', 2, '2024-07-01 08:00:00', '2024-07-10 18:00:00', 9, 2500.00, 2500.00, 100, 100, 15.00, '2024-06-25 00:00:00'),
+    ('BUS', 'HOTEL', 'Rome', 'rome.jpg', 1, '2024-08-15 10:00:00', '2024-06-20 20:00:00', 5, 900.00, 900.00, 60, 60, 10.00, '2024-06-10 00:00:00'),
+    ('PERSONAL', 'APARTMENT', 'Istanbul', 'istanbul.jpg', 3, '2024-09-01 12:00:00', '2024-09-07 22:00:00', 6, 1300.00, 1300.00, 70, 70, 0, NULL),
+    ('PERSONAL', 'HOTEL', 'New York', 'newyork.jpg', 4, '2024-08-15 14:00:00', '2024-08-25 23:00:00', 10, 3500.00, 3500.00, 120, 120, 20.00, '2024-08-10 00:00:00'),
+    ('AIRPLANE', 'HOTEL', 'Dubai', 'dubai.jpg', 2, '2024-11-20 08:00:00', '2024-11-30 18:00:00', 10, 3000.00, 3000.00, 100, 100, 10.00, '2024-11-15 00:00:00'),
+    ('PERSONAL', 'APARTMENT', 'Santorini', 'santorini.jpg', 3, '2024-07-20 12:00:00', '2024-07-27 22:00:00', 7, 1600.00, 1600.00, 80, 80, 0, NULL),
+    ('PERSONAL', 'HOTEL', 'Miami', 'miami.jpg', 4, '2024-08-05 14:00:00', '2024-06-15 23:00:00', 10, 2400.00, 2400.00, 120, 120, 10.00, '2024-06-01 00:00:00'),
+    ('AIRPLANE', 'HOTEL', 'Tokyo', 'tokyo.jpg', 2, '2024-09-15 08:00:00', '2024-09-25 18:00:00', 10, 2800.00, 2800.00, 100, 100, 15.00, '2024-09-10 00:00:00'),
+    ('BUS', 'HOTEL', 'Vienna', 'vienna.jpg', 1, '2024-12-10 10:00:00', '2024-12-15 20:00:00', 5, 1100.00, 1100.00, 60, 60, 5.00, '2024-12-05 00:00:00');
+
+    
 -- Insert data for past trips
 INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangment_price, original_price, total_seats, available_seats, discount_percentage, discount_end_date)
 VALUES

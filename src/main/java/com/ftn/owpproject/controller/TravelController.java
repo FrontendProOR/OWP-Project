@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,8 @@ import com.ftn.owpproject.service.TravelService;
 public class TravelController implements ServletContextAware {
     public static final String USER_KEY = "loggedUser";
     public static final String TRAVELS_KEY = "travels";
-
+    private static final int NUM_TRAVELS_TO_DISPLAY = 3;
+    
     @Autowired
     private ServletContext servletContext;
     private String bURL;
@@ -79,19 +81,37 @@ public class TravelController implements ServletContextAware {
     }
 
     @GetMapping(value = {"/", "/index"})
-    public ModelAndView indexPage(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView indexPage(HttpServletResponse response, HttpSession session) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
         // Ažuriraj sve cene pre preuzimanja podataka
         travelService.updateAllTravelPrices();
 
         List<Travel> travels = travelService.findAll().stream()
-        		.filter(travel -> travel.getAvailableSeats() > 0)
-        		.filter(travel -> ChronoUnit.HOURS.between(LocalDateTime.now(), travel.getDepartureDateTime()) > 48)
+            .filter(travel -> travel.getAvailableSeats() > 0)
+            .filter(travel -> ChronoUnit.HOURS.between(LocalDateTime.now(), travel.getDepartureDateTime()) > 48)
+            .collect(Collectors.toList());
+
+        List<Travel> promotionalTravels = new ArrayList<>(travels.stream()
+            .filter(travel -> travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isAfter(LocalDateTime.now()))
+            .limit(NUM_TRAVELS_TO_DISPLAY)
+            .collect(Collectors.toList()));
+
+        if (promotionalTravels.size() < NUM_TRAVELS_TO_DISPLAY) {
+            List<Travel> additionalTravels = travels.stream()
+                .filter(travel -> !promotionalTravels.contains(travel))
+                .limit(NUM_TRAVELS_TO_DISPLAY - promotionalTravels.size())
                 .collect(Collectors.toList());
-        
+            promotionalTravels.addAll(additionalTravels);
+        }
+
+        List<Travel> allTravels = travels.stream()
+            .filter(travel -> !promotionalTravels.contains(travel))
+            .collect(Collectors.toList());
+
         ModelAndView result = new ModelAndView("index");
-        result.addObject("travelOptions", travels);
+        result.addObject("promotionalTravels", promotionalTravels);
+        result.addObject("allTravels", allTravels);
         result.addObject("travelCategory", TravelCategoryEnum.values());
         result.addObject("loggedUser", loggedUser);
 
