@@ -58,7 +58,6 @@
         filterAndSort(); 
     }
 
-
     function filterAndSort() {
         var selectedOption = document.getElementById('sortSelect').value;
         var cardsContainer = document.querySelector('.row');
@@ -112,14 +111,17 @@
                             Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
                             Total Seats: <span th:text="${travel.totalSeats}"></span><br>
                             Available Seats: <span th:text="${travel.availableSeats}"></span><br>
-                            Discount Percentage: <span th:text="${travel.discountPercentage}">N/A</span><br>
-                            Discount End Date: <span th:text="${travel.discountEndDate}">N/A</span><br>
+                            <span th:if="${travel.discountPercentage > 0}">
+                                Discount Percentage: <span th:text="${travel.discountPercentage}"></span><br>
+                            </span>
+                            <span th:if="${travel.discountEndDate != null}">
+                                Discount End Date: <span th:text="${travel.discountEndDate}"></span><br>
+                            </span>
                         </p>
                         <a th:href="@{/travels/details(travelId=${travel.id})}" class="btn btn-secondary mb-2">View Details</a> 
                         <a th:href="@{/reservations/make(travelId=${travel.id})}" class="btn btn-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'BUYER'}">Make Reservation</a> 
-                    	<!--<a th:href="@{/travels}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>-->
-                    	<a th:href="@{/travels/editTravel(id=${travel.id})}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>
-                    	
+                        <!--<a th:href="@{/travels}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>-->
+                        <a th:href="@{/travels/editTravel(id=${travel.id})}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>
                     </div>
                 </div>
             </div>
