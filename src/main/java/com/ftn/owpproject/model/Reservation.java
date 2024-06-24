@@ -19,6 +19,15 @@ public class Reservation {
         this.totalPrice = totalPrice;
     }
     
+    public Reservation( Long userId, Travel travel, LocalDateTime reservationDate, int reservedSeats, double totalPrice) {
+        super();
+        this.userId = userId;
+        this.travel = travel;
+        this.reservationDate = reservationDate;
+        this.reservedSeats = reservedSeats;
+        this.totalPrice = totalPrice;
+    }
+    
     public Reservation(Long userId, Travel travel, LocalDateTime reservationDate, int reservedSeats) {
         this.userId = userId;
         this.travel = travel;

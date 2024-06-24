@@ -108,19 +108,24 @@
                             Departure: <span th:text="${travel.departureDateTime}"></span><br>
                             Return: <span th:text="${travel.returnDateTime}"></span><br>
                             Number of Nights: <span class="num-nights" th:text="${travel.numberOfNights}"></span><br>
-                            Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
+                            <span th:if="${travel.discountEndDate != null}">
+                                <span th:if="${travel.discountEndDate.isAfter(T(java.time.LocalDateTime).now())}">
+                                    Original Price: <span style="text-decoration: line-through;" th:text="${travel.originalPrice}"></span><br>
+                                    Action Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
+                                </span>
+                                <span th:if="${!travel.discountEndDate.isAfter(T(java.time.LocalDateTime).now())}">
+                                    <span style="color: red;">Discount End Date: <span th:text="${travel.discountEndDate}"></span></span><br>
+                                    Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
+                                </span>
+                            </span>
+                            <span th:if="${travel.discountEndDate == null}">
+                                Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
+                            </span>
                             Total Seats: <span th:text="${travel.totalSeats}"></span><br>
                             Available Seats: <span th:text="${travel.availableSeats}"></span><br>
-                            <span th:if="${travel.discountPercentage > 0}">
-                                Discount Percentage: <span th:text="${travel.discountPercentage}"></span><br>
-                            </span>
-                            <span th:if="${travel.discountEndDate != null}">
-                                Discount End Date: <span th:text="${travel.discountEndDate}"></span><br>
-                            </span>
                         </p>
                         <a th:href="@{/travels/details(travelId=${travel.id})}" class="btn btn-secondary mb-2">View Details</a> 
                         <a th:href="@{/reservations/make(travelId=${travel.id})}" class="btn btn-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'BUYER'}">Make Reservation</a> 
-                        <!--<a th:href="@{/travels}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>-->
                         <a th:href="@{/travels/editTravel(id=${travel.id})}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null and loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>
                     </div>
                 </div>

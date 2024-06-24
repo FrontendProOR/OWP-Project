@@ -11,4 +11,5 @@ public interface ReservationService {
     Reservation findOne(Long reservationId);
     void cancelReservation(Long reservationId) throws Exception;
     void save(Reservation reservation);
+    void saveReservation(Long userId, Long travelId, int reservedSeats);
 }

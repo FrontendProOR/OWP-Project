@@ -49,7 +49,8 @@ public class TravelDAOImpl implements TravelDAO {
             LocalDateTime departureDateTime = resultSet.getTimestamp(index++).toLocalDateTime();
             LocalDateTime returnDateTime = resultSet.getTimestamp(index++).toLocalDateTime();
             int numberOfNights = resultSet.getInt(index++);
-            double arrangementPrice = resultSet.getDouble(index++);
+            double arrangmentPrice = resultSet.getDouble(index++);
+            double originalPrice = resultSet.getDouble(index++);  // Dodato
             int totalSeats = resultSet.getInt(index++);
             int availableSeats = resultSet.getInt(index++);
             double discountPercentage = resultSet.getDouble(index++);
@@ -57,7 +58,7 @@ public class TravelDAOImpl implements TravelDAO {
             LocalDateTime discountEndDate = (discountEndTimestamp != null) ? discountEndTimestamp.toLocalDateTime() : null;
 
             Travel travel = new Travel(id, transportationType, accommodationType, destinationName, locationImage,
-                    travelCategory, departureDateTime, returnDateTime, discountEndDate, numberOfNights, arrangementPrice, totalSeats,
+                    travelCategory, departureDateTime, returnDateTime, discountEndDate, numberOfNights, arrangmentPrice, originalPrice, totalSeats, // Ažurirano
                     availableSeats, discountPercentage);
 
             travels.put(travel.getId(), travel);
@@ -83,7 +84,8 @@ public class TravelDAOImpl implements TravelDAO {
                 rs.getTimestamp("return_date_time").toLocalDateTime(),
                 rs.getTimestamp("discount_end_date") != null ? rs.getTimestamp("discount_end_date").toLocalDateTime() : null,
                 rs.getInt("number_of_nights"),
-                rs.getDouble("arrangement_price"),
+                rs.getDouble("arrangment_price"),
+                rs.getDouble("original_price"),  // Dodato
                 rs.getInt("total_seats"),
                 rs.getInt("available_seats"),
                 rs.getDouble("discount_percentage")
@@ -101,8 +103,8 @@ public class TravelDAOImpl implements TravelDAO {
 
     @Override
     public int save(Travel travel) {
-        String sql = "INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangement_price, total_seats, available_seats, discount_percentage, discount_end_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, travel.getTransportationType().toString(), travel.getAccommodationType().toString(), travel.getDestinationName(), travel.getLocationImage(), travel.getTravelCategory().getId(), Timestamp.valueOf(travel.getDepartureDateTime()), Timestamp.valueOf(travel.getReturnDateTime()), travel.getNumberOfNights(), travel.getArrangmentPrice(), travel.getTotalSeats(), travel.getAvailableSeats(), travel.getDiscountPercentage(), travel.getDiscountEndDate() != null ? Timestamp.valueOf(travel.getDiscountEndDate()) : null);
+        String sql = "INSERT INTO Travel (transportation_type, accommodation_type, destination_name, location_image, travel_category_id, departure_date_time, return_date_time, number_of_nights, arrangment_price, original_price, total_seats, available_seats, discount_percentage, discount_end_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql, travel.getTransportationType().toString(), travel.getAccommodationType().toString(), travel.getDestinationName(), travel.getLocationImage(), travel.getTravelCategory().getId(), Timestamp.valueOf(travel.getDepartureDateTime()), Timestamp.valueOf(travel.getReturnDateTime()), travel.getNumberOfNights(), travel.getArrangmentPrice(), travel.getOriginalPrice(), travel.getTotalSeats(), travel.getAvailableSeats(), travel.getDiscountPercentage(), travel.getDiscountEndDate() != null ? Timestamp.valueOf(travel.getDiscountEndDate()) : null);
     }
 
     @Override
@@ -133,8 +135,8 @@ public class TravelDAOImpl implements TravelDAO {
             return 0;
         }
 
-        String sql = "UPDATE Travel SET transportation_type = ?, accommodation_type = ?, destination_name = ?, location_image = ?, travel_category_id = ?, departure_date_time = ?, return_date_time = ?, number_of_nights = ?, arrangement_price = ?, total_seats = ?, available_seats = ?, discount_percentage = ?, discount_end_date = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, travel.getTransportationType().toString(), travel.getAccommodationType().toString(), travel.getDestinationName(), travel.getLocationImage(), travelCategoryId, Timestamp.valueOf(travel.getDepartureDateTime()), Timestamp.valueOf(travel.getReturnDateTime()), travel.getNumberOfNights(), travel.getArrangmentPrice(), travel.getTotalSeats(), travel.getAvailableSeats(), travel.getDiscountPercentage(), travel.getDiscountEndDate() != null ? Timestamp.valueOf(travel.getDiscountEndDate()) : null, travel.getId());
+        String sql = "UPDATE Travel SET transportation_type = ?, accommodation_type = ?, destination_name = ?, location_image = ?, travel_category_id = ?, departure_date_time = ?, return_date_time = ?, number_of_nights = ?, arrangment_price = ?, original_price = ?, total_seats = ?, available_seats = ?, discount_percentage = ?, discount_end_date = ? WHERE id = ?";  // Ažurirano
+        return jdbcTemplate.update(sql, travel.getTransportationType().toString(), travel.getAccommodationType().toString(), travel.getDestinationName(), travel.getLocationImage(), travelCategoryId, Timestamp.valueOf(travel.getDepartureDateTime()), Timestamp.valueOf(travel.getReturnDateTime()), travel.getNumberOfNights(), travel.getArrangmentPrice(), travel.getOriginalPrice(), travel.getTotalSeats(), travel.getAvailableSeats(), travel.getDiscountPercentage(), travel.getDiscountEndDate() != null ? Timestamp.valueOf(travel.getDiscountEndDate()) : null, travel.getId());
     }
 
     @Override
@@ -155,4 +157,9 @@ public class TravelDAOImpl implements TravelDAO {
         return jdbcTemplate.update(sql, availableSeats, travelId);
     }
 
+    @Override
+    public int updatePrice(Long travelId, double newPrice) {
+        String sql = "UPDATE Travel SET arrangment_price = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, newPrice, travelId);
+    }
 }

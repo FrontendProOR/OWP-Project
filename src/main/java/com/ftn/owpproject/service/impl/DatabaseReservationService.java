@@ -5,6 +5,8 @@ import com.ftn.owpproject.dao.TravelDAO;
 import com.ftn.owpproject.model.Reservation;
 import com.ftn.owpproject.model.Travel;
 import com.ftn.owpproject.service.ReservationService;
+import com.ftn.owpproject.service.TravelService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,9 @@ import java.util.List;
 
 @Service
 public class DatabaseReservationService implements ReservationService {
-
+	@Autowired
+	private TravelService travelService;
+	
     @Autowired
     private ReservationDAO reservationDAO;
 
@@ -55,4 +59,17 @@ public class DatabaseReservationService implements ReservationService {
     public void save(Reservation reservation) {
         reservationDAO.save(reservation);
     }
+    
+    @Override
+    public void saveReservation(Long userId, Long travelId, int reservedSeats) {
+        Travel travel = travelDAO.findOne(travelId);
+        double currentPrice = travelService.getCurrentPrice(travel);
+        travel.setArrangmentPrice(currentPrice);
+
+        double totalPrice = currentPrice * reservedSeats;
+
+        Reservation reservation = new Reservation(userId, travel, LocalDateTime.now(), reservedSeats, totalPrice);
+        reservationDAO.save(reservation);
+    }
+
 }

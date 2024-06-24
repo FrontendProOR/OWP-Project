@@ -14,6 +14,8 @@ public interface TravelService {
 	Travel update(Travel travel); 
 	Travel delete(Long id); 
 	boolean hasReservations(Long travelId);
-
+	double getCurrentPrice(Travel travel);
 	int updateAvailableSeats(Long travelId, int availableSeats);
+	void updatePrice(Long travelId, double newPrice);
+	void updateAllTravelPrices();
 }

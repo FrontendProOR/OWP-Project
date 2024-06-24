@@ -72,8 +72,12 @@
                 <input type="text" class="form-control" id="returnDateTime" name="returnDateTime" th:value="${travel.returnDateTime.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a'))}">
             </div>
             <div class="form-group">
+                <label for="originalPrice">Original Price:</label>
+                <input type="text" class="form-control" id="originalPrice" name="originalPrice" th:value="${travel.originalPrice}">
+            </div>
+            <div class="form-group">
                 <label for="arrangmentPrice">Arrangment Price:</label>
-                <input type="text" class="form-control" id="arrangmentPrice" name="arrangmentPrice" th:value="${travel.arrangmentPrice}">
+                <input type="text" class="form-control" id="arrangmentPrice" name="arrangmentPrice" th:value="${travel.arrangmentPrice}" readonly>
             </div>
             <div class="form-group">
                 <label for="totalSeats">Total Seats:</label>

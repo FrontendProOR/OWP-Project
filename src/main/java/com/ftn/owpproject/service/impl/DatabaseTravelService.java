@@ -1,5 +1,6 @@
 package com.ftn.owpproject.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,4 +60,34 @@ public class DatabaseTravelService implements TravelService {
 	    return travelDAO.updateAvailableSeats(travelId, availableSeats);
 	}
 
+	public double getCurrentPrice(Travel travel) {
+        if (travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isBefore(LocalDateTime.now())) {
+            return travel.getOriginalPrice();
+        } else {
+            return travel.getArrangmentPrice();
+        }
+    }
+	
+	public void updatePrice(Long travelId, double newPrice) {
+        travelDAO.updatePrice(travelId, newPrice);
+    }
+
+    public void updateAllTravelPrices() {
+        List<Travel> travels = findAll();
+        travels.forEach(this::checkAndUpdatePrice);
+    }
+
+    private void checkAndUpdatePrice(Travel travel) {
+        if (travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isAfter(LocalDateTime.now())) {
+            double discount = travel.getOriginalPrice() * (travel.getDiscountPercentage() / 100);
+            double newPrice = travel.getOriginalPrice() - discount;
+            if (travel.getArrangmentPrice() != newPrice) {
+                travel.setArrangmentPrice(newPrice);
+                updatePrice(travel.getId(), newPrice);
+            }
+        } else if (travel.getArrangmentPrice() != travel.getOriginalPrice()) {
+            travel.setArrangmentPrice(travel.getOriginalPrice());
+            updatePrice(travel.getId(), travel.getOriginalPrice());
+        }
+    }
 }

@@ -61,6 +61,7 @@ public class ReservationController {
         return "makeReservation";
     }
 
+    
     @PostMapping("/make")
     public String makeReservation(@RequestParam Long travelId, @RequestParam int reservedSeats, HttpSession session) {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
@@ -68,23 +69,23 @@ public class ReservationController {
             return "redirect:/users/login";
         }
 
-        if (loggedUser.getRole().toString().equals("MANAGER")) {
+        if (loggedUser.getRole().toString() == "MANAGER") {
             return "redirect:/error";
         }
 
         Travel travel = travelService.findOne(travelId);
         if (travel == null || travel.getAvailableSeats() < reservedSeats) {
-            return "redirect:/error";
+            return "redirect:/error"; 
         }
 
         int newAvailableSeats = travel.getAvailableSeats() - reservedSeats;
         travelService.updateAvailableSeats(travelId, newAvailableSeats);
 
-        Reservation reservation = new Reservation(loggedUser.getId(), travel, LocalDateTime.now(), reservedSeats);
-        reservationService.save(reservation);
+        reservationService.saveReservation(loggedUser.getId(), travelId, reservedSeats);
 
         return "redirect:/";
     }
+
 
     @PostMapping("/deleteExpired")
     public String deleteExpiredReservation(@RequestParam Long reservationId, HttpSession session, Model model) {

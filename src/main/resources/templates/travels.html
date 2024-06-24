@@ -84,6 +84,7 @@
                 <th>Return Date and Time</th>
                 <th>Number of Nights</th>
                 <th>Arrangement Price</th>
+                <th>Original Price</th> <!-- Dodato -->
                 <th>Total Seats</th>
                 <th>Available Seats</th>
                 <th>Discount End Date</th>
@@ -123,6 +124,7 @@
                     <td><input type="text" name="returnDateTime" th:value="${travel.formattedReturnDateTime}"></td>
                     <td><input type="text" name="numberOfNights" th:value="${travel.numberOfNights}" readonly></td>
                     <td><input type="text" name="arrangmentPrice" th:value="${travel.arrangmentPrice}"></td>
+                    <td><input type="text" name="originalPrice" th:value="${travel.originalPrice}"></td> <!-- Dodato -->
                     <td><input type="text" name="totalSeats" th:value="${travel.totalSeats}"></td>
                     <td><input type="text" name="availableSeats" th:value="${travel.availableSeats}"></td>
                     <td><input type="text" name="discountEndDate" th:value="${travel.discountEndDate != null ? travel.discountEndDate.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a')) : ''}"></td>

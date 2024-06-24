@@ -24,8 +24,58 @@ public class Travel {
     private String formattedDepartureDateTime;
     private String formattedReturnDateTime;
     private String formattedDiscountEndDateTime;
+    private double originalPrice;
     
     public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType,
+            String destinationName, String locationImage, TravelCategory travelCategory,
+            LocalDateTime departureDateTime, LocalDateTime returnDateTime, LocalDateTime discountEndDate,
+            int numberOfNights, double arrangmentPrice, double originalPrice, int totalSeats, int availableSeats,
+            double discountPercentage) {
+  this.id = id;
+  this.transportationType = transportationType;
+  this.accommodationType = accommodationType;
+  this.destinationName = destinationName;
+  this.locationImage = locationImage;
+  this.travelCategory = travelCategory;
+  this.departureDateTime = departureDateTime;
+  this.returnDateTime = returnDateTime;
+  this.discountEndDate = discountEndDate;
+  this.numberOfNights = numberOfNights;
+  this.arrangmentPrice = arrangmentPrice;
+  this.originalPrice = originalPrice;
+  this.totalSeats = totalSeats;
+  this.availableSeats = availableSeats;
+  this.discountPercentage = discountPercentage;
+}
+    
+    
+    
+    public Travel(TransportationType transportationType, TypeOfAccommodation accommodationType, String destinationName,
+			String locationImage, TravelCategory travelCategory, LocalDateTime departureDateTime,
+			LocalDateTime returnDateTime, LocalDateTime discountEndDate, int numberOfNights, int totalSeats,
+			int availableSeats, double arrangmentPrice, double discountPercentage, String formattedDepartureDateTime,
+			String formattedReturnDateTime, String formattedDiscountEndDateTime, double originalPrice) {
+		super();
+		this.transportationType = transportationType;
+		this.accommodationType = accommodationType;
+		this.destinationName = destinationName;
+		this.locationImage = locationImage;
+		this.travelCategory = travelCategory;
+		this.departureDateTime = departureDateTime;
+		this.returnDateTime = returnDateTime;
+		this.discountEndDate = discountEndDate;
+		this.numberOfNights = numberOfNights;
+		this.totalSeats = totalSeats;
+		this.availableSeats = availableSeats;
+		this.arrangmentPrice = arrangmentPrice;
+		this.discountPercentage = discountPercentage;
+		this.formattedDepartureDateTime = formattedDepartureDateTime;
+		this.formattedReturnDateTime = formattedReturnDateTime;
+		this.formattedDiscountEndDateTime = formattedDiscountEndDateTime;
+		this.originalPrice = originalPrice;
+	}
+
+	public Travel(Long id, TransportationType transportationType, TypeOfAccommodation accommodationType,
             String destinationName, String locationImage, TravelCategory travelCategory,
             LocalDateTime departureDateTime, LocalDateTime returnDateTime, LocalDateTime discountEndDate,
             int numberOfNights, double arrangementPrice, int totalSeats, int availableSeats,
@@ -288,6 +338,12 @@ public class Travel {
 
 	public void setFormattedDiscountEndDateTime(String formattedDiscountEndDateTime) {
 		this.formattedDiscountEndDateTime = formattedDiscountEndDateTime;
+	}
+	public double getOriginalPrice() {
+		return originalPrice;
+	}
+	public void setOriginalPrice(double originalPrice) {
+		this.originalPrice = originalPrice;
 	}
 	
 	
