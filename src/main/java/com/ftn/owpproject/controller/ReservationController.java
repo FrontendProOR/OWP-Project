@@ -57,6 +57,7 @@ public class ReservationController {
         }
 
         Travel travel = travelService.findOne(travelId);
+        model.addAttribute("loggedUser",loggedUser);
         model.addAttribute("travel", travel);
         return "makeReservation";
     }

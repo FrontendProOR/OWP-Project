@@ -83,14 +83,25 @@ public class TravelController implements ServletContextAware {
     @GetMapping(value = {"/", "/index"})
     public ModelAndView indexPage(HttpServletResponse response, HttpSession session) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
+        String userRole = null;
+        if(loggedUser != null) {
+        	userRole = loggedUser.getRole().toString();        	
+        }
 
-        // Ažuriraj sve cene pre preuzimanja podataka
         travelService.updateAllTravelPrices();
 
-        List<Travel> travels = travelService.findAll().stream()
-            .filter(travel -> travel.getAvailableSeats() > 0)
-            .filter(travel -> ChronoUnit.HOURS.between(LocalDateTime.now(), travel.getDepartureDateTime()) > 48)
-            .collect(Collectors.toList());
+        List<Travel> travels = travelService.findAll();
+
+        if (userRole == "BUYER" || loggedUser == null) {
+            travels = travels.stream()
+                .filter(travel -> travel.getAvailableSeats() > 0)
+                .filter(travel -> ChronoUnit.HOURS.between(LocalDateTime.now(), travel.getDepartureDateTime()) > 48)
+                .collect(Collectors.toList());
+        } else if (userRole == "MANAGER") {
+            travels = travels.stream()
+                .filter(travel -> ChronoUnit.HOURS.between(LocalDateTime.now(), travel.getDepartureDateTime()) > 48)
+                .collect(Collectors.toList());
+        }
 
         List<Travel> promotionalTravels = new ArrayList<>(travels.stream()
             .filter(travel -> travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isAfter(LocalDateTime.now()))
@@ -118,14 +129,19 @@ public class TravelController implements ServletContextAware {
         return result;
     }
 
+
     @GetMapping("/travels")
     public ModelAndView travelsPage(@RequestParam(required = false) String page, HttpServletResponse response, HttpSession session) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
 
-        travelService.updateAllTravelPrices(); // Ensure all prices are updated before fetching data
+        if (loggedUser == null || loggedUser.getRole() != UserRole.MANAGER) {
+            response.sendRedirect(bURL);
+        }
+        
+        travelService.updateAllTravelPrices(); 
 
         List<Travel> travels = travelService.findAll();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         travels.forEach(travel -> {
             travel.setFormattedDepartureDateTime(travel.getDepartureDateTime().format(formatter));
             travel.setFormattedReturnDateTime(travel.getReturnDateTime().format(formatter));
@@ -154,6 +170,7 @@ public class TravelController implements ServletContextAware {
         }
 
         ModelAndView modelAndView = new ModelAndView("editTravel");
+        modelAndView.addObject("loggedUser",loggedUser);
         modelAndView.addObject("travel", travel);
         modelAndView.addObject("categories", TravelCategoryEnum.values());
 
@@ -192,7 +209,7 @@ public class TravelController implements ServletContextAware {
             return;
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
         travel.setTransportationType(TransportationType.valueOf(transportationType.toUpperCase()));
         travel.setAccommodationType(TypeOfAccommodation.valueOf(accommodationType.toUpperCase()));
@@ -263,7 +280,7 @@ public class TravelController implements ServletContextAware {
             response.sendRedirect(bURL);
             return null;
         }
-
+        modelAndView.addObject("loggedUser",loggedUser);
         modelAndView.setViewName("addTravel");
         modelAndView.addObject("categories", TravelCategoryEnum.values());
 

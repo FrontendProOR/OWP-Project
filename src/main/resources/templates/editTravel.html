@@ -65,11 +65,11 @@
             </div>
             <div class="form-group">
                 <label for="departureDateTime">Departure Date and Time:</label>
-                <input type="text" class="form-control" id="departureDateTime" name="departureDateTime" th:value="${travel.departureDateTime.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a'))}">
+                <input type="datetime-local" class="form-control" id="departureDateTime" name="departureDateTime" th:value="${travel.departureDateTime}">
             </div>
             <div class="form-group">
                 <label for="returnDateTime">Return Date and Time:</label>
-                <input type="text" class="form-control" id="returnDateTime" name="returnDateTime" th:value="${travel.returnDateTime.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a'))}">
+                <input type="datetime-local" class="form-control" id="returnDateTime" name="returnDateTime" th:value="${travel.returnDateTime}">
             </div>
             <div class="form-group">
                 <label for="originalPrice">Original Price:</label>
@@ -93,7 +93,7 @@
             </div>
             <div class="form-group">
                 <label for="discountEndDate">Discount End Date:</label>
-                <input type="text" class="form-control" id="discountEndDate" name="discountEndDate" th:value="${travel.discountEndDate != null ? travel.discountEndDate.format(T(java.time.format.DateTimeFormatter).ofPattern('MM/dd/yyyy hh:mm a')) : ''}">
+                <input type="datetime-local" class="form-control" name="discountEndDate" th:value="${travel.discountEndDate != null ? travel.discountEndDate : ''}">
             </div>
             <button type="submit" class="btn btn-primary">Edit</button>
         </form>
