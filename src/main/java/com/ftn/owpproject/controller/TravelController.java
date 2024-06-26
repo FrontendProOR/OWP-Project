@@ -190,7 +190,7 @@ public class TravelController implements ServletContextAware {
             @RequestParam double originalPrice,
             @RequestParam int totalSeats,
             @RequestParam int availableSeats,
-            @RequestParam(value = "discountPercentage", required = false) String discountPercentageStr,
+            @RequestParam(value = "discountPercentage", required = false, defaultValue = "0.0") String discountPercentageStr,
             @RequestParam(value = "discountEndDate", required = false) String discountEndDateStr,
             HttpServletResponse response,
             HttpSession session) throws IOException {
@@ -236,9 +236,11 @@ public class TravelController implements ServletContextAware {
         double arrangmentPrice = originalPrice;
         if (discountPercentageStr != null && !discountPercentageStr.isEmpty()) {
             double discountPercentage = Double.parseDouble(discountPercentageStr);
-            LocalDateTime discountEndDate = LocalDateTime.parse(discountEndDateStr, formatter);
-            if (discountPercentage > 0 && discountEndDate.isAfter(LocalDateTime.now())) {
-                arrangmentPrice = originalPrice - (originalPrice * discountPercentage / 100);
+            if (discountEndDateStr != null && !discountEndDateStr.isEmpty()) {
+                LocalDateTime discountEndDate = LocalDateTime.parse(discountEndDateStr, formatter);
+                if (discountPercentage > 0 && discountEndDate.isAfter(LocalDateTime.now())) {
+                    arrangmentPrice = originalPrice - (originalPrice * discountPercentage / 100);
+                }
             }
         }
 
@@ -263,6 +265,7 @@ public class TravelController implements ServletContextAware {
 
         response.sendRedirect(bURL + "travels");
     }
+
 
     @PostMapping(value = "/travels/showEditForm")
     public String showEditForm(@RequestParam Long id, Model model) {

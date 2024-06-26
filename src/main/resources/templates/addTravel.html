@@ -6,12 +6,76 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <title>Add Travel</title>
+    <script>
+        function validateForm(form) {
+            const discountPercentage = parseFloat(form.discountPercentage.value.trim());
+            const discountEndDate = form.discountEndDate.value.trim();
+            const destinationName = form.destinationName.value.trim();
+            const departureDateTime = new Date(form.departureDateTime.value);
+            const returnDateTime = new Date(form.returnDateTime.value);
+            const arrangementPrice = parseFloat(form.arrangmentPrice.value.trim());
+            const originalPrice = parseFloat(form.originalPrice.value.trim());
+            const totalSeats = parseInt(form.totalSeats.value.trim());
+            const availableSeats = parseInt(form.availableSeats.value.trim());
+
+            // Validate discount fields
+            if ((discountPercentage === 0.0 && discountEndDate) || (discountPercentage > 0.0 && !discountEndDate)) {
+                alert("Both Discount Percentage and Discount End Date must be filled or both must be empty.");
+                return false;
+            }
+
+            if (discountEndDate && discountPercentage < 1) {
+                alert("Discount Percentage must be greater than 1 if Discount End Date is provided.");
+                return false;
+            }
+
+            // Validate required fields
+            if (!form.transportationType.value.trim() || !form.accommodationType.value.trim() ||
+                !destinationName || !form.departureDateTime.value.trim() ||
+                !form.returnDateTime.value.trim() || !form.originalPrice.value.trim() ||
+                !form.totalSeats.value.trim() || !form.availableSeats.value.trim()) {
+                alert("All fields except Discount Percentage and Discount End Date are required.");
+                return false;
+            }
+
+            // Validate destination name length
+            if (destinationName.length <= 2) {
+                alert("Destination Name must be longer than 2 characters.");
+                return false;
+            }
+
+            // Validate date times
+            if (departureDateTime >= returnDateTime) {
+                alert("Departure Date and Time must be before Return Date and Time.");
+                return false;
+            }
+
+            // Validate original price
+            if (originalPrice > 10000) {
+                alert("Original Price cannot exceed 10000.");
+                return false;
+            }
+
+            // Validate seats
+            if (totalSeats > 999) {
+                alert("Total Seats cannot exceed 999.");
+                return false;
+            }
+
+            if (availableSeats > 999) {
+                alert("Available Seats cannot exceed 999.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
     <div th:insert="~{fragments/navbar.html :: navbar}"></div>
     <div class="container">
         <h2>Add New Travel</h2>
-        <form method="post" th:action="@{/travels/add}" enctype="multipart/form-data">
+        <form method="post" th:action="@{/travels/add}" enctype="multipart/form-data" onsubmit="return validateForm(this)">
             <div class="mb-3">
                 <label for="transportationType" class="form-label">Transportation Type</label>
                 <select class="form-select" id="transportationType" name="transportationType" required>
@@ -33,7 +97,7 @@
             </div>
             <div class="mb-3">
                 <label for="locationImage" class="form-label">Location Image</label>
-                <input type="file" class="form-control" id="locationImage" name="locationImage" required>
+                <input type="file" class="form-control" id="locationImage" name="locationImage" accept=".jpg, .png" required>
             </div>
             <div class="mb-3">
                 <label for="travelCategory" class="form-label">Travel Category</label>
@@ -52,6 +116,10 @@
             <div class="mb-3">
                 <label for="originalPrice" class="form-label">Original Price</label>
                 <input type="number" class="form-control" id="originalPrice" name="originalPrice" step="0.01" required>
+            </div>
+            <div class="mb-3">
+                <label for="arrangmentPrice" class="form-label">Arrangement Price</label>
+                <input type="number" class="form-control" id="arrangmentPrice" name="arrangmentPrice" step="0.01" readonly>
             </div>
             <div class="mb-3">
                 <label for="totalSeats" class="form-label">Total Seats</label>

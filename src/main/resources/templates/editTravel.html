@@ -9,16 +9,71 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>
         function validateForm(form) {
-            var discountPercentage = form.discountPercentage.value.trim();
-            var discountEndDate = form.discountEndDate.value.trim();
-            if ((discountPercentage !== '' && discountEndDate === '') || (discountPercentage === '' && discountEndDate !== '')) {
-                alert('You must enter both Discount Percentage and Discount End Date if you are updating one of them.');
+            const discountPercentage = parseFloat(form.discountPercentage.value.trim());
+            const discountEndDate = form.discountEndDate.value.trim();
+            const destinationName = form.destinationName.value.trim();
+            const departureDateTime = new Date(form.departureDateTime.value);
+            const returnDateTime = new Date(form.returnDateTime.value);
+            const arrangementPrice = parseFloat(form.arrangmentPrice.value.trim());
+            const originalPrice = parseFloat(form.originalPrice.value.trim());
+            const totalSeats = parseInt(form.totalSeats.value.trim());
+            const availableSeats = parseInt(form.availableSeats.value.trim());
+
+            // Validate discount fields
+            if ((discountPercentage === 0.0 && discountEndDate) || (discountPercentage > 0.0 && !discountEndDate)) {
+                alert("Both Discount Percentage and Discount End Date must be filled or both must be empty.");
                 return false;
             }
-            if (discountPercentage !== '' && parseFloat(discountPercentage) <= 1) {
-                alert('Discount Percentage must be greater than 1.');
+
+            if (discountEndDate && discountPercentage < 1) {
+                alert("Discount Percentage must be greater than 1 if Discount End Date is provided.");
                 return false;
             }
+
+            // Validate required fields
+            if (!form.transportationType.value.trim() || !form.accommodationType.value.trim() ||
+                !destinationName || !form.departureDateTime.value.trim() ||
+                !form.returnDateTime.value.trim() || !form.originalPrice.value.trim() ||
+                !form.totalSeats.value.trim() || !form.availableSeats.value.trim()) {
+                alert("All fields except Discount Percentage and Discount End Date are required.");
+                return false;
+            }
+
+            // Validate destination name length
+            if (destinationName.length <= 2) {
+                alert("Destination Name must be longer than 2 characters.");
+                return false;
+            }
+
+            // Validate date times
+            if (departureDateTime >= returnDateTime) {
+                alert("Departure Date and Time must be before Return Date and Time.");
+                return false;
+            }
+
+            // Validate arrangement price
+            if (arrangementPrice > 10000) {
+                alert("Arrangement Price cannot exceed 10000.");
+                return false;
+            }
+
+            // Validate original price
+            if (originalPrice > 10000) {
+                alert("Original Price cannot exceed 10000.");
+                return false;
+            }
+
+            // Validate seats
+            if (totalSeats > 999) {
+                alert("Total Seats cannot exceed 999.");
+                return false;
+            }
+
+            if (availableSeats > 999) {
+                alert("Available Seats cannot exceed 999.");
+                return false;
+            }
+
             return true;
         }
     </script>
@@ -76,7 +131,7 @@
                 <input type="text" class="form-control" id="originalPrice" name="originalPrice" th:value="${travel.originalPrice}">
             </div>
             <div class="form-group">
-                <label for="arrangmentPrice">Arrangment Price:</label>
+                <label for="arrangmentPrice">Arrangement Price:</label>
                 <input type="text" class="form-control" id="arrangmentPrice" name="arrangmentPrice" th:value="${travel.arrangmentPrice}" readonly>
             </div>
             <div class="form-group">
