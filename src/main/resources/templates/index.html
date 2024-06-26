@@ -98,6 +98,8 @@
             cardsContainer.appendChild(card);
         });
     }
+    
+    
     </script>
     
 </head>
@@ -154,9 +156,49 @@
             </div>
         </div>
 
-        <div th:if="${loggedUser != null}">
-        	<h3>All Travels</h3>
+		<h3>Seasonal Travels</h3>
         <div class="row">
+            <div th:each="travel : ${seasonalTravels}" class="col-md-4">
+                <div class="card mb-4" th:classappend="${travel.discountEndDate != null && travel.discountEndDate.isAfter(T(java.time.LocalDateTime).now())} ? 'discount-card'">
+                    <img th:src="@{'/images/' + ${travel.locationImage}}" class="card-img-top" alt="Travel Destination" width="450" height="300">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${travel.destinationName}"></h5>
+                        <p class="card-text">
+                            Transportation: <span th:text="${travel.transportationType}"></span><br>
+                            Accommodation: <span th:text="${travel.accommodationType}"></span><br>
+                            Category: <span class="category" th:text="${travel.getTravelCategory().getCategoryName().toString()}"></span><br>
+                            Departure: <span th:text="${travel.departureDateTime}"></span><br>
+                            Return: <span th:text="${travel.returnDateTime}"></span><br>
+                            Number of Nights: <span class="num-nights" th:text="${travel.numberOfNights}"></span><br>
+                            <span th:if="${travel.discountEndDate != null}">
+                                <span th:if="${travel.discountEndDate.isAfter(T(java.time.LocalDateTime).now())}">
+                                    Original Price: <span style="text-decoration: line-through;" th:text="${travel.originalPrice}"></span><br>
+                                    Action Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
+                                    Discount: <span th:text="${travel.discountPercentage}"></span>%<br>
+                                    Discount End Date: <span th:text="${travel.discountEndDate}"></span><br>
+                                </span>
+                                <span th:if="${!travel.discountEndDate.isAfter(T(java.time.LocalDateTime).now())}">
+                                    <span style="color: red;">Discount End Date: <span th:text="${travel.discountEndDate}"></span></span><br>
+                                    Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
+                                </span>
+                            </span>
+                            <span th:if="${travel.discountEndDate == null}">
+                                Price: <span class="arrangment-price" th:text="${travel.arrangmentPrice}"></span><br>
+                            </span>
+                            Total Seats: <span th:text="${travel.totalSeats}"></span><br>
+                            Available Seats: <span th:text="${travel.availableSeats}"></span><br>
+                        </p>
+                        <div th:if="${travel.discountEndDate != null && travel.discountEndDate.isAfter(T(java.time.LocalDateTime).now())}" class="discount-tag">Special</br>Offer</div>
+                        <a th:href="@{/travels/details(travelId=${travel.id})}" class="btn btn-secondary mb-2">View Details</a> 
+                        <a th:href="@{/reservations/make(travelId=${travel.id})}" class="btn btn-primary mb-2" th:if="${loggedUser != null && loggedUser.role.toString() == 'BUYER'}">Make Reservation</a> 
+                        <a th:href="@{/travels/editTravel(id=${travel.id})}" class="btn btn-outline-primary mb-2" th:if="${loggedUser != null && loggedUser.role.toString() == 'MANAGER'}">Edit Travel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>All Other Travels</h3>
+        <div class="row" id="all-travels">
             <div th:each="travel : ${allTravels}" class="col-md-4">
                 <div class="card mb-4" th:classappend="${travel.discountEndDate != null && travel.discountEndDate.isAfter(T(java.time.LocalDateTime).now())} ? 'discount-card'">
                     <img th:src="@{'/images/' + ${travel.locationImage}}" class="card-img-top" alt="Travel Destination" width="450" height="300">
@@ -195,7 +237,8 @@
                 </div>
             </div>
         </div>
-        </div>
+        
     </div>
+    
 </body>
 </html>

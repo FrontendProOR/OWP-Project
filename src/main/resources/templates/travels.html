@@ -93,7 +93,11 @@
                 alert("Available Seats cannot exceed 999.");
                 return false;
             }
-
+			
+            if(availableSeats > totalSeats){
+            	alert("Number of available Seats cannot exceed number of total seats.");
+                return false;
+            }
             return true;
         }
     </script>

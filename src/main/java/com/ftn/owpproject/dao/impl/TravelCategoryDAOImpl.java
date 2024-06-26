@@ -28,26 +28,7 @@ public class TravelCategoryDAOImpl implements TravelCategoryDAO{
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-//	public class TravelCategoryRowCallBackHandler implements RowCallbackHandler {
-//		private Map<Long, TravelCategory> travelCategories = new LinkedHashMap<>();
-//		
-//		@Override
-//		public void processRow(ResultSet resultSet)throws SQLException{
-//			int index = 1;
-//			Long id = resultSet.getLong(index++);
-//			String name = resultSet.getString(index++);
-//			String description = resultSet.getString(index++);
-//			TravelCategory travelCategory = travelCategories.get(id);
-//			TravelCategoryEnum nameEnum = TravelCategoryEnum.valueOf(name);
-//			if(travelCategory == null) {
-//				travelCategory = new TravelCategory(id,nameEnum,description);
-//			}
-//		}
-//		
-//		public List<TravelCategory> getTravelCategories(){
-//			return new ArrayList<>(travelCategories.values());
-//		}
-//	}
+
 	public class TravelCategoryRowCallBackHandler implements RowCallbackHandler {
 	    private Map<Long, TravelCategory> travelCategories = new LinkedHashMap<>();
 

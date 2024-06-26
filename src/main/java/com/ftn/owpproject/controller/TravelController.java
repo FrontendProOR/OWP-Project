@@ -81,11 +81,11 @@ public class TravelController implements ServletContextAware {
     }
 
     @GetMapping(value = {"/", "/index"})
-    public ModelAndView indexPage(HttpServletResponse response, HttpSession session) throws IOException {
+    public ModelAndView indexPage(HttpServletResponse response, HttpSession session, @RequestParam(required = false, defaultValue = "6") int limit) throws IOException {
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
         String userRole = null;
-        if(loggedUser != null) {
-        	userRole = loggedUser.getRole().toString();        	
+        if (loggedUser != null) {
+            userRole = loggedUser.getRole().toString();            
         }
 
         travelService.updateAllTravelPrices();
@@ -103,31 +103,61 @@ public class TravelController implements ServletContextAware {
                 .collect(Collectors.toList());
         }
 
-        List<Travel> promotionalTravels = new ArrayList<>(travels.stream()
-            .filter(travel -> travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isAfter(LocalDateTime.now()))
-            .limit(NUM_TRAVELS_TO_DISPLAY)
-            .collect(Collectors.toList()));
-
-        if (promotionalTravels.size() < NUM_TRAVELS_TO_DISPLAY) {
-            List<Travel> additionalTravels = travels.stream()
-                .filter(travel -> !promotionalTravels.contains(travel))
-                .limit(NUM_TRAVELS_TO_DISPLAY - promotionalTravels.size())
-                .collect(Collectors.toList());
-            promotionalTravels.addAll(additionalTravels);
-        }
-
+        List<Travel> promotionalTravels = getPromotionalTravels(travels);
+        List<Travel> seasonalTravels = getSeasonalTravels(travels);
         List<Travel> allTravels = travels.stream()
-            .filter(travel -> !promotionalTravels.contains(travel))
+            .filter(travel -> !promotionalTravels.contains(travel) && !seasonalTravels.contains(travel))
+            .limit(limit)//6
             .collect(Collectors.toList());
 
+        
         ModelAndView result = new ModelAndView("index");
         result.addObject("promotionalTravels", promotionalTravels);
+        result.addObject("seasonalTravels", seasonalTravels);
         result.addObject("allTravels", allTravels);
         result.addObject("travelCategory", TravelCategoryEnum.values());
         result.addObject("loggedUser", loggedUser);
 
         return result;
     }
+
+
+    private List<Travel> getPromotionalTravels(List<Travel> travels) {
+        return travels.stream()
+            .filter(travel -> travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isAfter(LocalDateTime.now()))
+            .limit(NUM_TRAVELS_TO_DISPLAY)
+            .collect(Collectors.toList());
+    }
+
+    private List<Travel> getSeasonalTravels(List<Travel> travels) {
+        LocalDateTime now = LocalDateTime.now();
+        TravelCategoryEnum currentSeason = getCurrentSeason(now);
+        return travels.stream()
+            .filter(travel -> travel.getTravelCategory().getCategoryName() == currentSeason)
+            .filter(travel -> travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isAfter(now))
+            .limit(NUM_TRAVELS_TO_DISPLAY)
+            .collect(Collectors.toList());
+    }
+
+    private TravelCategoryEnum getCurrentSeason(LocalDateTime date) {
+        if (isSummer(date)) {
+            return TravelCategoryEnum.SUMMER_VACATION;
+        } else if (isWinter(date)) {
+            return TravelCategoryEnum.SKIING;
+        } else {
+            return null; // Fallback to non-seasonal or random
+        }
+    }
+
+    private boolean isSummer(LocalDateTime date) {
+        return date.getMonthValue() >= 6 && date.getMonthValue() <= 8;
+    }
+
+    private boolean isWinter(LocalDateTime date) {
+        return date.getMonthValue() == 12 || date.getMonthValue() == 1 || date.getMonthValue() == 2;
+    }
+
+
 
 
     @GetMapping("/travels")
