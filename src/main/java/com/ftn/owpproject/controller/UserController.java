@@ -90,6 +90,13 @@ public class UserController extends Exception implements ServletContextAware {
 			return result;
 		}
 		Long jmbgLong = Long.parseLong(jmbg);
+	    User sameJmbg = userService.findByJmbg(jmbgLong);
+	    if (sameJmbg != null) {
+	        ModelAndView result = new ModelAndView("addUser");
+	        result.addObject("message", "User with the same JMBG already exists!");
+	        return result;
+	    }
+	    
 		LocalDateTime registrationDateTime = LocalDateTime.now();
 		UserRole buyerRole = UserRole.BUYER;
 		User user = new User(firstName, lastName, password, emailAddress, dateOfBirth, address, phoneNumber,

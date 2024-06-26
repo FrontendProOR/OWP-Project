@@ -38,7 +38,6 @@ public class DatabaseUserServiceImpl implements UserService {
 	@Override
 	public void save(User user) {
 	    userDAO.save(user);
-//	    return user;
 	}
 
 	@Override
@@ -49,23 +48,13 @@ public class DatabaseUserServiceImpl implements UserService {
 
 	@Override
 	public void delete(Long id) {
-//	    User user = userDAO.findOne(id);
 	    userDAO.delete(id);
-//	    return user.getId();
 	}
 
-
-//	@Override
-//	public Map<Long, User> findAllAsMap() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//	@Override
-//	public User findOneById(int id) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public User findByJmbg(Long jmbg) {
+		return userDAO.findByJmbg(jmbg);
+	}
 
 	
 }

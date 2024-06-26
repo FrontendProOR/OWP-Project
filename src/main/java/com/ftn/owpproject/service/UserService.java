@@ -15,4 +15,5 @@ public interface UserService {
     void delete(Long id);
 	User findOneById(Long id); 
 //	Map<Long, User> findAllAsMap();
+	 User findByJmbg(Long jmbg);
 }

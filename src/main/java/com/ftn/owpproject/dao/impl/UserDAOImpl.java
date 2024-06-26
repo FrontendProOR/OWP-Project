@@ -36,27 +36,6 @@ public class UserDAOImpl implements UserDAO {
 
 		private Map<Long, User> users = new LinkedHashMap<>();
 		
-//		@Override
-//		public void processRow(ResultSet resultSet) throws SQLException {
-//			int index = 1;
-//			Long id = resultSet.getLong(index++);
-//			String firstName = resultSet.getString(index++);
-//			String lastName = resultSet.getString(index++);	
-//			String password = resultSet.getString(index++);
-//			String email = resultSet.getString(index++);
-////			LocalDate dateOfBirth = resultSet.getTimestamp(index++).toLocalDateTime().toLocalDate();
-//			LocalDate dateOfBirth = resultSet.getDate(index++).toLocalDate();
-//			String address = resultSet.getString(index++);
-//			String phoneNumber = resultSet.getString(index++);
-//			Long jmbg = resultSet.getLong(index++);	//		LocalDateTime registationDateTime = resultSet.getTimestamp(index++).toLocalDateTime();
-//			
-//			
-//			User user = users.get(id);
-//			if (user == null) {
-//				user = new User(id,firstName,lastName,password,email,dateOfBirth,address,phoneNumber,LocalDateTime.now(),UserRole.BUYER,jmbg);
-//				users.put(user.getId(), user);
-//			}
-//		}
 
 			@Override
 			public void processRow(ResultSet resultSet) throws SQLException {
@@ -117,9 +96,6 @@ public class UserDAOImpl implements UserDAO {
         UserRowCallBackHandler rowCallbackHandler = new UserRowCallBackHandler();
         jdbcTemplate.query(sql, rowCallbackHandler, email, password);
 
-//        if (rowCallbackHandler.getUsers().size() == 0) {
-//            return null;
-//        }
 
         return rowCallbackHandler.getUsers().get(0);
     }
@@ -184,5 +160,23 @@ public class UserDAOImpl implements UserDAO {
     public int delete(Long id) {
         String sql = "DELETE FROM User WHERE id = ?";
         return jdbcTemplate.update(sql, id);
+    }
+    
+    @Override
+    public User findByJmbg(Long jmbg) {
+        try {
+            String sql = "SELECT * FROM User WHERE jmbg = ?";
+
+            UserRowCallBackHandler rowCallbackHandler = new UserRowCallBackHandler();
+            jdbcTemplate.query(sql, rowCallbackHandler, jmbg);
+
+            List<User> users = rowCallbackHandler.getUsers();
+            if (users.isEmpty()) {
+                return null;
+            }
+            return users.get(0);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -20,4 +20,5 @@ public interface UserDAO {
 
 	public int delete(Long id);
 	
+	public User findByJmbg(Long jmbg);
 }
