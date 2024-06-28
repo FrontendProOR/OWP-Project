@@ -107,9 +107,18 @@ public class UserController extends Exception implements ServletContextAware {
 	}
 
 	@PostMapping(value = "/delete")
-	public void delete(@RequestParam Long id, HttpServletResponse response) throws IOException {
+	public ModelAndView delete(@RequestParam Long id, HttpServletResponse response) throws IOException {
+		List<Reservation> reservations = reservationService.findByUserId(id);
+	    if (!reservations.isEmpty()) {
+	        ModelAndView modelAndView = new ModelAndView("users");
+	        modelAndView.addObject("message", "User cannot be deleted because they have existing reservations.");
+	        modelAndView.addObject("users", userService.findAll());
+	        return modelAndView;
+	    }
+		
 		userService.delete(id);
 		response.sendRedirect(bURL + "users/logout");
+		return null;
 		}
 
 	@GetMapping(value = "/details")

@@ -82,11 +82,11 @@ public class DatabaseTravelService implements TravelService {
                 updatePrice(travel.getId(), newPrice);
             }
         } else if (travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isBefore(LocalDateTime.now())) {
-            // Discount has expired, reset discount attributes
+            
             travel.setDiscountPercentage(0.0);
             travel.setDiscountEndDate(null);
             travel.setArrangmentPrice(travel.getOriginalPrice());
-            update(travel); // Update travel with new attributes
+            update(travel); 
         } else if (travel.getArrangmentPrice() != travel.getOriginalPrice()) {
             travel.setArrangmentPrice(travel.getOriginalPrice());
             updatePrice(travel.getId(), travel.getOriginalPrice());

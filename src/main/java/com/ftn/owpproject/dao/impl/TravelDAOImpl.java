@@ -85,7 +85,7 @@ public class TravelDAOImpl implements TravelDAO {
                 rs.getTimestamp("discount_end_date") != null ? rs.getTimestamp("discount_end_date").toLocalDateTime() : null,
                 rs.getInt("number_of_nights"),
                 rs.getDouble("arrangment_price"),
-                rs.getDouble("original_price"),  // Dodato
+                rs.getDouble("original_price"),  
                 rs.getInt("total_seats"),
                 rs.getInt("available_seats"),
                 rs.getDouble("discount_percentage")

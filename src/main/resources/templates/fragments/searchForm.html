@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Form</title>
+</head>
+<body>
+    <div th:fragment="searchForm">
+        <form id="searchForm" th:action="@{/index}" method="get">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="transportation">Transportation:</label>
+                    <select id="transportation" name="transportation" class="form-control">
+                        <option value="" th:selected="${transportation == null or transportation == ''}">Select</option>
+                        <option value="AIRPLANE" th:selected="${transportation == 'AIRPLANE'}">AIRPLANE</option>
+                        <option value="BUS" th:selected="${transportation == 'BUS'}">BUS</option>
+                        <option value="PERSONAL" th:selected="${transportation == 'PERSONAL'}">PERSONAL</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="destination">Destination:</label>
+                    <input type="text" id="destination" name="destination" class="form-control" th:value="${destination}">
+                </div>
+                <div class="col-md-4">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" class="form-control">
+                        <option value="" th:selected="${category == null or category == ''}">Select</option>
+                        <option value="NEW_YEAR" th:selected="${category == 'NEW_YEAR'}">NEW_YEAR</option>
+                        <option value="LAST_MINUTE" th:selected="${category == 'LAST_MINUTE'}">LAST_MINUTE</option>
+                        <option value="SUMMER_VACATION" th:selected="${category == 'SUMMER_VACATION'}">SUMMER_VACATION</option>
+                        <option value="SKIING" th:selected="${category == 'SKIING'}">SKIING</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="minPrice">Min Price:</label>
+                    <input type="number" id="minPrice" name="minPrice" class="form-control" th:value="${minPrice}">
+                </div>
+                <div class="col-md-4">
+                    <label for="maxPrice">Max Price:</label>
+                    <input type="number" id="maxPrice" name="maxPrice" class="form-control" th:value="${maxPrice}">
+                </div>
+                <div class="col-md-4">
+                    <label for="minNights">Min Nights:</label>
+                    <input type="number" id="minNights" name="minNights" class="form-control" th:value="${minNights}">
+                </div>
+                <div class="col-md-4">
+                    <label for="maxNights">Max Nights:</label>
+                    <input type="number" id="maxNights" name="maxNights" class="form-control" th:value="${maxNights}">
+                </div>
+                <div class="col-md-4">
+                    <label for="sort">Sort By:</label>
+                    <select id="sort" name="sort" class="form-control">
+                        <option value="" th:selected="${sort == null or sort == ''}">None</option>
+                        <option value="destination" th:selected="${sort == 'destination'}">Destination</option>
+                        <option value="price" th:selected="${sort == 'price'}">Price</option>
+                        <option value="nights" th:selected="${sort == 'nights'}">Nights</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

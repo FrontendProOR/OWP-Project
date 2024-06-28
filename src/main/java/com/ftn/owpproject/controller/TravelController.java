@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,7 @@ public class TravelController implements ServletContextAware {
     @PostConstruct
     public void init() {
         bURL = servletContext.getContextPath() + "/";
-        travelService.updateAllTravelPrices();  // Ensure all prices are updated on application startup
+        travelService.updateAllTravelPrices();  
     }
 
     @Autowired
@@ -81,7 +82,18 @@ public class TravelController implements ServletContextAware {
     }
 
     @GetMapping(value = {"/", "/index"})
-    public ModelAndView indexPage(HttpServletResponse response, HttpSession session, @RequestParam(required = false, defaultValue = "6") int limit) throws IOException {
+    public ModelAndView indexPage(
+            HttpServletResponse response, HttpSession session,
+            @RequestParam(required = false) String transportation,
+            @RequestParam(required = false) String destination,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Integer minNights,
+            @RequestParam(required = false) Integer maxNights,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false, defaultValue = "6") int limit) throws IOException {
+
         User loggedUser = (User) session.getAttribute(UserController.USER_KEY);
         String userRole = null;
         if (loggedUser != null) {
@@ -103,22 +115,105 @@ public class TravelController implements ServletContextAware {
                 .collect(Collectors.toList());
         }
 
+        travels = searchAndFilterTravels(travels, transportation, destination, category, minPrice, maxPrice, minNights, maxNights, sort);
+
         List<Travel> promotionalTravels = getPromotionalTravels(travels);
         List<Travel> seasonalTravels = getSeasonalTravels(travels);
         List<Travel> allTravels = travels.stream()
             .filter(travel -> !promotionalTravels.contains(travel) && !seasonalTravels.contains(travel))
-            .limit(limit)//6
+            .limit(limit)
             .collect(Collectors.toList());
 
-        
         ModelAndView result = new ModelAndView("index");
         result.addObject("promotionalTravels", promotionalTravels);
         result.addObject("seasonalTravels", seasonalTravels);
         result.addObject("allTravels", allTravels);
         result.addObject("travelCategory", TravelCategoryEnum.values());
         result.addObject("loggedUser", loggedUser);
+        result.addObject("transportation", transportation);
+        result.addObject("destination", destination);
+        result.addObject("category", category);
+        result.addObject("minPrice", minPrice);
+        result.addObject("maxPrice", maxPrice);
+        result.addObject("minNights", minNights);
+        result.addObject("maxNights", maxNights);
+        result.addObject("sort", sort);
 
         return result;
+    }
+
+    private List<Travel> searchAndFilterTravels(
+            List<Travel> travels,
+            String transportation,
+            String destination,
+            String category,
+            Double minPrice,
+            Double maxPrice,
+            Integer minNights,
+            Integer maxNights,
+            String sort) {
+
+        
+        if (transportation != null && !transportation.isEmpty()) {
+            travels = travels.stream()
+                    .filter(travel -> travel.getTransportationType().toString().equalsIgnoreCase(transportation))
+                    .collect(Collectors.toList());
+        }
+        if (destination != null && !destination.isEmpty()) {
+            travels = travels.stream()
+                    .filter(travel -> travel.getDestinationName().toLowerCase().startsWith(destination.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if (category != null && !category.isEmpty()) {
+            travels = travels.stream()
+                    .filter(travel -> travel.getTravelCategory().getCategoryName().toString().equalsIgnoreCase(category))
+                    .collect(Collectors.toList());
+        }
+        if (minPrice != null) {
+            travels = travels.stream()
+                    .filter(travel -> travel.getArrangmentPrice() >= minPrice)
+                    .collect(Collectors.toList());
+        }
+        if (maxPrice != null) {
+            travels = travels.stream()
+                    .filter(travel -> travel.getArrangmentPrice() <= maxPrice)
+                    .collect(Collectors.toList());
+        }
+        if (minNights != null) {
+            travels = travels.stream()
+                    .filter(travel -> travel.getNumberOfNights() >= minNights)
+                    .collect(Collectors.toList());
+        }
+        if (maxNights != null) {
+            travels = travels.stream()
+                    .filter(travel -> travel.getNumberOfNights() <= maxNights)
+                    .collect(Collectors.toList());
+        }
+
+        
+        if (sort != null && !sort.isEmpty()) {
+            switch (sort) {
+                case "destination":
+                    travels = travels.stream()
+                            .sorted(Comparator.comparing(Travel::getDestinationName))
+                            .collect(Collectors.toList());
+                    break;
+                case "price":
+                    travels = travels.stream()
+                            .sorted(Comparator.comparing(Travel::getArrangmentPrice))
+                            .collect(Collectors.toList());
+                    break;
+                case "nights":
+                    travels = travels.stream()
+                            .sorted(Comparator.comparing(Travel::getNumberOfNights))
+                            .collect(Collectors.toList());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return travels;
     }
 
 
@@ -145,7 +240,7 @@ public class TravelController implements ServletContextAware {
         } else if (isWinter(date)) {
             return TravelCategoryEnum.SKIING;
         } else {
-            return null; // Fallback to non-seasonal or random
+            return null; 
         }
     }
 
@@ -262,7 +357,7 @@ public class TravelController implements ServletContextAware {
         int numberOfNights = (int) ChronoUnit.DAYS.between(travel.getDepartureDateTime(), travel.getReturnDateTime());
         travel.setNumberOfNights(numberOfNights);
 
-        // Calculate arrangmentPrice
+        
         double arrangmentPrice = originalPrice;
         if (discountPercentageStr != null && !discountPercentageStr.isEmpty()) {
             double discountPercentage = Double.parseDouble(discountPercentageStr);
@@ -274,8 +369,8 @@ public class TravelController implements ServletContextAware {
             }
         }
 
-        travel.setOriginalPrice(originalPrice); // Set original price
-        travel.setArrangmentPrice(arrangmentPrice); // Calculated
+        travel.setOriginalPrice(originalPrice); 
+        travel.setArrangmentPrice(arrangmentPrice); 
         travel.setTotalSeats(totalSeats);
         travel.setAvailableSeats(availableSeats);
 
@@ -369,7 +464,7 @@ public class TravelController implements ServletContextAware {
         int numberOfNights = (int) ChronoUnit.DAYS.between(travel.getDepartureDateTime(), travel.getReturnDateTime());
         travel.setNumberOfNights(numberOfNights);
 
-        // Calculate arrangmentPrice
+        
         double arrangmentPrice = originalPrice;
         if (discountPercentageStr != null && !discountPercentageStr.isEmpty()) {
             double discountPercentage = Double.parseDouble(discountPercentageStr);
@@ -379,8 +474,8 @@ public class TravelController implements ServletContextAware {
             }
         }
 
-        travel.setOriginalPrice(originalPrice); // Set original price
-        travel.setArrangmentPrice(arrangmentPrice); // Calculated
+        travel.setOriginalPrice(originalPrice);
+        travel.setArrangmentPrice(arrangmentPrice); 
         travel.setTotalSeats(totalSeats);
         travel.setAvailableSeats(availableSeats);
 
@@ -452,11 +547,11 @@ public class TravelController implements ServletContextAware {
                 travelService.updatePrice(travel.getId(), newPrice);
             }
         } else if (travel.getDiscountEndDate() != null && travel.getDiscountEndDate().isBefore(LocalDateTime.now())) {
-            // Discount has expired, reset discount attributes
+            
             travel.setDiscountPercentage(0.0);
             travel.setDiscountEndDate(null);
             travel.setArrangmentPrice(travel.getOriginalPrice());
-            travelService.update(travel); // Update travel with new attributes
+            travelService.update(travel); 
         } else if (travel.getArrangmentPrice() != travel.getOriginalPrice()) {
             travel.setArrangmentPrice(travel.getOriginalPrice());
             travelService.updatePrice(travel.getId(), travel.getOriginalPrice());

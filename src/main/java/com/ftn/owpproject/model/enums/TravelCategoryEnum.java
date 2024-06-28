@@ -7,4 +7,3 @@ public enum TravelCategoryEnum {
     NEW_YEAR;
 
 }
-
