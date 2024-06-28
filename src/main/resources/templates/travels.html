@@ -64,7 +64,13 @@
                 alert("Destination Name must be longer than 2 characters.");
                 return false;
             }
-
+         	
+            // Validate destination name maximum length
+            if (destinationName.length > 50) {
+                alert("Destination Name cannot exceed 50 characters.");
+                return false;
+            }
+         
             // Validate date times
             if (departureDateTime >= returnDateTime) {
                 alert("Departure Date and Time must be before Return Date and Time.");

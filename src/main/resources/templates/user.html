@@ -119,55 +119,64 @@
             var datePattern = /^\d{4}-\d{2}-\d{2}$/;
             var phoneNumberPattern = /^\d{10}$/;
             var jmbgPattern = /^\d{13}$/;
-			//var serbiaPhoneRegex = /^(\+381)?(\s|-)?6(([0-6]|[8-9])\d{8}|(77|78)\d{7}){1}$/
-			//var passwordRegex = (?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
+
             var errors = [];
 
             if (firstName === "") {
                 errors.push("First name cannot be empty.");
+            } else if (!firstName.match(namePattern)) {
+                errors.push("Please enter a valid first name.");
+            } else if (firstName.length > 50) {
+                errors.push("First name cannot exceed 50 characters.");
             }
+
             if (lastName === "") {
                 errors.push("Last name cannot be empty.");
+            } else if (!lastName.match(namePattern)) {
+                errors.push("Please enter a valid last name.");
+            } else if (lastName.length > 50) {
+                errors.push("Last name cannot exceed 50 characters.");
             }
+
             if (email === "") {
                 errors.push("Email address cannot be empty.");
+            } else if (!email.match(emailPattern)) {
+                errors.push("Please enter a valid email address.");
+            } else if (email.length > 50) {
+                errors.push("Email address cannot exceed 50 characters.");
             }
+
             if (dateOfBirth === "") {
                 errors.push("Date of birth cannot be empty.");
+            } else if (!dateOfBirth.match(datePattern)) {
+                errors.push("Please enter a valid date of birth.");
             }
+
             if (address === "") {
                 errors.push("Address cannot be empty.");
+            } else if (address.length > 50) {
+                errors.push("Address cannot exceed 50 characters.");
             }
+
             if (phoneNumber === "") {
                 errors.push("Phone number cannot be empty.");
+            } else if (!phoneNumber.match(phoneNumberPattern)) {
+                errors.push("Please enter a valid phone number (10 digits).");
             }
+
             if (jmbg === "") {
                 errors.push("JMBG cannot be empty.");
+            } else if (!jmbg.match(jmbgPattern)) {
+                errors.push("Please enter a valid JMBG (13 digits).");
             }
 
             if (password !== "") {
+                if (password.length > 50) {
+                    errors.push("Password cannot exceed 50 characters.");
+                }
                 if (password !== confirmationPassword) {
                     errors.push("Password and confirmation password do not match.");
                 }
-            }
-
-            if (!firstName.match(namePattern)) {
-                errors.push("Please enter a valid first name.");
-            }
-            if (!lastName.match(namePattern)) {
-                errors.push("Please enter a valid last name.");
-            }
-            if (!email.match(emailPattern)) {
-                errors.push("Please enter a valid email address.");
-            }
-            if (!dateOfBirth.match(datePattern)) {
-                errors.push("Please enter a valid date of birth.");
-            }
-            if (!phoneNumber.match(phoneNumberPattern)) {
-                errors.push("Please enter a valid phone number (10 digits).");
-            }
-            if (!jmbg.match(jmbgPattern)) {
-                errors.push("Please enter a valid JMBG (13 digits).");
             }
 
             if (errors.length > 0) {
@@ -184,6 +193,7 @@
 
             return true;
         }
+
 
         function cancelReservation(button) {
             var reservationId = button.getAttribute("data-id");
